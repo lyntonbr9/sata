@@ -6,6 +6,8 @@ import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 
 public interface ISimulacao {
-
-	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes);
+	
+	public void setQtdTotalOperacoesRiscoStop(int qtdTotalOperacoesRiscoStop);
+	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss);
+	
 }

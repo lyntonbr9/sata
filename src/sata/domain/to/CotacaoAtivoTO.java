@@ -5,6 +5,10 @@ public class CotacaoAtivoTO {
 	private String codigo;
 	private String abertura;
 	private String maxima;
+	private String minima;
+	private String fechamento;
+	private String periodo;
+	
 	public String getAbertura() {
 		return abertura;
 	}
@@ -44,10 +48,6 @@ public class CotacaoAtivoTO {
 	public void setPeriodo(String periodo) {
 		this.periodo = periodo;
 	}
-
-	private String minima;
-	private String fechamento;
-	private String periodo;
 	
 	public String getCodigo() {
 		return codigo;
@@ -57,7 +57,5 @@ public class CotacaoAtivoTO {
 		this.codigo = codigo;
 	}
 
-	public CotacaoAtivoTO(String codigo){
-		this.codigo = codigo;
-	}
+
 }
