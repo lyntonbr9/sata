@@ -2,6 +2,9 @@ package sata.domain.to;
 
 public class ResultadoSimulacaoTO {
 
+	public static final int CANDLE_VERDE = 4;
+	public static final int CANDLE_VERMELHA = 3;
+	
 	private int qtdTotalOperacoes;
 	private int qtdOperacoesSucesso;
 	private int qtdOperacoesFalha;

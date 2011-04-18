@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import sata.domain.dao.DAOFactory;
-import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.arquivo.ArquivoAtivoDAO;
 import sata.domain.dao.arquivo.ArquivoCotacaoAtivoDAO;
 import sata.domain.simulacao.ISimulacao;
@@ -14,10 +13,42 @@ import sata.domain.to.ResultadoSimulacaoTO;
 
 public class Principal {
 
+	
+	public static void simulaAcao(String codigoAcao, String ano){
+		System.out.println("testando Simulacao " + codigoAcao);
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
+		ArquivoCotacaoAtivoDAO cotacaoAtivoDAO = (ArquivoCotacaoAtivoDAO) daoFactory.getCotacaoAtivoDAO();
+		//cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_PETR4_2009.txt");
+		cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos(ano + "\\saida_" + codigoAcao + "_" + ano + ".txt");
+		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDosAtivos();
+		ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
+		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
+		System.out.println("ACAO: " + codigoAcao);
+		System.out.println("TOTAL OPERACOES: " + res.getQtdTotalOperacoes());
+		System.out.println("OPERACOES RISCO: " + res.getQtdOperacoesRiscoStop());
+		System.out.println("OPERACOES GANHO: " + res.getQtdOperacoesSucesso());
+		System.out.println("OPERACOES PERDA: " + res.getQtdOperacoesFalha());
+		System.out.println("VALOR TOTAL: " + res.getValorTotal());
+		System.out.println("VALOR GANHO: " + res.getValorGanho());
+		System.out.println("VALOR PERDA: " + res.getValorPerda());
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		String ano="2008";
+		
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
+		ArquivoAtivoDAO ativoDAO = (ArquivoAtivoDAO) daoFactory.getAtivoDAO();
+		ativoDAO.setArquivoListaDeAtivos("listaDeAtivos_" + ano + ".txt");
+		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
+		while(i.hasNext()){
+			String codigoAcao = i.next();
+			simulaAcao(codigoAcao, ano);
+		}
+
 		// TODO Auto-generated method stub
 //		System.out.println("testando ArquivoDAO");
 //		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
@@ -43,22 +74,26 @@ public class Principal {
 //			System.out.println("FECHAMENTO: " + ativo.getFechamento());
 //		}
 		
-		System.out.println("testando Simulacao");
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
-		ArquivoCotacaoAtivoDAO cotacaoAtivoDAO = (ArquivoCotacaoAtivoDAO) daoFactory.getCotacaoAtivoDAO();
-		//cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_PETR4_2009.txt");
-		cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_BBDC4_2009.txt");
-		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDosAtivos();
-		ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
-		//simulacao.setQtdTotalOperacoesRiscoStop(25);
-		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
-		System.out.println("TOTAL OPERACOES: " + res.getQtdTotalOperacoes());
-		System.out.println("OPERACOES RISCO: " + res.getQtdOperacoesRiscoStop());
-		System.out.println("OPERACOES GANHO: " + res.getQtdOperacoesSucesso());
-		System.out.println("OPERACOES PERDA: " + res.getQtdOperacoesFalha());
-		System.out.println("VALOR TOTAL: " + res.getValorTotal());
-		System.out.println("VALOR GANHO: " + res.getValorGanho());
-		System.out.println("VALOR PERDA: " + res.getValorPerda());
+//		System.out.println("testando Simulacao");
+//		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
+//		ArquivoCotacaoAtivoDAO cotacaoAtivoDAO = (ArquivoCotacaoAtivoDAO) daoFactory.getCotacaoAtivoDAO();
+//		//cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_PETR4_2009.txt");
+//		String codigoAcao = "BBDC4";
+//		String ano="2009";
+//		
+//		cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_BBDC4_2009.txt");
+//		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDosAtivos();
+//		ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
+//		//simulacao.setQtdTotalOperacoesRiscoStop(25);
+//		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
+//		System.out.println("ACAO: " + codigoAcao);
+//		System.out.println("TOTAL OPERACOES: " + res.getQtdTotalOperacoes());
+//		System.out.println("OPERACOES RISCO: " + res.getQtdOperacoesRiscoStop());
+//		System.out.println("OPERACOES GANHO: " + res.getQtdOperacoesSucesso());
+//		System.out.println("OPERACOES PERDA: " + res.getQtdOperacoesFalha());
+//		System.out.println("VALOR TOTAL: " + res.getValorTotal());
+//		System.out.println("VALOR GANHO: " + res.getValorGanho());
+//		System.out.println("VALOR PERDA: " + res.getValorPerda());
 		
 //		while(i.hasNext()){
 //			CotacaoAtivoTO ativo = i.next();

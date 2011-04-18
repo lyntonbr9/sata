@@ -60,7 +60,7 @@ public class SimulacaoAcaoOperacaoAlta implements ISimulacao{
 		
 	}
 	
-	//TODO Continuar esta joça
+	//TODO: Continuar esta joça
 	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, 
 				int stopGain, int stopLoss, double probabilidadeStopLoss){
 		
