@@ -31,6 +31,8 @@ public class Principal {
 		System.out.println("VALOR TOTAL: " + res.getValorTotal());
 		System.out.println("VALOR GANHO: " + res.getValorGanho());
 		System.out.println("VALOR PERDA: " + res.getValorPerda());
+		System.out.println("==================================================");
+		System.out.println("");
 	}
 	
 	/**
@@ -38,7 +40,7 @@ public class Principal {
 	 */
 	public static void main(String[] args) {
 		
-		String ano="2008";
+		String ano="2010";
 		
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
 		ArquivoAtivoDAO ativoDAO = (ArquivoAtivoDAO) daoFactory.getAtivoDAO();
