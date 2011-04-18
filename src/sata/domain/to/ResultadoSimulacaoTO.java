@@ -5,10 +5,17 @@ public class ResultadoSimulacaoTO {
 	private int qtdTotalOperacoes;
 	private int qtdOperacoesSucesso;
 	private int qtdOperacoesFalha;
+	private int qtdOperacoesRiscoStop;
 	private int valorTotal;
 	private int valorGanho;
 	private int valorPerda;
 	
+	public int getQtdOperacoesRiscoStop() {
+		return qtdOperacoesRiscoStop;
+	}
+	public void setQtdOperacoesRiscoStop(int qtdOperacoesRiscoStop) {
+		this.qtdOperacoesRiscoStop = qtdOperacoesRiscoStop;
+	}
 	public int getQtdTotalOperacoes() {
 		return qtdTotalOperacoes;
 	}
