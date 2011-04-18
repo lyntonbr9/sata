@@ -15,7 +15,7 @@ public class Principal {
 
 	
 	public static void simulaAcao(String codigoAcao, String ano){
-		System.out.println("testando Simulacao " + codigoAcao);
+		System.out.println("testando Simulacao " + codigoAcao + " ano de " + ano);
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
 		ArquivoCotacaoAtivoDAO cotacaoAtivoDAO = (ArquivoCotacaoAtivoDAO) daoFactory.getCotacaoAtivoDAO();
 		//cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_PETR4_2009.txt");
