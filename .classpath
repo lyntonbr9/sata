@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/Libs/activation.jar"/>
 	<classpathentry kind="lib" path="/Libs/inetfactory.jar"/>
 	<classpathentry kind="lib" path="/Libs/mail.jar"/>
+	<classpathentry kind="lib" path="/Libs/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

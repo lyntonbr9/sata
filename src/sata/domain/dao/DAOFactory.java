@@ -1,11 +1,12 @@
 package sata.domain.dao;
 
 import sata.domain.dao.arquivo.ArquivoDAOFactory;
+import sata.domain.dao.postgre.PostgreDAOFactory;
 
 public abstract class DAOFactory {
 	
 	public static final int ARQUIVO = 1;
-	public static final int SQL = 2;
+	public static final int POSTGRESQL = 2;
 	
 	public abstract IAtivoDAO getAtivoDAO();
 	public abstract ICotacaoAtivoDAO getCotacaoAtivoDAO();
@@ -15,7 +16,8 @@ public abstract class DAOFactory {
 		{
 			case ARQUIVO:
 				return new ArquivoDAOFactory();
-			case SQL:
+			case POSTGRESQL:
+				return new PostgreDAOFactory();
 			default:
 				return null;
 		}

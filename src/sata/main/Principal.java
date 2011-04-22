@@ -4,23 +4,22 @@ import java.util.Iterator;
 import java.util.List;
 
 import sata.domain.dao.DAOFactory;
-import sata.domain.dao.arquivo.ArquivoAtivoDAO;
-import sata.domain.dao.arquivo.ArquivoCotacaoAtivoDAO;
+import sata.domain.dao.IAtivoDAO;
+import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.simulacao.ISimulacao;
 import sata.domain.simulacao.SimulacaoAcaoOperacaoAlta;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
+import sata.domain.util.DataManagement;
 
 public class Principal {
 
 	
 	public static void simulaAcao(String codigoAcao, String ano){
 		System.out.println("testando Simulacao " + codigoAcao + " ano de " + ano);
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
-		ArquivoCotacaoAtivoDAO cotacaoAtivoDAO = (ArquivoCotacaoAtivoDAO) daoFactory.getCotacaoAtivoDAO();
-		//cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos("saida_PETR4_2009.txt");
-		cotacaoAtivoDAO.setArquivoListaCotacaoDeAtivos(ano + "\\saida_" + codigoAcao + "_" + ano + ".txt");
-		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDosAtivos();
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
+		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
 		ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
 		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
 		System.out.println("ACAO: " + codigoAcao);
@@ -35,6 +34,14 @@ public class Principal {
 		System.out.println("");
 	}
 	
+	public static void insereAcaoDB(String codigoAcao, String ano){
+		System.out.println("inserindo acao " + codigoAcao + " ano de " + ano);
+		DataManagement dm = new DataManagement();
+		String pathArqListaDeCotacoesDaAcao = ano + "\\saida_" + codigoAcao + "_" + ano + ".txt";
+		dm.setArquivoListaCotacaoDeAtivos(pathArqListaDeCotacoesDaAcao);
+		dm.importarArqCotacaoToDB(codigoAcao, ano);
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -42,15 +49,35 @@ public class Principal {
 		
 		String ano="2010";
 		
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
-		ArquivoAtivoDAO ativoDAO = (ArquivoAtivoDAO) daoFactory.getAtivoDAO();
-		ativoDAO.setArquivoListaDeAtivos("listaDeAtivos_" + ano + ".txt");
+//		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+//		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
+//		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
+//		while(i.hasNext()){
+//			String codigoAcao = i.next();
+//			if (codigoAcao.equalsIgnoreCase("PETR4"))
+//				simulaAcao(codigoAcao, ano);
+//		}
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
 		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
 		while(i.hasNext()){
 			String codigoAcao = i.next();
+			//if (codigoAcao.equalsIgnoreCase("BBRK3"))
+				//insereAcaoDB(codigoAcao, ano);
 			simulaAcao(codigoAcao, ano);
 		}
-
+		
+//		String ano="2010";
+//		
+//		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
+//		ArquivoAtivoDAO ativoDAO = (ArquivoAtivoDAO) daoFactory.getAtivoDAO();
+//		ativoDAO.setArquivoListaDeAtivos("listaDeAtivos_" + ano + ".txt");
+//		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
+//		while(i.hasNext()){
+//			String codigoAcao = i.next();
+//			simulaAcao(codigoAcao, ano);
+//		}
+		
 		// TODO Auto-generated method stub
 //		System.out.println("testando ArquivoDAO");
 //		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);

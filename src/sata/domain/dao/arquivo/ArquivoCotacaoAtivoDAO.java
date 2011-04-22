@@ -28,7 +28,7 @@ public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 		return caTO;
 	}
 	
-	public List<CotacaoAtivoTO> getCotacoesDosAtivos(){
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String ano){
 		List<CotacaoAtivoTO> listaDeCotacesDeAtivos = new ArrayList<CotacaoAtivoTO>();
 		if (this.fisArqListaCotacaoDeAtivos != null)
 		{
@@ -44,7 +44,7 @@ public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 					caTO.setMaxima(cotacaoDoAtivo[2]);
 					caTO.setMinima(cotacaoDoAtivo[3]);
 					caTO.setFechamento(cotacaoDoAtivo[4]);
-					caTO.setPeriodo("D"); //cotacao diaria
+					caTO.setTipoPeriodo("D"); //cotacao diaria
 					listaDeCotacesDeAtivos.add(caTO);
 				}				
 			} catch (Exception e) {
@@ -58,5 +58,16 @@ public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 			}
 		}
 		return listaDeCotacesDeAtivos;
+	}
+	@Override
+	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo,
+			String ano) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

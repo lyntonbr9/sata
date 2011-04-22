@@ -7,6 +7,7 @@ import sata.domain.to.CotacaoAtivoTO;
 public interface ICotacaoAtivoDAO {
 
 	public CotacaoAtivoTO getCotacaoAtivo(String codigo);
-	public List<CotacaoAtivoTO> getCotacoesDosAtivos();
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano);
+	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO);
 	
 }
