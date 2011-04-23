@@ -5,7 +5,7 @@ import java.util.List;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 
-public class SimulacaoAcaoOperacaoAlta implements ISimulacao{
+public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao{
 	
 	private int stopGain;
 	private int stopLoss;

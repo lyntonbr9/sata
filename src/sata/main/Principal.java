@@ -7,7 +7,8 @@ import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.simulacao.ISimulacao;
-import sata.domain.simulacao.SimulacaoAcaoOperacaoAlta;
+import sata.domain.simulacao.SimulacaoAcaoOperacaoDeAlta;
+import sata.domain.simulacao.SimulacaoAcaoOperacaoDeBaixa;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 import sata.domain.util.DataManagement;
@@ -20,7 +21,8 @@ public class Principal {
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
-		ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
+		//ISimulacao simulacao = new SimulacaoAcaoOperacaoAlta();
+		ISimulacao simulacao = new SimulacaoAcaoOperacaoDeBaixa();
 		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
 		System.out.println("ACAO: " + codigoAcao);
 		System.out.println("TOTAL OPERACOES: " + res.getQtdTotalOperacoes());
@@ -62,9 +64,9 @@ public class Principal {
 		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
 		while(i.hasNext()){
 			String codigoAcao = i.next();
-			//if (codigoAcao.equalsIgnoreCase("BBRK3"))
+			//if (codigoAcao.equalsIgnoreCase("PETR4"))
 				//insereAcaoDB(codigoAcao, ano);
-			simulaAcao(codigoAcao, ano);
+				simulaAcao(codigoAcao, ano);
 		}
 		
 //		String ano="2010";
