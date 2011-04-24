@@ -4,8 +4,10 @@ import java.util.List;
 
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
+import sata.domain.util.IConstants;
+import sata.domain.util.SATAUtil;
 
-public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
+public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 
 	
 //	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss) {
@@ -13,12 +15,11 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 		
 		//definicao dos parametros passados
 		int stopGain = (Integer) parametros[0];
+		int stopLoss = (Integer) parametros[1];
 		
 		ResultadoSimulacaoTO resultado = new ResultadoSimulacaoTO();
 		
 		int abertura;
-		int maxima;
-		int fechamento;
 		int fechamentoDiaAnterior;
 		int maximaDiaAnterior;
 		int minimaDiaAnterior;
@@ -32,15 +33,7 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 		int valorTotal=0;
 		int contadorOperSeguidas=0;
 		
-		int Candles[] = new int[listaDasCotacoes.size()];
-		
-		//seta as candles
-		for (int i=1; i < listaDasCotacoes.size(); i++  )
-		{
-			abertura = Integer.parseInt(listaDasCotacoes.get(i).getAbertura());
-			fechamento = Integer.parseInt(listaDasCotacoes.get(i).getFechamento());
-			Candles[i-1] = (fechamento > abertura) ? CANDLE_VERDE : CANDLE_VERMELHA; 
-		}
+		int Candles[] = SATAUtil.getCandles(listaDasCotacoes);
 		
 		int VALOR_GAP_ABERT_FECH = 15;
 		int TAM_CAND_ANT_VERDE = 20;
@@ -50,10 +43,9 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 		boolean corpoCandleAnteriorVerdeGrande;
 		boolean fechouPertoDaMaxima;
 		
-		for (int i=1; i < listaDasCotacoes.size(); i++  ){
+		for (int i=1; i < listaDasCotacoes.size(); i++  )
+		{
 			abertura = Integer.parseInt(listaDasCotacoes.get(i).getAbertura());
-			maxima = Integer.parseInt(listaDasCotacoes.get(i).getMaxima());
-			fechamento = Integer.parseInt(listaDasCotacoes.get(i).getFechamento());
 			fechamentoDiaAnterior = Integer.parseInt(listaDasCotacoes.get(i-1).getFechamento());
 			maximaDiaAnterior = Integer.parseInt(listaDasCotacoes.get(i-1).getMaxima());
 			minimaDiaAnterior = Integer.parseInt(listaDasCotacoes.get(i-1).getMinima());
@@ -78,8 +70,8 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 						if ((abertura - fechamentoDiaAnterior) > (VALOR_GAP_ABERT_FECH))
 							abriuGapCandleAnterior = true;
 						
-						if(abriuGapCandleAnterior == false){
-							
+						if(abriuGapCandleAnterior == false)
+						{
 							//verifica o tamanho do corpo da candle verde anterior
 							int tamCorpoCandleAnteriorVerde = Math.abs(maximaDiaAnterior - minimaDiaAnterior);
 							if (tamCorpoCandleAnteriorVerde > TAM_CAND_ANT_VERDE){
@@ -112,31 +104,39 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 								//se nao tiver candle vermelha grande anterior
 								if(temCandleVermelhaGrande == false){ 
 									//Se a candle anterior a anterior eh verde faz a operacao
-									if (Candles[i-2] == CANDLE_VERDE){
-										//seta o valor
-										if ((abertura + stopGain) <= maxima){
-											valorGanho = valorGanho + stopGain;
+									if (Candles[i-2] == CANDLE_VERDE)
+									{
+										//calcula o valor da operacao
+										int valorOperacao = SATAUtil.getValorGanho(listaDasCotacoes.get(i), i, fechamentoDiaAnterior, stopGain, stopLoss);
+										
+										if (valorOperacao > 0){
+											valorGanho = valorGanho + valorOperacao;
 											qtdOperSucesso++;
 										}
 										else{
-											valorPerda = valorPerda + (fechamento - abertura);
+											valorPerda = valorPerda + valorOperacao;
 											qtdOperFalha++;
 										}
 										contadorOperSeguidas++;
+										
 									}else{
 										//Se a candle anterior a anterior eh vermelha
                                         //Verifica se o corpo da candle vermelha anterior a anterior eh menor 
 										//ou igual a candle verde anterior
 										int tamCorpoCandleVermelhaAnterACandleAnter = Math.abs(Integer.parseInt(listaDasCotacoes.get(i-2).getMaxima())
 																		- Integer.parseInt(listaDasCotacoes.get(i-2).getMinima()));
-										if((tamCorpoCandleAnteriorVerde - tamCorpoCandleVermelhaAnterACandleAnter) > DIF_CAND_VERMELHA_ANT_VERDE){
-											//seta o valor
-											if ((abertura + stopGain) <= maxima){
-												valorGanho = valorGanho + stopGain;
+										
+										if((tamCorpoCandleAnteriorVerde - tamCorpoCandleVermelhaAnterACandleAnter) > DIF_CAND_VERMELHA_ANT_VERDE)
+										{
+											//calcula o valor da operacao
+											int valorOperacao = SATAUtil.getValorGanho(listaDasCotacoes.get(i), i, fechamentoDiaAnterior, stopGain, stopLoss);
+											
+											if (valorOperacao > 0){
+												valorGanho = valorGanho + valorOperacao;
 												qtdOperSucesso++;
 											}
 											else{
-												valorPerda = valorPerda + (fechamento - abertura);
+												valorPerda = valorPerda + valorOperacao;
 												qtdOperFalha++;
 											}
 											contadorOperSeguidas++;
@@ -150,8 +150,7 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 				if(contadorOperSeguidas == 2){
 					i = i + 2;
 					contadorOperSeguidas = 0;
-				}else
-					i++;
+				}
 			}
 		}
 		

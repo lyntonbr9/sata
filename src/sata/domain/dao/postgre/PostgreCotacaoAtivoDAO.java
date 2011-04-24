@@ -27,13 +27,15 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
 			+ " \"codigoAtivo\" = '" + codigoAtivo + "' "
-			+ " AND ano = '" + ano + "'";
+			+ " AND ano = '" + ano + "' " 
+			+ " ORDER BY periodo ASC";
 		try {
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
 				caTO.setCodigo(rs.getString("codigoAtivo"));
+				caTO.setPeriodo(SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"),false));
 				caTO.setAbertura(rs.getString("abertura"));
 				caTO.setMaxima(rs.getString("maxima"));
 				caTO.setMinima(rs.getString("minima"));
