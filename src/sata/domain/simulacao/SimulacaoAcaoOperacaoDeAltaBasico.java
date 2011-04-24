@@ -61,13 +61,14 @@ public class SimulacaoAcaoOperacaoDeAltaBasico implements ISimulacao{
 	}
 	
 	//TODO: Continuar esta joça
-	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, 
-				int stopGain, int stopLoss, double probabilidadeStopLoss){
+	//public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss){
+	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, Object[] parametros){
 		
+		//definicao dos parametros
+		this.stopGain = (Integer) parametros[0];
+		this.stopLoss = (Integer) parametros[1];
+		this.probabilidadeStopLoss = (Double) parametros[2];
 		this.listaCotacoes = listaDasCotacoes;
-		this.stopGain = stopGain;
-		this.stopLoss = stopLoss;
-		this.probabilidadeStopLoss = probabilidadeStopLoss;
 		ResultadoSimulacaoTO resultado = new ResultadoSimulacaoTO();
 		
 		boolean fazerOperacao;

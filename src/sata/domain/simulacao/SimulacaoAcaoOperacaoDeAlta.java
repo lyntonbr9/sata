@@ -8,7 +8,12 @@ import sata.domain.to.ResultadoSimulacaoTO;
 public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao {
 
 	
-	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss) {
+//	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss) {
+	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, Object[] parametros) {
+		
+		//definicao dos parametros passados
+		int stopGain = (Integer) parametros[0];
+		
 		ResultadoSimulacaoTO resultado = new ResultadoSimulacaoTO();
 		
 		int abertura;

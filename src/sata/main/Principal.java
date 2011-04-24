@@ -22,9 +22,12 @@ public class Principal {
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
+		Object[] paramSimulacao = {30, 10, 0.5}; //{stopGain, stopLoss, probStopLoss}
 		ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAlta();
 		//ISimulacao simulacao = new SimulacaoAcaoOperacaoDeBaixa();
-		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, 30, 10, 0.5);
+		//ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAltaBasico();
+		
+		ResultadoSimulacaoTO res = simulacao.getResultado(listaCotacoesAtivo, paramSimulacao);
 		System.out.println("ACAO: " + codigoAcao);
 		System.out.println("TOTAL OPERACOES: " + res.getQtdTotalOperacoes());
 		System.out.println("OPERACOES RISCO: " + res.getQtdOperacoesRiscoStop());

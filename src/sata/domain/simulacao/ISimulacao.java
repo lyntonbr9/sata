@@ -11,6 +11,7 @@ public interface ISimulacao {
 	public int CANDLE_VERMELHA = 3;
 	
 	public void setQtdTotalOperacoesRiscoStop(int qtdTotalOperacoesRiscoStop);
-	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss);
+	//public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss);
+	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, Object[] parametros);
 	
 }
