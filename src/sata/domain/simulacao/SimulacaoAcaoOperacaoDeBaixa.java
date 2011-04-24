@@ -7,6 +7,7 @@ import sata.domain.to.ResultadoSimulacaoTO;
 
 public class SimulacaoAcaoOperacaoDeBaixa implements ISimulacao{
 
+	//TODO: Ver o algoritmo parece meio ruim para operacao de baixa
 	public ResultadoSimulacaoTO getResultado(List<CotacaoAtivoTO> listaDasCotacoes, int stopGain, int stopLoss, double probabilidadeStopLoss) {
 		ResultadoSimulacaoTO resultado = new ResultadoSimulacaoTO();
 		

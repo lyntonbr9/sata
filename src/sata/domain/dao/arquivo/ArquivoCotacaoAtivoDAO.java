@@ -10,8 +10,9 @@ import java.util.List;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.to.CotacaoAtivoTO;
 
-public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
-
+//public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
+public class ArquivoCotacaoAtivoDAO{
+	
 	private FileInputStream fisArqListaCotacaoDeAtivos;
 	
 	public void setArquivoListaCotacaoDeAtivos(String pathArqListaCotacaoDeAtivos){
@@ -22,7 +23,7 @@ public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 			e.printStackTrace();
 		}
 	}
-	//TODO: Fazer esta porra
+
 	public CotacaoAtivoTO getCotacaoAtivo(String codigo){
 		CotacaoAtivoTO caTO = new CotacaoAtivoTO();
 		return caTO;
@@ -59,12 +60,13 @@ public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 		}
 		return listaDeCotacesDeAtivos;
 	}
-	@Override
+
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+
+	
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo,
 			String ano) {
 		// TODO Auto-generated method stub

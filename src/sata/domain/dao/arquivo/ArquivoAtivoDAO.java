@@ -11,7 +11,8 @@ import java.util.List;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.to.AtivoTO;
 
-public class ArquivoAtivoDAO implements IAtivoDAO{
+//public class ArquivoAtivoDAO implements IAtivoDAO{
+public class ArquivoAtivoDAO{
 	
 	private FileInputStream fisArqListaDeAtivos;
 	

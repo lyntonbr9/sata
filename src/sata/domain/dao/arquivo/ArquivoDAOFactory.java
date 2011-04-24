@@ -7,10 +7,12 @@ import sata.domain.dao.DAOFactory;
 public class ArquivoDAOFactory extends DAOFactory {
 
 	public IAtivoDAO getAtivoDAO(){
-		return new ArquivoAtivoDAO();
+		//return new ArquivoAtivoDAO();
+		return null;
 	} 
 	
 	public ICotacaoAtivoDAO getCotacaoAtivoDAO(){
-		return new ArquivoCotacaoAtivoDAO();
+		//return new ArquivoCotacaoAtivoDAO();
+		return null;
 	}
 }
