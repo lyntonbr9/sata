@@ -24,7 +24,7 @@ public class Principal {
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
-		Object[] paramSimulacao = {10, 23, 0.5}; //{stopGain, stopLoss, probStopLoss}
+		Object[] paramSimulacao = {10, 12, 0.5}; //{stopGain, stopLoss, probStopLoss}
 		ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAlta();
 		//ISimulacao simulacao = new SimulacaoAcaoOperacaoDeBaixa();
 		//ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAltaBasico();
@@ -55,8 +55,8 @@ public class Principal {
 	 */
 	public static void main(String[] args) {
 		
-		//String ano="2010";
-		String ano="2009";
+		String ano="2010";
+		//String ano="2009";
 		
 //		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 //		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
@@ -72,7 +72,7 @@ public class Principal {
 		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
 		while(i.hasNext()){
 			String codigoAcao = i.next();
-			if (codigoAcao.equalsIgnoreCase("PETR4"))
+			//if (codigoAcao.equalsIgnoreCase("TNLP4"))
 				//insereAcaoDB(codigoAcao, ano);
 				simulaAcao(codigoAcao, ano);
 		}

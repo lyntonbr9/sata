@@ -15,6 +15,7 @@ public class OperacaoDeAlta implements IConstants{
 		int TAM_CAND_ANT_ANT_VERMELHA = 65;
 		int DIF_FECH_MAX_ANT = 30;
 		int DIF_CAND_VERMELHA_ANT_VERDE = 5;
+		int TAM_MAX_CAND_ANT_VERDE = 80;
 		
 		int fechamentoDiaAnterior;
 		int maximaDiaAnterior;
@@ -28,7 +29,8 @@ public class OperacaoDeAlta implements IConstants{
 		maximaDiaAnterior = Integer.parseInt(listaDasCotacoes.get(3).getMaxima());
 		minimaDiaAnterior = Integer.parseInt(listaDasCotacoes.get(3).getMinima());
 
-		if (Candles[3] == CANDLE_VERMELHA){ 
+		//if (Candles[3] == CANDLE_VERMELHA){
+		if (Candles[3] == CANDLE_VERMELHA && (Math.abs(maximaDiaAnterior - minimaDiaAnterior) < TAM_MAX_CAND_ANT_VERDE) ){
 			return false; //se a candle anterior for vermelha abandona a operacao
 		}
 		else

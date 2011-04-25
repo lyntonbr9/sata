@@ -39,6 +39,7 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 		int TAM_CAND_ANT_VERDE = 20;
 		int DIF_FECH_MAX_ANT = 30;
 		int DIF_CAND_VERMELHA_ANT_VERDE = 5;
+		int TAM_MAX_CAND_ANT_VERDE = 80;
 		
 		boolean corpoCandleAnteriorVerdeGrande;
 		boolean fechouPertoDaMaxima;
@@ -52,8 +53,12 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 			
 			corpoCandleAnteriorVerdeGrande=false;
 			fechouPertoDaMaxima=false;
+			
+			if (i == 212)
+				System.out.println("teste");
 
-			if (Candles[i-1] == CANDLE_VERMELHA){ 
+			if (Candles[i-1] == CANDLE_VERMELHA && (Math.abs(maximaDiaAnterior - minimaDiaAnterior) < TAM_MAX_CAND_ANT_VERDE) ){
+			//if (Candles[i-1] == CANDLE_VERMELHA){
 				continue; //se a candle anterior for vermelha abandona a operacao
 			}
 			else
