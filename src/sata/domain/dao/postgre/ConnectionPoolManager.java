@@ -9,9 +9,9 @@ import java.util.List;
 class ConnectionPoolManager
 {
 
-	String databaseUrl = "jdbc:postgresql://localhost:5432/db_sata";
+	String databaseUrl = "jdbc:postgresql://pbr00zcja.br.biz:5432/db_sata";
 	String userName = "postgres";
-	String password = "admin";
+	String password = "adminsata";
 
 	List<Connection> connectionPool = new ArrayList<Connection>();
 

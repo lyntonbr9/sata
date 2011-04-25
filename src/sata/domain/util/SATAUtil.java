@@ -57,11 +57,9 @@ public class SATAUtil implements IConstants{
 		if ((fechamentoDiaAnterior + stopGain) <= maxima)
 		{
 			//ver qtd de operacoes de risco
-//			if( ((fechamentoDiaAnterior - stopLoss) >= minima) ){
-//				valorGanho = valorGanho - stopLoss;
-//				qtdOperRiscoStop++;
-//				System.out.println("Fez a operacao dia RISCO: " + (stopLoss * -1) + " " + listaDasCotacoes.get(i).getPeriodo() + " i = " + i);
-//			}
+			if( ((fechamentoDiaAnterior - stopLoss) >= minima) ){
+				System.out.println("Fez a operacao dia RISCO: " + caTO.getPeriodo() + " posicaoListaCotacoes = " + posicaoListaCotacoes);
+			}
 //			else
 //			{
 				if (abertura < (fechamentoDiaAnterior + stopGain))

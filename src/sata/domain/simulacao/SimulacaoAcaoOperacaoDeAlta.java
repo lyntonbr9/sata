@@ -54,7 +54,7 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 			corpoCandleAnteriorVerdeGrande=false;
 			fechouPertoDaMaxima=false;
 
-			if (Candles[i-1] == CANDLE_VERMELHA && (Math.abs(maximaDiaAnterior - minimaDiaAnterior) < TAM_MAX_CAND_ANT_VERDE) ){
+			if (Candles[i-1] == CANDLE_VERMELHA || (Math.abs(maximaDiaAnterior - minimaDiaAnterior) > TAM_MAX_CAND_ANT_VERDE) ){
 			//if (Candles[i-1] == CANDLE_VERMELHA){
 				continue; //se a candle anterior for vermelha abandona a operacao
 			}

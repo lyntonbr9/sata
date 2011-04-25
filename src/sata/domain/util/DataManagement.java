@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import sata.domain.dao.DAOFactory;
@@ -59,7 +60,79 @@ public class DataManagement {
 			}
 		}
 	}
-	
+
+	public void importarArqCotacaoHistoricaBovespaToDB(String codigoAtivo, String ano){
+		
+		//tenta abrir o arquivo de cotacoes
+		try {
+			fisArqListaCotacoesDoAtivo = new FileInputStream("COTAHIST_A" + ano + ".TXT");
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		if (this.fisArqListaCotacoesDoAtivo != null)
+		{
+			DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+			DataInputStream disEntrada = new DataInputStream(this.fisArqListaCotacoesDoAtivo);
+			BufferedReader brEntrada = new BufferedReader(new InputStreamReader(disEntrada));
+			try {
+				
+				int tamStrNomeAcaoOpcao;
+				int tamStrNomeParametro;
+				
+				Date agora = new Date();
+				long t1 = agora.getTime();
+				System.out.println("Processando...");
+
+				if (codigoAtivo.length() == 5) {
+					tamStrNomeAcaoOpcao = 5;
+					tamStrNomeParametro = 5;
+				} else {
+					tamStrNomeAcaoOpcao = 7;
+					tamStrNomeParametro = 4;
+				}
+				
+				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
+				String conteudoLinha = "";
+				while((conteudoLinha = brEntrada.readLine()) != null)
+				{
+					if (conteudoLinha.substring(0, 2).equals("01")) 
+					{
+						if (conteudoLinha.substring(12, 24).trim().length() == tamStrNomeAcaoOpcao
+							&& conteudoLinha.substring(12, 24).trim().substring(0,tamStrNomeParametro).equalsIgnoreCase(codigoAtivo)) 
+						{
+							CotacaoAtivoTO caTO = new CotacaoAtivoTO();
+							caTO.setCodigo(codigoAtivo);
+							caTO.setAbertura(String.valueOf(Integer.valueOf(conteudoLinha.substring(56, 69).trim())));
+							caTO.setMaxima(String.valueOf(Integer.valueOf(conteudoLinha.substring(69, 82).trim())));
+							caTO.setMinima(String.valueOf(Integer.valueOf(conteudoLinha.substring(82, 95).trim())));
+							caTO.setFechamento(String.valueOf(Integer.valueOf(conteudoLinha.substring(108, 121).trim())));
+							caTO.setPeriodo(String.valueOf(Integer.valueOf(conteudoLinha.substring(2, 10).trim())));
+							caTO.setTipoPeriodo("D"); //cotacao diaria
+							caTO.setAno(ano);
+							cotacaoAtivoDAO.insertCotacaoDoAtivo(caTO);
+						}
+					}
+				}
+				
+				agora = new Date();
+				long tempoDuracao = agora.getTime() - t1;
+				
+				System.out.println("Tempo de processamento: " + tempoDuracao);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				try {
+					brEntrada.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 //		DataManagement dm = new DataManagement();
 //		String periodo = "20100104";
