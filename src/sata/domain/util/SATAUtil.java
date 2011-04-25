@@ -50,6 +50,8 @@ public class SATAUtil implements IConstants{
 	public static int getValorGanho(CotacaoAtivoTO caTO, int posicaoListaCotacoes, int fechamentoDiaAnterior, int stopGain, int stopLoss){
 		int abertura = Integer.parseInt(caTO.getAbertura());
 		int maxima = Integer.parseInt(caTO.getMaxima());
+		int minima = Integer.parseInt(caTO.getMinima());
+		int fechamento = Integer.parseInt(caTO.getFechamento());
 		int valorGanho;
 		
 		if ((fechamentoDiaAnterior + stopGain) <= maxima)
@@ -67,14 +69,18 @@ public class SATAUtil implements IConstants{
 				else
 					valorGanho = (abertura - fechamentoDiaAnterior);
 				
-				System.out.println("Fez a operacao dia SUCESSO: " + valorGanho + " posicaoListaCotacoes = " + posicaoListaCotacoes);
+				System.out.println("Fez a operacao dia SUCESSO: " + valorGanho  + " " + caTO.getPeriodo() 
+						+ " posicaoListaCotacoes = " + posicaoListaCotacoes + " A: " + abertura + " Max: " + maxima
+						+ " Min: " + minima + " F: " + fechamento);
 			
 //			}
 		}
 		else{
 			//valorPerda = valorPerda + (fechamento - abertura);
 			valorGanho = (stopLoss * -1);
-			System.out.println("Fez a operacao dia FRACASSO: " + valorGanho + " " + caTO.getPeriodo() + " posicaoListaCotacoes = " + posicaoListaCotacoes);
+			System.out.println("Fez a operacao dia FRACASSO: " + valorGanho  + " " + caTO.getPeriodo() 
+					+ " posicaoListaCotacoes = " + posicaoListaCotacoes + " A: " + abertura + " Max: " + maxima
+					+ " Min: " + minima + " F: " + fechamento);
 		}
 		return valorGanho;
 	}

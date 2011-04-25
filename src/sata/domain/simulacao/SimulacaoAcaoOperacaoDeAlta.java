@@ -53,9 +53,6 @@ public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 			
 			corpoCandleAnteriorVerdeGrande=false;
 			fechouPertoDaMaxima=false;
-			
-			if (i == 212)
-				System.out.println("teste");
 
 			if (Candles[i-1] == CANDLE_VERMELHA && (Math.abs(maximaDiaAnterior - minimaDiaAnterior) < TAM_MAX_CAND_ANT_VERDE) ){
 			//if (Candles[i-1] == CANDLE_VERMELHA){
