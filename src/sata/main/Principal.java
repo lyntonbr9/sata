@@ -82,37 +82,37 @@ public class Principal {
 //			//if (codigoAcao.equalsIgnoreCase("PETR4"))	
 //				//insereAcaoDB(codigoAcao, ano);
 //				simulaAcao(codigoAcao, ano);
-//				//insereCotacaoAcaoHistoricoBovespaDB(codigoAcao, ano);
+////				insereCotacaoAcaoHistoricoBovespaDB(codigoAcao, ano);
 //		}
-		
+
+		//simula o alerta
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
 		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
-		while(i.hasNext()){
+		while(i.hasNext())
+		{
 			String codigoAcao = i.next();
-//			if (codigoAcao.equalsIgnoreCase("PETR4"))
-//			{
-				//insereAcaoDB(codigoAcao, ano);
-				//simulaAcao(codigoAcao, ano);
+////			if (codigoAcao.equalsIgnoreCase("PETR4"))
+////			{
+//				//insereAcaoDB(codigoAcao, ano);
+//				//simulaAcao(codigoAcao, ano);
 				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
 				List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
 				List<CotacaoAtivoTO> listaParaAlerta = new ArrayList<CotacaoAtivoTO>();
-				//for(int j = 70; j < 74; j ++){
-				for(int j = listaCotacoesAtivo.size() - 4; j < listaCotacoesAtivo.size(); j ++){
+//				//for(int j = 70; j < 74; j ++){
+				for(int j = listaCotacoesAtivo.size() - 5; j < listaCotacoesAtivo.size()-1; j ++){
 					CotacaoAtivoTO caTO = listaCotacoesAtivo.get(j);
 					listaParaAlerta.add(caTO);
-//					if(j > 3){
-//						OperacaoDeAlta oper = new OperacaoDeAlta();
-//						System.out.println("Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) + " j= " + j);
-//						listaParaAlerta.remove(0);
-//					}
+////					if(j > 3){
+////						OperacaoDeAlta oper = new OperacaoDeAlta();
+////						System.out.println("Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) + " j= " + j);
+////						listaParaAlerta.remove(0);
+////					}
 				}
 
 				OperacaoDeAlta oper = new OperacaoDeAlta();
 				if(oper.analisaFazerOperacao(listaParaAlerta, null))
 					System.out.println("Ativo: " + codigoAcao + " Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null));
-
-				//OperacaoDeAlta oper = new OperacaoDeAlta();
 				
 			//}
 		}
@@ -184,5 +184,4 @@ public class Principal {
 //			System.out.println("FECHAMENTO: " + ativo.getFechamento());
 //		}
 	}
-
 }
