@@ -95,6 +95,7 @@ public class DataManagement {
 				
 				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
 				String conteudoLinha = "";
+				String periodo="";
 				while((conteudoLinha = brEntrada.readLine()) != null)
 				{
 					if (conteudoLinha.substring(0, 2).equals("01")) 
@@ -102,16 +103,20 @@ public class DataManagement {
 						if (conteudoLinha.substring(12, 24).trim().length() == tamStrNomeAcaoOpcao
 							&& conteudoLinha.substring(12, 24).trim().substring(0,tamStrNomeParametro).equalsIgnoreCase(codigoAtivo)) 
 						{
-							CotacaoAtivoTO caTO = new CotacaoAtivoTO();
-							caTO.setCodigo(codigoAtivo);
-							caTO.setAbertura(String.valueOf(Integer.valueOf(conteudoLinha.substring(56, 69).trim())));
-							caTO.setMaxima(String.valueOf(Integer.valueOf(conteudoLinha.substring(69, 82).trim())));
-							caTO.setMinima(String.valueOf(Integer.valueOf(conteudoLinha.substring(82, 95).trim())));
-							caTO.setFechamento(String.valueOf(Integer.valueOf(conteudoLinha.substring(108, 121).trim())));
-							caTO.setPeriodo(String.valueOf(Integer.valueOf(conteudoLinha.substring(2, 10).trim())));
-							caTO.setTipoPeriodo("D"); //cotacao diaria
-							caTO.setAno(ano);
-							cotacaoAtivoDAO.insertCotacaoDoAtivo(caTO);
+							periodo = String.valueOf(Integer.valueOf(conteudoLinha.substring(2, 10).trim()));
+							//verifica se a cotacao nao existe
+							if(cotacaoAtivoDAO.existeCotacao(codigoAtivo, periodo) == false){
+								CotacaoAtivoTO caTO = new CotacaoAtivoTO();
+								caTO.setCodigo(codigoAtivo);
+								caTO.setAbertura(String.valueOf(Integer.valueOf(conteudoLinha.substring(56, 69).trim())));
+								caTO.setMaxima(String.valueOf(Integer.valueOf(conteudoLinha.substring(69, 82).trim())));
+								caTO.setMinima(String.valueOf(Integer.valueOf(conteudoLinha.substring(82, 95).trim())));
+								caTO.setFechamento(String.valueOf(Integer.valueOf(conteudoLinha.substring(108, 121).trim())));
+								caTO.setPeriodo(periodo);
+								caTO.setTipoPeriodo("D"); //cotacao diaria
+								caTO.setAno(ano);
+								cotacaoAtivoDAO.insertCotacaoDoAtivo(caTO);								
+							}
 						}
 					}
 				}

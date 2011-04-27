@@ -76,5 +76,28 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean existeCotacao(String codigoAtivo, String periodo){
+		
+		String sqlStmt = "SELECT \"codigoAtivo\", periodo FROM \"CotacaoAtivo\"" 
+			+ " WHERE \"codigoAtivo\" = ? AND periodo = ? ";
+		
+		try {
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, codigoAtivo);
+			ps.setTimestamp(2,SATAUtil.getTimeStampPeriodoCotacao(periodo));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) //se existe
+			{
+				PostgreDAOFactory.returnConnection(con);
+				return true;
+			}
+			PostgreDAOFactory.returnConnection(con);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 }
