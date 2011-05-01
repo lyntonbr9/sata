@@ -1,0 +1,3 @@
+Ativo: GGBR4 	 Fazer operacao = true data indicativo: 29/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: GOLL4 	 Fazer operacao = true data indicativo: 29/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: LAME4 	 Fazer operacao = true data indicativo: 29/4/2011 SE OPERA NO PROXIMO DIA

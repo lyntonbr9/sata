@@ -1,0 +1,10 @@
+Ativo: ABCB4 Fazer operacao = true data: 19/4/2011
+Ativo: BBAS3 Fazer operacao = true data: 19/4/2011
+Ativo: BBDC4 Fazer operacao = true data: 19/4/2011
+Ativo: CRUZ3 Fazer operacao = true data: 19/4/2011
+Ativo: CYRE3 Fazer operacao = true data: 19/4/2011
+Ativo: GFSA3 Fazer operacao = true data: 19/4/2011
+Ativo: HYPE3 Fazer operacao = true data: 19/4/2011
+Ativo: MRVE3 Fazer operacao = true data: 19/4/2011
+Ativo: PDGR3 Fazer operacao = true data: 19/4/2011
+Ativo: RSID3 Fazer operacao = true data: 19/4/2011

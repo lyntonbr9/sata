@@ -1,0 +1,2 @@
+Ativo: CRUZ3 Fazer operacao = true data: 13/4/2011
+Ativo: LAME4 Fazer operacao = true data: 13/4/2011

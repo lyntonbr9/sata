@@ -1,0 +1,6 @@
+Ativo: BBAS3 Fazer operacao = true data: 30/3/2011
+Ativo: BBDC4 Fazer operacao = true data: 30/3/2011
+Ativo: BVMF3 Fazer operacao = true data: 30/3/2011
+Ativo: CYRE3 Fazer operacao = true data: 30/3/2011
+Ativo: ITSA4 Fazer operacao = true data: 30/3/2011
+Ativo: ITUB4 Fazer operacao = true data: 30/3/2011

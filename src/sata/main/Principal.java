@@ -98,7 +98,7 @@ public class Principal {
 				List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
 				List<CotacaoAtivoTO> listaParaAlerta = new ArrayList<CotacaoAtivoTO>();
 //				//for(int j = 70; j < 74; j ++){
-				for(int j = listaCotacoesAtivo.size() - 4; j < listaCotacoesAtivo.size(); j ++){
+				for(int j = listaCotacoesAtivo.size() - 6; j < listaCotacoesAtivo.size()-2; j ++){
 					CotacaoAtivoTO caTO = listaCotacoesAtivo.get(j);
 					listaParaAlerta.add(caTO);
 //					if(j > 3){
@@ -113,7 +113,7 @@ public class Principal {
 					System.out.println("Ativo: " + codigoAcao + " \t Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) 
 							+ " data indicativo: " + listaParaAlerta.get(listaParaAlerta.size()-1).getPeriodo() + " SE OPERA NO PROXIMO DIA");
 				
-			}
+//			}
 		}
 
 		
@@ -182,5 +182,5 @@ public class Principal {
 //			System.out.println("MINIMA: " + ativo.getMinima());
 //			System.out.println("FECHAMENTO: " + ativo.getFechamento());
 //		}
-//	}
+	}
 }

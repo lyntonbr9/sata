@@ -1,0 +1,7 @@
+Ativo: BBAS3 Fazer operacao = true
+Ativo: BBDC4 Fazer operacao = true
+Ativo: CRUZ3 Fazer operacao = true
+Ativo: GOLL4 Fazer operacao = true
+Ativo: ITSA4 Fazer operacao = true
+Ativo: LAME4 Fazer operacao = true
+Ativo: MRVE3 Fazer operacao = true
