@@ -1,8 +1,8 @@
-Ativo: BRFS3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: CIEL3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: CMIG4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: CRUZ3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: EMBR3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: GOLL4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: OGXP3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
-Ativo: TCSL4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: BRFS3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (caiu: verde, verde, vermelho, verde)
+Ativo: CIEL3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (caiu: vermelho, verde, verde, verde grande)
+Ativo: CMIG4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (subiu: verde, vermelho, verde, verde)
+Ativo: CRUZ3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (caiu: verde, verde, vermelho, verde grande)
+Ativo: EMBR3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (caiu: vermelho, verde, vermelho, verde)
+Ativo: GOLL4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (subiu: verde, verde, vermelho, verde)
+Ativo: OGXP3 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (subiu: vermelho, vermelho, vermelho, verde grande)
+Ativo: TCSL4 	 Fazer operacao = true data indicativo: 28/4/2011 SE OPERA NO PROXIMO DIA (caiu: verde, verde, vermelho, verde)
