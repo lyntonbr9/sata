@@ -98,7 +98,7 @@ public class Principal {
 				List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
 				List<CotacaoAtivoTO> listaParaAlerta = new ArrayList<CotacaoAtivoTO>();
 //				//for(int j = 70; j < 74; j ++){
-				for(int j = listaCotacoesAtivo.size() - 7; j < listaCotacoesAtivo.size()-3; j ++){
+				for(int j = listaCotacoesAtivo.size() - 4; j < listaCotacoesAtivo.size(); j ++){
 					CotacaoAtivoTO caTO = listaCotacoesAtivo.get(j);
 					listaParaAlerta.add(caTO);
 //					if(j > 3){

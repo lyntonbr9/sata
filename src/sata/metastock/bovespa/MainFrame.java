@@ -9,10 +9,12 @@ package sata.metastock.bovespa;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Window;
+import java.lang.reflect.Method;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
+
+import sata.metastock.swing.SATAViewWindowListener;
 
 /**
  * @author Flavio
@@ -24,17 +26,32 @@ public class MainFrame {
 	
 	public static SpaceView grafico = new SpaceView();
     public static JFrame  frame = null;
+    private static Method metodoOpacidade;
+    
+    static{
+    	try {
+    		Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
+    		metodoOpacidade = awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class); 
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+    }
+    
    // public static JTransFrame  frame = null;
 	
 	public static void main(String args[]){
 		
 	    // Create the frame
-	    String title = "Bolsa de São Paulo";
+	    String title = "SATA - Sistema de Analise Tecnica Automatizada";
 	    frame = new JFrame(title);
+	   
+	    //seta a opacidade da janela
+	    setOpacidade(1.0f);
 	    
 	    //frame = new JTransFrame(0,0,0);
 	    // Create a component to add to the frame
-	    JComponent comp = new JTextArea();
+//	    JComponent comp = new JTextArea();
 	    
 	    // Add the component to the frame's content pane;
 	    // by default, the content pane has a border layout
@@ -54,7 +71,9 @@ public class MainFrame {
 	    						255);
 	    
 	    
-	   frame.setBackground(color);
+	    frame.setBackground(color);
+	    
+	    frame.addWindowListener(new SATAViewWindowListener());
 	    
 	    frame.setVisible(true);
 
@@ -118,6 +137,15 @@ public class MainFrame {
 		grafico.setDias(Integer.parseInt(dias));
 		grafico.setRetroativo(true);
 		grafico.repaint();
+	}
+	
+	public static void setOpacidade(float opacidade){
+		try {
+			metodoOpacidade.invoke(null, frame, new Float(opacidade));	
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 }

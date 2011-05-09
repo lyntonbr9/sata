@@ -12,10 +12,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import sata.domain.dao.DAOFactory;
+import sata.domain.dao.IAtivoDAO;
 import sata.metastock.data.Merge2;
 
 
@@ -37,7 +40,7 @@ import sata.metastock.data.Merge2;
 public class Menu extends JPanel{
 	
 	
-	JTextField textfield = new JTextField("");
+//	JTextField textfield = new JTextField("");
 	JTextField diasAtras = new JTextField("");
 	
 	JTextField primeiro = new JTextField("");
@@ -47,8 +50,10 @@ public class Menu extends JPanel{
    	JTextField mes = new JTextField("",2);
 
    	JTextField ano = new JTextField("",4);
+   	
+   	JTextField txtOpacidade = new JTextField("",4);
+   	JComboBox cmbAcoes;
 
-	
 	private int cont = 0;
 	
 	private String[] acoesNome = {
@@ -153,16 +158,15 @@ public class Menu extends JPanel{
 	"VIVO4 VIVO PN 476.709.448 0,600",  
 	"WEGE4 WEG PN 188.907.220 0,340"};  
 
-	
-	
 	private String acoes[] = null;
 	
     public Menu() {
     	
+    	/*    	
 		File arq = new File("H:\\flavio\\bolsa\\bovespa\\historico\\BaseBovespa\\");
 		
 		//BLOCO 1 - TODAS AS AÇÕES
-/*		String[] todas = arq.list();
+		String[] todas = arq.list();
 		ArrayList nomes5 = new ArrayList();
 		for(int i=0;i<todas.length;i++){
 			if(todas[i].replaceAll(".txt","").length()==5){
@@ -179,14 +183,21 @@ public class Menu extends JPanel{
 		
 		//IBrX
 		
-		acoes = new String[acoesNome.length];
-		for(int i=0;i<acoesNome.length;i++){
-			acoes[i] = acoesNome[i].substring(0,acoesNome[i].indexOf(" "));
-		}
+//		acoes = new String[acoesNome.length];
+//		for(int i=0;i<acoesNome.length;i++){
+//			acoes[i] = acoesNome[i].substring(0,acoesNome[i].indexOf(" "));
+//		}
 		
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
+		List<String> listaAtivos = ativoDAO.getCodigosAtivos();
+		acoes = new String[listaAtivos.size()];
+		for(int i=0; i < listaAtivos.size(); i++)
+			acoes[i] = listaAtivos.get(i);
 		
+		cmbAcoes = new JComboBox(acoes);
 		
-        JButton next = new JButton("Próxima");
+		JButton next = new JButton("Próxima");
         next.addActionListener(new NextListener());
         
         JButton proximoDia = new JButton("Próximo dia");
@@ -214,6 +225,7 @@ public class Menu extends JPanel{
         JLabel labelDiario = new JLabel("D");
         JLabel labelSemanal = new JLabel("S");
         JLabel labelMensal = new JLabel("M");
+        JLabel lblOpacidade = new JLabel("Opacidade: ");
         
         // Associate the two buttons with a button group
         ButtonGroup group = new ButtonGroup();
@@ -225,8 +237,8 @@ public class Menu extends JPanel{
         // Create a text field with some initial text and a default number of columns.
         // The number of columns controls the preferred width of the component;
         // each column is rougly the size of an M in the current font.
-        int cols = 6;
-        textfield = new JTextField(acoes[0], cols);
+//        int cols = 6;
+//        textfield = new JTextField(acoes[0], cols);
         diasAtras = new JTextField("", 3);
         diasAtras.addActionListener(new DiasListener());
         
@@ -236,17 +248,20 @@ public class Menu extends JPanel{
         JButton atualiza = new JButton("Atualiza");
         atualiza.addActionListener(new AtualizaListener());
        
-        textfield.addActionListener(new MyActionListener());
+//        textfield.addActionListener(new MyActionListener());
+        cmbAcoes.addActionListener(new ComboSelecionaAcoesListener());
+        txtOpacidade.addActionListener(new OpacidadeListener());
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
-    	this.add(textfield);
-    	this.add(next);
+//    	this.add(textfield);
+    	this.add(cmbAcoes);
+        this.add(next);
     	this.add(diasAtras);
     	this.add(primeiro);
     	this.add(ultimo);
     	this.add(proximoDia);
-    	this.add(relatorio);
-    	this.add(compra);
-    	this.add(vende);
+//    	this.add(relatorio);
+//    	this.add(compra);
+//    	this.add(vende);
     	this.add(verifica);
     	this.add(labelDiario);
     	this.add(bDiario);
@@ -255,16 +270,40 @@ public class Menu extends JPanel{
     	this.add(labelMensal);
     	this.add(bMensal);
     	this.add(atualiza);
-    	
+    	this.add(lblOpacidade);
+    	this.add(txtOpacidade);
+
         setPreferredSize(new Dimension(200, 50));
         setBackground(new Color(210,210,210));
     }//end constructor
     
 
     public String getAcao(){
-    	return textfield.getText();
+    	//return textfield.getText();
+    	return (String) cmbAcoes.getSelectedItem();
     }
 
+    class OpacidadeListener implements ActionListener{
+    	public void actionPerformed(ActionEvent evt){
+    		JTextField txtSource = (JTextField)evt.getSource();
+    		String valorOpacidade = txtSource.getText();
+    		if (valorOpacidade.equalsIgnoreCase("") == false){
+    			valorOpacidade = valorOpacidade.replace(",", ".");
+    			if(Float.parseFloat(valorOpacidade) > 1)
+    				valorOpacidade = "1.0";
+    			MainFrame.setOpacidade(Float.parseFloat(valorOpacidade));
+    		}
+    			
+    	}
+    }
+    
+    class ComboSelecionaAcoesListener implements ActionListener{
+    	public void actionPerformed(ActionEvent evt){
+    		JComboBox cmbSource = (JComboBox)evt.getSource();
+    		String acao = (String) cmbSource.getSelectedItem();
+    		MainFrame.setAcao(acao);   			
+    	}
+    }
     
     class MyActionListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
@@ -289,38 +328,54 @@ public class Menu extends JPanel{
         	primeiro.setText("" + (Integer.parseInt(primeiro.getText()) + 1));
         	ultimo.setText("" + (Integer.parseInt(ultimo.getText()) + 1));
             MainFrame.setIntervaloDia(primeiro.getText(),ultimo.getText());
-        }
-
-	
+        }	
     }
 
     class NextListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
-           String acao = textfield.getText();
+           String acao = (String) cmbAcoes.getSelectedItem();
            
            for(int i=0;i<acoes.length;i++){
            	   if(acoes[i].equalsIgnoreCase(acao)){
            	   	
            	   		if(i==acoes.length-1){
 	           	   		MainFrame.setAcao(acoes[0]);     
-	           	   		textfield.setText(acoes[0]);
+	           	   		cmbAcoes.setSelectedItem(acoes[0]);
 	           	   		return;
            	   		}else{
-	           	   		MainFrame.setAcao(acoes[i+1]);     
-	           	   		textfield.setText(acoes[i+1]);
+	           	   		MainFrame.setAcao(acoes[i+1]);
+	           	   		cmbAcoes.setSelectedItem(acoes[i+1]);
 	           	   		return;
-           	   		}
-           	   	
-           	   		
+           	   		}	
            	   }
            }
-            
         }
-
-	
     }
-    
 
+//    class NextListener implements ActionListener {
+//        public void actionPerformed(ActionEvent evt) {
+//           String acao = textfield.getText();
+//           
+//           for(int i=0;i<acoes.length;i++){
+//           	   if(acoes[i].equalsIgnoreCase(acao)){
+//           	   	
+//           	   		if(i==acoes.length-1){
+//	           	   		MainFrame.setAcao(acoes[0]);     
+//	           	   		textfield.setText(acoes[0]);
+//	           	   		return;
+//           	   		}else{
+//	           	   		MainFrame.setAcao(acoes[i+1]);     
+//	           	   		textfield.setText(acoes[i+1]);
+//	           	   		return;
+//           	   		}
+//           	   	
+//           	   		
+//           	   }
+//           }
+//            
+//        }
+//    }
+    
     class Relatorio1Listener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
            
@@ -344,8 +399,6 @@ public class Menu extends JPanel{
            MainFrame.setWaitCursor(false);	
             
         }
-
-	
     }
 	
     class AtualizaListener implements ActionListener {
@@ -364,12 +417,8 @@ public class Menu extends JPanel{
            	data.getContentPane().add(mes);
            	data.getContentPane().add(ano);
            	data.getContentPane().add(ok);
-    		data.setVisible(true);
-    		
-            
+    		data.setVisible(true);  
         }
-
-	
     }
     
     class AtualizaOkListener implements ActionListener {
@@ -388,19 +437,13 @@ public class Menu extends JPanel{
         	
         	}
         }
-        
-	
     }
     
     class CompraListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
-           
-        	
-        	MainFrame.compra();
-            
-        }
 
-	
+        	MainFrame.compra();            
+        }
     }
     
     class VendeListener implements ActionListener {
@@ -409,8 +452,6 @@ public class Menu extends JPanel{
         	MainFrame.vende();
  
         }
-
-	
     }
     
     class MomentoPrcListener implements ActionListener {
@@ -419,8 +460,6 @@ public class Menu extends JPanel{
         	MainFrame.exibePercentualMomento();
  
         }
-
-	
     }
     
     class DiaCandleListener implements ActionListener {
@@ -429,8 +468,6 @@ public class Menu extends JPanel{
         	MainFrame.setDiasCandle(1);
  
         }
-
-	
     }
     
     class SemanaCandleListener implements ActionListener {
@@ -438,9 +475,7 @@ public class Menu extends JPanel{
            
         	MainFrame.setDiasCandle(5);
  
-        }
-
-	
+        }	
     }
     class MesCandleListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
@@ -448,7 +483,5 @@ public class Menu extends JPanel{
         	MainFrame.setDiasCandle(22);
  
         }
-
-	
     }
 }

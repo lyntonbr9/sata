@@ -6,10 +6,12 @@
  */
 package sata.metastock.data;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.List;
+
+import sata.domain.dao.DAOFactory;
+import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.to.CotacaoAtivoTO;
+import sata.domain.util.SATAUtil;
 
 /**
  * @author Flavio
@@ -27,96 +29,124 @@ public class ValuesMeta {
 	private String[] data = null;
 	
 	public ValuesMeta(String acao){
+		acao = acao.replace("D.txt", "");
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
+		List<CotacaoAtivoTO> listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
 		
-		FileInputStream file;
-
-		try {
-			System.out.println();
-			file = new FileInputStream("C:\\PRIVADO\\flavio\\bolsa\\BaseBovespa3\\" + acao);
-			//file = new FileInputStream("H:\\flavio\\bolsa\\bovespa\\historico\\atual\\" + acao);
-			//file = new FileInputStream(System.getProperty("user.dir") + "\\BaseBovespa3\\" + acao);
-			
-			DataInputStream myInput = new DataInputStream(file);
-			
-	        String thisLine = "";
-	        int i=0;
-	        myInput.readLine(); // retira primeira linha
-	        while ((thisLine = myInput.readLine()) != null){         	
-	        	i++;
-	        }
-	        myInput.close();
-	        file.close();
-	        
-	        closes = new double[i];
-	        high = new double[i];
-	        low = new double[i];
-	        open = new double[i];
-	        volume = new double[i];
-	        data = new String[i];
-	        
-	        
-	        file = new FileInputStream("C:\\privado\\flavio\\bolsa\\BaseBovespa3\\" + acao);
-	       // file = new FileInputStream("H:\\flavio\\bolsa\\bovespa\\historico\\atual\\" + acao);
-	        //file = new FileInputStream(System.getProperty("user.dir") + "\\BaseBovespa3\\" + acao);
-	        DataInputStream myInput2 = new DataInputStream(file );
-	       
-	        
-	        myInput2.readLine();
-	        i=0;
-	        while ((thisLine = myInput2.readLine()) != null){ 
-	        	
-	        	/*Acão*/
-	        	thisLine.substring(0,thisLine.indexOf(","));
-	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-	        	
-	        	/*periodo*/
-	        	thisLine.substring(0,thisLine.indexOf(","));
-	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-	        	
-	        	/*data*/	        	
-	        	data[i] = thisLine.substring(0,thisLine.indexOf(","));
-	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-	        	
-	        	/*time*/
-	        	thisLine.substring(0,thisLine.indexOf(","));
-	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-	        	
-	        	/*abertura*/
-			    open[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
-			    thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-			    
-			    /*maxima*/
-				high[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
-				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-				
-				/*minima*/
-				low[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
-				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-				
-				/*fechamento*/
-				closes[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
-				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-				
-				/*volume*/
-				//[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
-				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
-				
-				//System.out.println(closes[i-1]);
-				i++;
-	        }
+        closes = new double[listaCotacoes.size()];
+        high = new double[listaCotacoes.size()];
+        low = new double[listaCotacoes.size()];
+        open = new double[listaCotacoes.size()];
+        volume = new double[listaCotacoes.size()];
+        data = new String[listaCotacoes.size()];
         
-	        myInput2.close();
-	        file.close();
-
-	            
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+        CotacaoAtivoTO caTO;
+        int i;
+        for (i=0; i < listaCotacoes.size(); i++)
+        {
+			caTO = listaCotacoes.get(i);
+        	closes[i] = Double.parseDouble(caTO.getFechamento());
+        	high[i] = Double.parseDouble(caTO.getMaxima());
+        	low[i] = Double.parseDouble(caTO.getMinima());
+        	open[i] = Double.parseDouble(caTO.getAbertura());
+        	data[i] = SATAUtil.getDataSemFormato(caTO.getPeriodo()) ;
+        }
+	        
 	}
+
+	
+//	public ValuesMeta(String acao){
+//		
+//		FileInputStream file;
+//
+//		try {
+//			System.out.println();
+//			file = new FileInputStream("C:\\PRIVADO\\flavio\\bolsa\\BaseBovespa3\\" + acao);
+//			//file = new FileInputStream("H:\\flavio\\bolsa\\bovespa\\historico\\atual\\" + acao);
+//			//file = new FileInputStream(System.getProperty("user.dir") + "\\BaseBovespa3\\" + acao);
+//			
+//			DataInputStream myInput = new DataInputStream(file);
+//			
+//	        String thisLine = "";
+//	        int i=0;
+//	        myInput.readLine(); // retira primeira linha
+//	        while ((thisLine = myInput.readLine()) != null){         	
+//	        	i++;
+//	        }
+//	        myInput.close();
+//	        file.close();
+//	        
+//	        closes = new double[i];
+//	        high = new double[i];
+//	        low = new double[i];
+//	        open = new double[i];
+//	        volume = new double[i];
+//	        data = new String[i];
+//	        
+//	        
+//	        file = new FileInputStream("C:\\privado\\flavio\\bolsa\\BaseBovespa3\\" + acao);
+//	       // file = new FileInputStream("H:\\flavio\\bolsa\\bovespa\\historico\\atual\\" + acao);
+//	        //file = new FileInputStream(System.getProperty("user.dir") + "\\BaseBovespa3\\" + acao);
+//	        DataInputStream myInput2 = new DataInputStream(file );
+//	       
+//	        
+//	        myInput2.readLine();
+//	        i=0;
+//	        while ((thisLine = myInput2.readLine()) != null){ 
+//	        	
+//	        	/*Acão*/
+//	        	thisLine.substring(0,thisLine.indexOf(","));
+//	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//	        	
+//	        	/*periodo*/
+//	        	thisLine.substring(0,thisLine.indexOf(","));
+//	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//	        	
+//	        	/*data*/	        	
+//	        	data[i] = thisLine.substring(0,thisLine.indexOf(","));
+//	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//	        	
+//	        	/*time*/
+//	        	thisLine.substring(0,thisLine.indexOf(","));
+//	        	thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//	        	
+//	        	/*abertura*/
+//			    open[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
+//			    thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//			    
+//			    /*maxima*/
+//				high[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
+//				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//				
+//				/*minima*/
+//				low[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
+//				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//				
+//				/*fechamento*/
+//				closes[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
+//				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//				
+//				/*volume*/
+//				//[i] = Double.parseDouble(thisLine.substring(0,thisLine.indexOf(",")));
+//				thisLine = thisLine.substring(thisLine.indexOf(",") + 1);
+//				
+//				//System.out.println(closes[i-1]);
+//				i++;
+//	        }
+//        
+//	        myInput2.close();
+//	        file.close();
+//
+//	            
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//	}
 	
 	/**
 	 * @return Returns the open.

@@ -1,6 +1,7 @@
 package sata.domain.util;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -83,4 +84,20 @@ public class SATAUtil implements IConstants{
 		return valorGanho;
 	}
 
+	//Formata dd/MM/yyyy para yyyyMMdd
+	public static String getDataSemFormato(String data)
+	{
+		
+		String[] vetorData = data.split("/"); //a data é separada [0] = dia, [1] = mes, [2] = ano
+		
+		if(Integer.parseInt(vetorData[1]) < 10) //formatando o mes de 1...9 para 01...09
+			vetorData[1] = "0" + vetorData[1]; 
+		
+		if(Integer.parseInt(vetorData[0]) < 10) //formatando o dia de 1...9 para 01...09
+			vetorData[0] = "0" + vetorData[0]; 
+		
+		System.out.println("Data formatada: " + vetorData[2] + vetorData[1] + vetorData[0]);
+		return vetorData[2] + vetorData[1] + vetorData[0];
+		
+	}
 }

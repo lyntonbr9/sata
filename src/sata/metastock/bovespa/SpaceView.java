@@ -92,15 +92,15 @@ class SpaceView extends JPanel {
 	private int largCandle = 3;
 	
 	//dias
-	private int dias = 100;	
+	private int dias;	
 	
 	/*dias setados manualmente*/
 	private int primeiro = 0;
-	private int ultimo = 120;
+	private int ultimo = 50;
 	
 	/*dias mostrados*/
 	private int inicio = 0;
-	private int fim = 120;
+	private int fim = 50;
 	
 	private boolean retroativo = true;
 	
@@ -114,15 +114,16 @@ class SpaceView extends JPanel {
 	private double menorATR  =  20000000;
 	private double maiorATR  = 0;
 	
-	
     double open[] = null;
     double high[] = null;
     double low[] = null;
+    double close[] = null;
     String data[] = null;
+    int pontoXInicial[] = null;
+    int pontoXFinal[] = null;
      
     double valores[][] = null;
     double valores2[][] = null;
-    
     double valores3[][] = null;
     
     double[] ifrs = null;
@@ -158,12 +159,17 @@ class SpaceView extends JPanel {
         if(reload || !acao.equals(acaoAnterior)){
         	reload = false;
             acaoAnterior = acao;
-        	valores = c.getAcoesMM(mm,acao,diasCandle);
+        	
+            valores = c.getAcoesMM(mm,acao,diasCandle);
             
             open = c.getOpen();
             high = c.getHigh();
             low = c.getLow();
+            close = c.getClose();
             data = c.getDatas();
+            dias = open.length;
+            pontoXInicial = new int[dias];
+            pontoXFinal = new int[dias];
              
             valores2 = c.getAcoesMM(mm2,acao,diasCandle);
             
@@ -199,8 +205,6 @@ class SpaceView extends JPanel {
         	variacaoAlvo = new BigDecimal(precoAlvo).divide(new BigDecimal(valores[0][valores[0].length-1]),BigDecimal.ROUND_HALF_DOWN,4).add(new BigDecimal(-1)).multiply(new BigDecimal(100)).doubleValue();
         }
         
-       
-        
 		calcESTsFuturos(valores[0],stoc1);
 		
         if(variacaoAlvo < 0){
@@ -224,12 +228,13 @@ class SpaceView extends JPanel {
         	g.drawLine(2000, y,x2Click, y2Click);
         }
        
-        inicio =primeiro;
-        fim = ultimo;
-        if(retroativo){
-        	inicio = valores[0].length-dias;
-        	fim = valores[0].length-1;
-        }
+        inicio = primeiro;
+        fim = dias;
+//        fim = ultimo;
+//        if(retroativo){
+//        	inicio = valores[0].length-dias;
+//        	fim = valores[0].length-1;
+//        }
         
         menorPto  =  20000000;
         maiorPto  = 0;
@@ -287,8 +292,7 @@ class SpaceView extends JPanel {
             escala = new  Double(new BigDecimal(areaY).divide(new BigDecimal(maiorPto - menorPto),BigDecimal.ROUND_DOWN,6).doubleValue()).intValue();
         }
  
-               
-        g.drawLine(0,inicioGrafprincipal,5000,inicioGrafprincipal);
+//        g.drawLine(0,inicioGrafprincipal,5000,inicioGrafprincipal);
         
         g.drawLine(0,inicioGrafprincipal-areaY,5000,inicioGrafprincipal-areaY);
         
@@ -299,7 +303,6 @@ class SpaceView extends JPanel {
         g.drawLine(0,inicioGrafEST,5000,inicioGrafEST);
               
         g.drawLine(0,inicioGrafATR,5000,inicioGrafATR);
-        
         
         boolean desenha = true;
         for(int k=0;k<300;k++){
@@ -315,8 +318,6 @@ class SpaceView extends JPanel {
         	}else{
         		desenha = true;
         	}
- 
-        
         }
         
         /*Linha do meio do ATR*/
@@ -326,31 +327,44 @@ class SpaceView extends JPanel {
         
         int x=0;
         
- 
-        
         //for(int i=valores[0].length-dias;i<valores[0].length-1;i++){
         for(int i=inicio;i<fim;i++){
-        	if(i>0){
-	        	g.setColor(Color.black);
-	        	int pto = new Double(escala*(valores[0][i]/fator- menorPto)).intValue();
-	        	int ptoC =  new Double(escala*(valores[0][i+1]/fator- menorPto)).intValue();
-	        	int ptoO =  new Double(escala*(open[i+1]/fator- menorPto)).intValue();
-	        	int ptoL =  new Double(escala*(low[i+1]/fator- menorPto)).intValue();
-	        	int ptoH =  new Double(escala*(high[i+1]/fator- menorPto)).intValue(); 
+//        	if(i>0){
+        		
+//	        	g.setColor(Color.black);
+//	        	int pto = new Double(escala*(valores[0][i]/fator- menorPto)).intValue();
 	        	
+        		/* Desenha as candles */
+//        		int ptoC =  new Double(escala*(valores[0][i+1]/fator- menorPto)).intValue();
+//	        	int ptoO =  new Double(escala*(open[i+1]/fator- menorPto)).intValue();
+//	        	int ptoL =  new Double(escala*(low[i+1]/fator- menorPto)).intValue();
+//	        	int ptoH =  new Double(escala*(high[i+1]/fator- menorPto)).intValue(); 
+	        	
+	    		int ptoC =  new Double(escala*(valores[0][i]/fator- menorPto)).intValue();
+	        	int ptoO =  new Double(escala*(open[i]/fator- menorPto)).intValue();
+	        	int ptoL =  new Double(escala*(low[i]/fator- menorPto)).intValue();
+	        	int ptoH =  new Double(escala*(high[i]/fator- menorPto)).intValue(); 
+        	
 	        	//System.out.println(pto);
 	        	
-	        	//g.drawLine(x*espacoDia, inicioGrafprincipal-pto, x*espacoDia+espacoDia, inicioGrafprincipal-pto2);
+//	        	g.drawLine(x*espacoDia, inicioGrafprincipal-pto, x*espacoDia+espacoDia, inicioGrafprincipal-pto2);
 	        	if(ptoO<=ptoC){
 	        		g.setColor(Color.BLUE);
-	        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle,ptoC - ptoO + 1);
+//	        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle,ptoC - ptoO + 1);
+	        		g.drawRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle,ptoC - ptoO + 1);
+
 	        	}else{
 	        		g.setColor(Color.RED);
 	        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoO-2,largCandle,ptoO - ptoC + 1);
 	        	}
+	        	pontoXInicial[i] = x*espacoDia+espacoDia-largCandle/2;
+	        	pontoXFinal[i] = pontoXInicial[i] + largCandle;
 	        	
 	        	g.drawLine(x*espacoDia+espacoDia, inicioGrafprincipal-ptoL,x*espacoDia+espacoDia, inicioGrafprincipal-ptoH);
-	        	        	
+	        	
+	        	
+	        	/* Desenha os outros graficos */
+	        	/*
 	        	g.setColor(Color.darkGray);
 	        	int pto3 = new Double(escala*(valores[1][i]/fator-menorPto)).intValue();
 	        	int pto4 = new Double(escala*(valores[1][i+1]/fator-menorPto)).intValue();
@@ -372,30 +386,29 @@ class SpaceView extends JPanel {
 	        	g.setColor(Color.BLUE);
 	        	int pto9 = new Double(ifrs[i]).intValue();
 	        	int pto10 = new Double(ifrs[i+1]).intValue();
-
+	
 	        	g.drawLine(x*espacoDia, inicioGrafIFR-pto9, x*espacoDia+espacoDia, inicioGrafIFR-pto10);
-
+	
 	        	g.setColor(Color.BLUE);
 	        	int pto11 = new Double(stcs[i]).intValue();
 	        	int pto12 = new Double(stcs[i+1]).intValue();
-
+	
 	        	g.drawLine(x*espacoDia, inicioGrafEST-pto11, x*espacoDia+espacoDia, inicioGrafEST-pto12);
-
+	
 	        	g.setColor(Color.BLUE);
 	        	int pto13 = new Double(escalaATR*(atrEntry[i]/fatorATR-menorATR)).intValue(); 
 	        	int pto14 = new Double(escalaATR*(atrEntry[i+1]/fatorATR-menorATR)).intValue();
-
+	
 	        	g.drawLine(x*espacoDia, inicioGrafATR-pto13, x*espacoDia+espacoDia, inicioGrafATR-pto14);
 	        	
 	        	g.setColor(Color.red);
 	        	int pto15 = new Double(escalaATR*(atrExit[i]/fatorATR-menorATR)).intValue(); 
 	        	int pto16 = new Double(escalaATR*(atrExit[i+1]/fatorATR-menorATR)).intValue();
-
+	
 	        	g.drawLine(x*espacoDia, inicioGrafATR-pto15, x*espacoDia+espacoDia, inicioGrafATR-pto16);
-
-	        	
+	        	*/
 	        	x++;
-        	}
+//        	}
         }
         
 		g.drawString("IFR=" +  ifrs[ifrs.length-1],x*espacoDia+espacoDia +3,inicioGrafIFR - areaI + 15);
@@ -504,17 +517,13 @@ class SpaceView extends JPanel {
 		reload = true;
 	}
 	
-	
 	public int getPontoY(int x){
 		
 		ArrayList pontos = new ArrayList();
 		double c = (new BigDecimal(y1Click - y2Click).divide(new BigDecimal(x1Click - x2Click),4,BigDecimal.ROUND_HALF_UP)).doubleValue();   
 	
-		
 		return  (new Double(c*(x-x1Click) + y1Click)).intValue();
-			
-		
-		
+
 	}
 	
 	public ArrayList getPontos(int i,int fator){
@@ -560,7 +569,6 @@ class SpaceView extends JPanel {
 			System.out.println("ifr " + i + "% = "+ ifr.getIFR()[closeTemp.length-1]);
 		}
 		
-	
 	}
 	
 	public void calcESTsFuturos(double[]close, int dias){
@@ -587,8 +595,6 @@ class SpaceView extends JPanel {
 			}
 			System.out.println("Estocastico " + i + "% = "+ stcs[closeTemp.length-1]);
 		}
-		
-	
 	}
 	
 
@@ -600,8 +606,6 @@ class SpaceView extends JPanel {
 		}else{
 			return (preco - (preco*(-1)*var));
 		}
-		
-	
 	}
 	
 	public void compra(double dinheiro, boolean def){
@@ -611,13 +615,13 @@ class SpaceView extends JPanel {
 			capital.setDinheiro(dinheiro);
 		}
 		
-		capital.setPrecoCompra(valores[0][ultimo]);
+//		capital.setPrecoCompra(valores[0][ultimo]);
 	}
 	
 	public void vende(){
 		
 		comprado=false;
-		capital.setPrecoVenda(valores[0][ultimo]);
+//		capital.setPrecoVenda(valores[0][ultimo]);
 		String resultado = "Quantidade: " + capital.calculaNovoValor();	
 		resultado = resultado + " Percentual ganho último Negócio: " + capital.getPercentual() + "%";
 		
@@ -627,7 +631,7 @@ class SpaceView extends JPanel {
 	
 	public void exibePercentualMomento(){
 		
-		JOptionPane.showConfirmDialog(null,capital.getPercentualMomento(valores[0][ultimo]) + "%");
+//		JOptionPane.showConfirmDialog(null,capital.getPercentualMomento(valores[0][ultimo]) + "%");
 	}
 	
 	class MousePanel implements MouseListener, MouseMotionListener {
@@ -707,20 +711,38 @@ class SpaceView extends JPanel {
 		 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 		 */
 		public void mouseMoved(MouseEvent e) {
-			
-			int diaRelativo = new BigDecimal(e.getPoint().x).divide(new BigDecimal(espacoDia),BigDecimal.ROUND_DOWN,6).intValue();
-			
-			int dia = inicio + diaRelativo;
-			
-			if(data!=null && dia<data.length && dia >0){
-				String date = data[dia].substring(6,8) + "/" + data[dia].substring(4,6) + "/" + data[dia].substring(0,4);  
-				
-				MainFrame.showPreco("Data: " + date + " Preço:" + getPreco(e.getPoint().y,menorPto,fator,escala,inicioGrafprincipal));
-			}
-				// TODO Auto-generated method stub
-			
-		}
+						
+			int diaRelativo = -1 ;
 
+			//procura o dia relativo que o mouse passa por cima
+			for(int i=0; i < pontoXFinal.length; i++){ 
+				//se o ponto x esta dentro do intervalo da candle na coordenada X
+				if(e.getPoint().x >= pontoXInicial[i] && e.getPoint().x <= pontoXFinal[i])
+					diaRelativo = i;
+			}
+			
+//			System.out.println("e.getPoint().x = " + e.getPoint().x);
+//			System.out.println("diaRelativo = " + diaRelativo);
+			
+			if(diaRelativo != -1){
+				
+				int dia = inicio + diaRelativo;
+				
+				if(data != null && dia < data.length){
+					String date = data[dia].substring(6,8) + "/" + data[dia].substring(4,6) + "/" + data[dia].substring(0,4);  
+					
+					MainFrame.showPreco("Data: " + date + " Preço:" 
+							+ getPreco(e.getPoint().y,menorPto,fator,escala,inicioGrafprincipal) 
+							+ " A: " + open[dia] / 100 
+							+ " Max: " + high[dia] / 100
+							+ " Min: " + low[dia] / 100
+							+ " F: " + close[dia] / 100);
+				}
+			}
+			else{
+				MainFrame.showPreco(null); //esconde o tooltip
+			}
+		}
 	}
 	
 }//endclass SpaceView
