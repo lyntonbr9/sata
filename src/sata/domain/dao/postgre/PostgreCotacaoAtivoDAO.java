@@ -100,4 +100,27 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 		return false;
 	}
 
+	@Override
+	public String getDataUltimoCadastro(String codigoAtivo) {
+		
+		String dataUltimoCadastro = "";
+		String sqlStmt = "SELECT \"codigoAtivo\", periodo FROM \"CotacaoAtivo\"" 
+			+ " WHERE \"codigoAtivo\" = ? ORDER BY periodo DESC";
+		
+		try {
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, codigoAtivo);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) //pega o primeiro registro
+			{
+				dataUltimoCadastro = SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"), false);
+			}
+			PostgreDAOFactory.returnConnection(con);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dataUltimoCadastro;
+	}
+
 }

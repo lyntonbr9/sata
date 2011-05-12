@@ -14,6 +14,7 @@ import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
 	
+	
 	public static Timestamp getTimeStampPeriodoCotacao(String periodo){
 		Calendar cal = new GregorianCalendar();
 		cal.set(Integer.valueOf(periodo.substring(0,4)), Integer.valueOf(periodo.substring(4,6)) - 1, Integer.valueOf(periodo.substring(6,8)),0,0,0);
@@ -121,50 +122,98 @@ public class SATAUtil implements IConstants{
 		
 		String html = CotacaoLopesFilho.POST("http://br.finance.yahoo.com/q/hp", h);
 //		System.out.println(html);
-		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
+//		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
 		String dataFimDaLista = getDataToYahooFinances(dataInicial); // Ex: "2 de mai de 2011"
-		System.out.println(dataInicioLista);
-		System.out.println(dataFimDaLista);
+//		System.out.println(dataInicioLista);
+//		System.out.println(dataFimDaLista);
 		
-		String pedacoHtml = html.substring(html.indexOf(dataInicioLista));
-		System.out.println(pedacoHtml);
+//		String pedacoHtml = html.substring(html.indexOf(dataInicioLista));
+//		System.out.println(pedacoHtml);
+		String tagTDInicialDia = "<td class=\"yfnc_tabledata1\" nowrap align=\"right\">";
+		if(html.indexOf(tagTDInicialDia) == -1){
+			System.out.println("nao encontrou");
+			return listaCotacoesAtivo;
+		}
+			
+		String pedacoHtml = html.substring(html.indexOf(tagTDInicialDia));
+//		System.out.println(pedacoHtml);
 		String tagTD = "<td class=\"yfnc_tabledata1\" align=\"right\">";
 		String fimTD = "</td>";
 		
-		// 0 - Abertura   1 - Alta   2 - Baixa   4 - Fechar
-		String valores[] = new String[4];
-		int i = 0;
+		//Ordem de leitura dos valores:
+		// 0 - Dia  1 - Ano  2 - Abertura  3 - Alta   4 - Baixa  5 - Fechar
+		String valores[] = new String[6];
+		
+		int maximoVezesBusca = 300;
+		int contador = 0;
+		boolean buscar = true;
+		int posicaoFimTD = 0;
+		
+		int i;
 		//para todos os dias que faltam
-		CotacaoAtivoTO caTO = new CotacaoAtivoTO();
-		while (i < 4) {
-			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTD));
-			// System.out.println(pedacoHtml);
-			int posicaoFimTD = pedacoHtml.indexOf(fimTD);
-			// System.out.println(posicaoFimTD);
-			// System.out.println(tagTD.length());
-			valores[i] = pedacoHtml.substring(tagTD.length(), posicaoFimTD);
-//			System.out.println(valores[i]);
-			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(posicaoFimTD));
-			i++;
+		while(buscar)
+		{
+			//evita que fique em loop infinito
+			contador++;
+			if (contador == maximoVezesBusca)
+				break;
+			
+			//Le os valores do HTML
+			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTDInicialDia));
+			posicaoFimTD = pedacoHtml.indexOf(fimTD);
+			//Pega a data
+			valores[0] = pedacoHtml.substring(tagTDInicialDia.length(), posicaoFimTD);
+			
+			//se vier os dividendos na tabela pula pra proxima linha dela
+			if(valores[0].contains("/")){
+				pedacoHtml = pedacoHtml.substring(posicaoFimTD);
+				continue;
+			}
+			
+			//verifica se ja chegou ao fim para sair do loop, senao continua a extrair
+			if(valores[0].equalsIgnoreCase(dataFimDaLista))
+				break;
+			
+			//Formata para a data padrao dd/MM/yyyy
+			valores[0] = formataDataFromYahooFinances(valores[0]);
+			
+			//Pega o ano
+			valores[1] = valores[0].substring(valores[0].length() - 4);
+			
+			//Pega os valores da cotacao
+			i = 2;
+			while (i < 6) 
+			{
+				pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTD));
+//				System.out.println(pedacoHtml);
+				posicaoFimTD = pedacoHtml.indexOf(fimTD);
+//				System.out.println(posicaoFimTD);
+//				System.out.println(tagTD.length());
+				valores[i] = pedacoHtml.substring(tagTD.length(), posicaoFimTD);
+//				System.out.println(valores[i]);
+				pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(posicaoFimTD));
+				i++;
+			}
+			CotacaoAtivoTO caTO = new CotacaoAtivoTO();
+			caTO.setCodigo(acao);
+			caTO.setPeriodo(valores[0]); //data corrente de insercao
+			caTO.setAno(valores[1]);
+			caTO.setTipoPeriodo("D");
+			caTO.setAbertura(valores[2].replace(",", ""));
+			caTO.setMaxima(valores[3].replace(",", ""));
+			caTO.setMinima(valores[4].replace(",", ""));
+			caTO.setFechamento(valores[5].replace(",", ""));
+			listaCotacoesAtivo.add(caTO);
 		}
-		System.out.println("Teste");
-		caTO.setCodigo(acao);
-		caTO.setAbertura(valores[0].replace(",", ""));
-		caTO.setMaxima(valores[1].replace(",", ""));
-		caTO.setMinima(valores[2].replace(",", ""));
-		caTO.setFechamento(valores[3].replace(",", ""));
-		listaCotacoesAtivo.add(caTO);
-
 		return listaCotacoesAtivo;
 	}
 	public static String getDataToYahooFinances(String data){
 		
-		String meses[] = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
 		String valores[] = data.split("/");
 		int dia = Integer.parseInt(valores[0]);
 		int indiceMes = Integer.parseInt(valores[1]) - 1;
 		int ano = Integer.parseInt(valores[2]);
-		return String.valueOf(dia) + " de " + String.valueOf(meses[indiceMes]) + " de " + String.valueOf(ano);
+		return String.valueOf(dia) + " de " + String.valueOf(mesesYahooFinances[indiceMes]) + " de " + String.valueOf(ano);
 	}
 	
 	public static Hashtable<String, String> getYahooFinancesURLParameters(String acao, 
@@ -185,5 +234,37 @@ public class SATAUtil implements IConstants{
 		h.put("g", "d"); //diario
 		
 		return h;
+	}
+	
+	//A data do Yahoo Finances vem no formato Ex: 10 de mai de 2011
+	public static String formataDataFromYahooFinances(String dataYahooFinances)
+	{
+		String valoresSplit[] = dataYahooFinances.split(" ");
+		
+		System.out.println("EI: " + dataYahooFinances);
+		String dia = valoresSplit[0];
+		if(Integer.parseInt(dia) < 10)
+			dia = "0" + dia;
+		
+		int mes = getIndiceMesYahooFinances(valoresSplit[2]) + 1;
+		String mesStr = String.valueOf(mes);
+		if(mes < 10)
+			mesStr = "0" + mesStr;
+		
+		String ano = valoresSplit[4];
+		
+		//return dia + "/" + mesStr + "/" + ano;
+		return ano + mesStr + dia;
+	}
+	
+	//retorna a posicao do mes no array de meses
+	public static int getIndiceMesYahooFinances(String mesYahooFinanc)
+	{
+		for(int i=0; i < mesesYahooFinances.length; i++){
+			if(mesYahooFinanc.equalsIgnoreCase(mesesYahooFinances[i])){
+				return i;
+			}
+		}
+		return -1; //Se nao encontrar
 	}
 }

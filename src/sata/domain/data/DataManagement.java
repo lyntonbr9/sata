@@ -23,30 +23,34 @@ public class DataManagement {
 				+ (calendario.get(Calendar.MONTH) + 1) + "/"
 				+ calendario.get(Calendar.YEAR);
 		
-		System.out.println("Dia: " + calendario.get(Calendar.DAY_OF_MONTH));
-		System.out.println("Mes: " + calendario.get(Calendar.MONTH));
-		System.out.println("Ano: " + calendario.get(Calendar.YEAR));
+//		System.out.println("Dia: " + calendario.get(Calendar.DAY_OF_MONTH));
+//		System.out.println("Mes: " + calendario.get(Calendar.MONTH));
+//		System.out.println("Ano: " + calendario.get(Calendar.YEAR));
 
-		// para todas as acoes
+		// para todas as acoes do DB
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
 		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
 		List<String> listaDeAcoes = ativoDAO.getCodigosAtivos();
 		for (String acao : listaDeAcoes) {
-			if (acao.equalsIgnoreCase("PETR4")) {
+//			if (acao.equalsIgnoreCase("GOLL4")) {
 				//pega o ultimo dia cadastrado da acao
-				String dataUltimoCadastro = "09/05/2011";
+				String dataUltimoCadastroAtivo = caDAO.getDataUltimoCadastro(acao); //Ex: "2/5/2011"
+				System.out.println(dataUltimoCadastroAtivo);
 				// atualiza as cotacoes da acao
-				List<CotacaoAtivoTO> listaCotacoesAtivo = SATAUtil.getCotacoesFromYahooFinances(acao, dataUltimoCadastro, dataAtual);
+				List<CotacaoAtivoTO> listaCotacoesAtivo = SATAUtil.getCotacoesFromYahooFinances(acao, dataUltimoCadastroAtivo, dataAtual);
 				for(CotacaoAtivoTO caTO : listaCotacoesAtivo){
+					System.out.println(caTO.getCodigo());
+					System.out.println(caTO.getPeriodo());
+					System.out.println(caTO.getAno());
+					System.out.println(caTO.getTipoPeriodo());
 					System.out.println(caTO.getAbertura());
 					System.out.println(caTO.getMaxima());
 					System.out.println(caTO.getMinima());
 					System.out.println(caTO.getFechamento());
+					caDAO.insertCotacaoDoAtivo(caTO);
 				}
-					//caDAO.insertCotacaoDoAtivo(caTO);
-			}
-
+//			}
 		}
 
 	}
