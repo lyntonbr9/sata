@@ -40,6 +40,9 @@ public class DataManagement {
 				List<CotacaoAtivoTO> listaCotacoesAtivo = SATAUtil.getCotacoesFromYahooFinances(acao, dataUltimoCadastro, dataAtual);
 				for(CotacaoAtivoTO caTO : listaCotacoesAtivo){
 					System.out.println(caTO.getAbertura());
+					System.out.println(caTO.getMaxima());
+					System.out.println(caTO.getMinima());
+					System.out.println(caTO.getFechamento());
 				}
 					//caDAO.insertCotacaoDoAtivo(caTO);
 			}

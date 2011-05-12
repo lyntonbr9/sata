@@ -2,6 +2,7 @@ package sata.domain.util;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -115,20 +116,11 @@ public class SATAUtil implements IConstants{
 	// (http://br.finance.yahoo.com/q/hp?s=PETR4.SA) no intervalo
 	public static List<CotacaoAtivoTO> getCotacoesFromYahooFinances(String acao, String dataInicial, String dataFinal)
 	{
-		Hashtable h = new Hashtable();
-		String valoresDataInicial[] = dataInicial.split("/");
-		String valoresDataFinal[] = dataFinal.split("/");
-		h.put("s", acao + ".SA");
-		h.put("a", valoresDataInicial[1]); //indice mes inicial
-		h.put("b", valoresDataInicial[0]); //dia inicial
-		h.put("c", valoresDataInicial[2]); //ano inicial
-		h.put("d", valoresDataFinal[1]); //indice mes final
-		h.put("e", valoresDataFinal[0]); //dia final
-		h.put("f", valoresDataFinal[2]); //ano final
-		h.put("g", "d"); //diario
+		List<CotacaoAtivoTO> listaCotacoesAtivo = new ArrayList<CotacaoAtivoTO>();
+		Hashtable<String, String> h = getYahooFinancesURLParameters(acao, dataInicial, dataFinal);
 		
 		String html = CotacaoLopesFilho.POST("http://br.finance.yahoo.com/q/hp", h);
-		System.out.println(html);
+//		System.out.println(html);
 		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
 		String dataFimDaLista = getDataToYahooFinances(dataInicial); // Ex: "2 de mai de 2011"
 		System.out.println(dataInicioLista);
@@ -142,6 +134,8 @@ public class SATAUtil implements IConstants{
 		// 0 - Abertura   1 - Alta   2 - Baixa   4 - Fechar
 		String valores[] = new String[4];
 		int i = 0;
+		//para todos os dias que faltam
+		CotacaoAtivoTO caTO = new CotacaoAtivoTO();
 		while (i < 4) {
 			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTD));
 			// System.out.println(pedacoHtml);
@@ -149,21 +143,47 @@ public class SATAUtil implements IConstants{
 			// System.out.println(posicaoFimTD);
 			// System.out.println(tagTD.length());
 			valores[i] = pedacoHtml.substring(tagTD.length(), posicaoFimTD);
-			System.out.println(valores[i]);
+//			System.out.println(valores[i]);
 			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(posicaoFimTD));
 			i++;
 		}
+		System.out.println("Teste");
+		caTO.setCodigo(acao);
+		caTO.setAbertura(valores[0].replace(",", ""));
+		caTO.setMaxima(valores[1].replace(",", ""));
+		caTO.setMinima(valores[2].replace(",", ""));
+		caTO.setFechamento(valores[3].replace(",", ""));
+		listaCotacoesAtivo.add(caTO);
 
-		// System.out.println(html);
-		
-		return null;
+		return listaCotacoesAtivo;
 	}
 	public static String getDataToYahooFinances(String data){
+		
 		String meses[] = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
 		String valores[] = data.split("/");
 		int dia = Integer.parseInt(valores[0]);
 		int indiceMes = Integer.parseInt(valores[1]) - 1;
 		int ano = Integer.parseInt(valores[2]);
 		return String.valueOf(dia) + " de " + String.valueOf(meses[indiceMes]) + " de " + String.valueOf(ano);
+	}
+	
+	public static Hashtable<String, String> getYahooFinancesURLParameters(String acao, 
+				String dataInicial, String dataFinal){
+		
+		Hashtable<String, String> h = new Hashtable<String, String>();
+		String valoresDataInicial[] = dataInicial.split("/");
+		String valoresDataFinal[] = dataFinal.split("/");
+		int indiceMesInicial = (Integer.parseInt(valoresDataInicial[1]) - 1);
+		int indiceMesFinal = (Integer.parseInt(valoresDataFinal[1]) - 1);
+		h.put("s", acao + ".SA");
+		h.put("a", String.valueOf(indiceMesInicial) ); //indice mes inicial
+		h.put("b", valoresDataInicial[0]); //dia inicial
+		h.put("c", valoresDataInicial[2]); //ano inicial
+		h.put("d", String.valueOf(indiceMesFinal)); //indice mes final
+		h.put("e", valoresDataFinal[0]); //dia final
+		h.put("f", valoresDataFinal[2]); //ano final
+		h.put("g", "d"); //diario
+		
+		return h;
 	}
 }
