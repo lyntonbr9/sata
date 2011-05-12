@@ -95,8 +95,8 @@ public class CotacaoLopesFilho {
 		      
    		try{		
    			
-//			System.setProperty("http.proxyHost", "172.31.2.218");
-//			System.setProperty("http.proxyPort", "8080"); 
+			System.setProperty("http.proxyHost", "proxyad.br-petrobras.com.br");
+			System.setProperty("http.proxyPort", "9090"); 
 
 			URL url;
 			URLConnection conn;
