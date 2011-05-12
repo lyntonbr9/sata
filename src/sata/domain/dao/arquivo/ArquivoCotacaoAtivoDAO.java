@@ -10,6 +10,7 @@ import java.util.List;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.to.CotacaoAtivoTO;
 
+@Deprecated
 //public class ArquivoCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 public class ArquivoCotacaoAtivoDAO{
 	

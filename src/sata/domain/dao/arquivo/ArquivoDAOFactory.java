@@ -4,6 +4,7 @@ import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.DAOFactory;
 
+@Deprecated
 public class ArquivoDAOFactory extends DAOFactory {
 
 	public IAtivoDAO getAtivoDAO(){

@@ -11,6 +11,7 @@ import java.util.List;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.to.AtivoTO;
 
+@Deprecated
 //public class ArquivoAtivoDAO implements IAtivoDAO{
 public class ArquivoAtivoDAO{
 	

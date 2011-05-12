@@ -95,79 +95,82 @@ public class CotacaoLopesFilho {
 		      
    		try{		
    			
-   			System.setProperty("http.proxyHost", "172.31.2.218");
-	   	    System.setProperty("http.proxyPort", "8080"); 
+//			System.setProperty("http.proxyHost", "172.31.2.218");
+//			System.setProperty("http.proxyPort", "8080"); 
 
-   			   URL url; 
-		       URLConnection conn; 
-		        
-		       // The data streams used to read from and write to the URL connection. 
-		       DataOutputStream out; 
-		       DataInputStream in; 
-		        
-		       // String returned as the result of the POST. 
-		       String returnString = ""; 
-		                
-		       // Create the URL object and make a connection to it. 
-		       url = new URL (targetURL); 
-		       conn = url.openConnection(); 
-		                
-		       // Set connection parameters. We need to perform input and output, 
-		       // so set both as true. 
-		       conn.setDoInput (true); 
-		       conn.setDoOutput (true); 
-		        
-		       // Disable use of caches. 
-		       conn.setUseCaches (false); 
-		                
-		       // Set the content type we are POSTing. We impersonate it as 
-		       // encoded form data 
-		       conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
-		        
-		       // get the output stream to POST to. 
-		       out = new DataOutputStream (conn.getOutputStream ()); 
-		       String content = ""; 
-		        
-		       // Create a single String value to be POSTED from the parameters passed 
-		       // to us. This is done by making "name"="value" pairs for all the keys 
-		       // in the Hashtable passed to us. 
-		       Enumeration e = contentHash.keys(); 
-		       boolean first = true; 
-		       while(e.hasMoreElements()) 
-		       {             
-		           // For each key and value pair in the hashtable 
-		           Object key = e.nextElement(); 
-		           Object value = contentHash.get(key); 
-		            
-		           // If this is not the first key-value pair in the hashtable, 
-		           // concantenate an "&" sign to the constructed String 
-		           if(!first)  
-		               content += "&"; 
-		                                    
-		           // append to a single string. Encode the value portion 
-		           content += (String)key + "=" + URLEncoder.encode((String)value); 
-		            
-		           first = false; 
-		       } 
-		        
-		       // Write out the bytes of the content string to the stream. 
-		       out.writeBytes (content); 
-		       out.flush (); 
-		       out.close (); 
-		        
-		       // Read input from the input stream. 
-		       in = new DataInputStream (conn.getInputStream ()); 
-		        
-		       String str;         
-		       while (null != ((str = in.readLine()))) 
-		       { 
-		           returnString += str + "\n"; 
-		       } 
-		        
-		       in.close (); 
-		        
-		       // return the string that was read. 
-		       return returnString; 
+			URL url;
+			URLConnection conn;
+
+			// The data streams used to read from and write to the URL
+			// connection.
+			DataOutputStream out;
+			DataInputStream in;
+
+			// String returned as the result of the POST.
+			String returnString = "";
+
+			// Create the URL object and make a connection to it.
+			url = new URL(targetURL);
+			conn = url.openConnection();
+
+			// Set connection parameters. We need to perform input and output,
+			// so set both as true.
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			// Disable use of caches.
+			conn.setUseCaches(false);
+
+			// Set the content type we are POSTing. We impersonate it as
+			// encoded form data
+			conn.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded");
+
+			// get the output stream to POST to.
+			out = new DataOutputStream(conn.getOutputStream());
+			String content = "";
+
+			// Create a single String value to be POSTED from the parameters
+			// passed
+			// to us. This is done by making "name"="value" pairs for all the
+			// keys
+			// in the Hashtable passed to us.
+			Enumeration<?> e = contentHash.keys();
+			boolean first = true;
+			while (e.hasMoreElements()) {
+				// For each key and value pair in the hashtable
+				Object key = e.nextElement();
+				Object value = contentHash.get(key);
+
+				// If this is not the first key-value pair in the hashtable,
+				// concantenate an "&" sign to the constructed String
+				if (!first)
+					content += "&";
+
+				// append to a single string. Encode the value portion
+				content += (String) key + "=" + URLEncoder.encode((String) value);
+
+				first = false;
+			}
+			System.out.println(content);
+
+			// Write out the bytes of the content string to the stream.
+			out.writeBytes(content);
+			out.flush();
+			out.close();
+
+			// Read input from the input stream.
+			in = new DataInputStream(conn.getInputStream());
+
+			String str;
+			while (null != ((str = in.readLine()))) {
+				returnString += str + "\n";
+			}
+
+			in.close();
+
+			// return the string that was read.
+			return returnString; 
    		}catch(Exception e){
    			e.printStackTrace();
    		}

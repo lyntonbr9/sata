@@ -3,10 +3,13 @@ package sata.domain.util;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.List;
 
 import sata.domain.to.CotacaoAtivoTO;
+import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
 	
@@ -99,5 +102,68 @@ public class SATAUtil implements IConstants{
 		System.out.println("Data formatada: " + vetorData[2] + vetorData[1] + vetorData[0]);
 		return vetorData[2] + vetorData[1] + vetorData[0];
 		
+	}
+	
+	public static Calendar getDataAtual(){
+		Date dataAtual = new Date();
+		GregorianCalendar calendario = new GregorianCalendar();
+		calendario.setTime(dataAtual);
+		return calendario;		
+	}
+
+	// pega as cotacoes do site
+	// (http://br.finance.yahoo.com/q/hp?s=PETR4.SA) no intervalo
+	public static List<CotacaoAtivoTO> getCotacoesFromYahooFinances(String acao, String dataInicial, String dataFinal)
+	{
+		Hashtable h = new Hashtable();
+		String valoresDataInicial[] = dataInicial.split("/");
+		String valoresDataFinal[] = dataFinal.split("/");
+		h.put("s", acao + ".SA");
+		h.put("a", valoresDataInicial[1]); //indice mes inicial
+		h.put("b", valoresDataInicial[0]); //dia inicial
+		h.put("c", valoresDataInicial[2]); //ano inicial
+		h.put("d", valoresDataFinal[1]); //indice mes final
+		h.put("e", valoresDataFinal[0]); //dia final
+		h.put("f", valoresDataFinal[2]); //ano final
+		h.put("g", "d"); //diario
+		
+		String html = CotacaoLopesFilho.POST("http://br.finance.yahoo.com/q/hp", h);
+		System.out.println(html);
+		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
+		String dataFimDaLista = getDataToYahooFinances(dataInicial); // Ex: "2 de mai de 2011"
+		System.out.println(dataInicioLista);
+		System.out.println(dataFimDaLista);
+		
+		String pedacoHtml = html.substring(html.indexOf(dataInicioLista));
+		System.out.println(pedacoHtml);
+		String tagTD = "<td class=\"yfnc_tabledata1\" align=\"right\">";
+		String fimTD = "</td>";
+		
+		// 0 - Abertura   1 - Alta   2 - Baixa   4 - Fechar
+		String valores[] = new String[4];
+		int i = 0;
+		while (i < 4) {
+			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTD));
+			// System.out.println(pedacoHtml);
+			int posicaoFimTD = pedacoHtml.indexOf(fimTD);
+			// System.out.println(posicaoFimTD);
+			// System.out.println(tagTD.length());
+			valores[i] = pedacoHtml.substring(tagTD.length(), posicaoFimTD);
+			System.out.println(valores[i]);
+			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(posicaoFimTD));
+			i++;
+		}
+
+		// System.out.println(html);
+		
+		return null;
+	}
+	public static String getDataToYahooFinances(String data){
+		String meses[] = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
+		String valores[] = data.split("/");
+		int dia = Integer.parseInt(valores[0]);
+		int indiceMes = Integer.parseInt(valores[1]) - 1;
+		int ano = Integer.parseInt(valores[2]);
+		return String.valueOf(dia) + " de " + String.valueOf(meses[indiceMes]) + " de " + String.valueOf(ano);
 	}
 }
