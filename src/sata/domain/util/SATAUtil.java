@@ -298,7 +298,7 @@ public class SATAUtil implements IConstants{
 	
 	// pega as cotacoes do site
 	// (http://br.finance.yahoo.com/q/hp?s=PETR4.SA) no intervalo
-	public static List<CotacaoAtivoTO> getCotacoesFromInfoMoney(String acao, String dataInicial, String dataFinal, String htmlSource)
+	public static List<CotacaoAtivoTO> getCotacoesFromInfoMoney(String acao, String dataInicial, String htmlSource)
 	{
 		List<CotacaoAtivoTO> listaCotacoesAtivo = new ArrayList<CotacaoAtivoTO>();
 		
@@ -314,8 +314,8 @@ public class SATAUtil implements IConstants{
 //		System.out.println(pedacoHtml);
 		String tagTDInicialDia = "<td>";
 		
-		if(html.indexOf(dataFinal) == -1){
-			System.out.println("nao encontrou");
+		if(html.indexOf(dataFimDaLista) == -1){
+			System.out.println("Nao encontrou data do ultimo cadastro do ativo");
 			return listaCotacoesAtivo;
 		}
 			
