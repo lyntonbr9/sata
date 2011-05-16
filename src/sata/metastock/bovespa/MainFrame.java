@@ -109,33 +109,42 @@ public class MainFrame {
 		grafico.setToolTipText(preco);
 	}
 	
-	public static void compra(){
 		
-		grafico.compra(10000,true);
+    public static void nextPage(){
+    	grafico.setPaginaFrente();
+    	grafico.repaint();
 	}
 	
-	public static void vende(){
+    public static void lastPage(){
+    	
+    	grafico.setPaginaAtras();
+    	grafico.repaint();
+    }
 		
-		grafico.vende();
+    public static void nextDia(){
+    	grafico.setDiaFrente();
+    	grafico.repaint();
 	}
 	
-	public static void exibePercentualMomento(){
+    public static void lastDia(){
 		
-		grafico.exibePercentualMomento();
+    	grafico.setDiaAtras();
+    	grafico.repaint();
 	}
 	
-	public static void setIntervaloDia(String dia1, String dia2){
-		grafico.setprimeiroDia(Integer.parseInt(dia1));
-		grafico.setUltimoDia(Integer.parseInt(dia2));
-		grafico.setRetroativo(false);
+    public static void setPrimeiroCandle(){
+    	grafico.setPrimeiroCandle();
 		grafico.repaint();
     }
     
+    public static void setUltimoCandle(){
+    	grafico.setUltimoCandle();
+    	grafico.repaint();
    
+    }
 	
 	public static void setDias(String dias){
 		grafico.setDias(Integer.parseInt(dias));
-		grafico.setRetroativo(true);
 		grafico.repaint();
 	}
 	

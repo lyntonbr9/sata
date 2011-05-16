@@ -39,7 +39,8 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		for(int i=0;i<chaves.size();i++){
 			
 			//System.out.println(((CotacaoAtivoTO)listaDasCotacoes.get(i)).getCodigo());
-			System.out.println(((Integer)chaves.get(i)).toString() + " " + ((Integer)dias.get(i)).toString().toString());
+			CotacaoAtivoTO cotacao = listaDasCotacoes.get(((Integer)chaves.get(i)).intValue());
+			System.out.println(cotacao.getPeriodo() + " " + ((Integer)dias.get(i)).toString().toString());
 		}
 		
 		return null;
@@ -49,7 +50,9 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();
 		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 		ICotacaoAtivoDAO caDAO = factory.getCotacaoAtivoDAO();
-		List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo("PETR4", "2009");
+		List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo("USIM5", "2011");
+		
+		
 		s.getResultado(listaDasCotacoes, null);
 	}
 	
@@ -64,7 +67,6 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 			cot2.multiply(new BigDecimal(-1));
 			prc[i] = cot2.add(cot1.multiply(new BigDecimal(-1))).divide(cot1,BigDecimal.ROUND_HALF_EVEN,6).doubleValue();
 			//System.out.println(prc[i]);
-			
 			
 		}
 		
