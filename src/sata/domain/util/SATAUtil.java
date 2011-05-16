@@ -207,6 +207,7 @@ public class SATAUtil implements IConstants{
 		}
 		return listaCotacoesAtivo;
 	}
+	
 	public static String getDataToYahooFinances(String data){
 		
 		String valores[] = data.split("/");
@@ -267,4 +268,123 @@ public class SATAUtil implements IConstants{
 		}
 		return -1; //Se nao encontrar
 	}
+	
+	//formata a data para yyyyMMdd
+	public static String formataDataFromInfoMoney(String dataInfoMoney)
+	{
+		String valoresSplit[] = dataInfoMoney.split("/");
+		
+		return valoresSplit[2] + valoresSplit[1] + valoresSplit[0];
+	}
+	
+	//retorna data para o site InfoMoney
+	public static String getDataToInfoMoney(String dataSemFormato){
+		String valoresSplit[] = dataSemFormato.split("/");
+		String dia;
+		String mes;
+		
+		if (Integer.parseInt(valoresSplit[0]) < 10)
+			dia = "0" + valoresSplit[0].toString();
+		else
+			dia = valoresSplit[0].toString();
+		
+		if (Integer.parseInt(valoresSplit[1]) < 10)
+			mes = "0" + valoresSplit[1].toString();
+		else
+			mes = valoresSplit[1].toString();
+		
+		return dia + "/" + mes + "/" + valoresSplit[2];
+	}
+	
+	// pega as cotacoes do site
+	// (http://br.finance.yahoo.com/q/hp?s=PETR4.SA) no intervalo
+	public static List<CotacaoAtivoTO> getCotacoesFromInfoMoney(String acao, String dataInicial, String dataFinal, String htmlSource)
+	{
+		List<CotacaoAtivoTO> listaCotacoesAtivo = new ArrayList<CotacaoAtivoTO>();
+		
+		String html = htmlSource;
+//		System.out.println(html);
+//		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
+		String dataFimDaLista = dataInicial;
+//		String dataFimDaLista = "09/05/2011";
+//		System.out.println(dataInicioLista);
+//		System.out.println(dataFimDaLista);
+		
+//		String pedacoHtml = html.substring(html.indexOf(dataInicioLista));
+//		System.out.println(pedacoHtml);
+		String tagTDInicialDia = "<td>";
+		
+		if(html.indexOf(dataFinal) == -1){
+			System.out.println("nao encontrou");
+			return listaCotacoesAtivo;
+		}
+			
+		String pedacoHtml = html.substring(html.indexOf(tagTDInicialDia));
+//		System.out.println(pedacoHtml);
+		String tagTD = "<td class=\"numbers\">";
+		String fimTD = "</td>";
+		
+		//Ordem de leitura dos valores:
+		// 0 - Dia  1 - Ano  2 - Abertura  3 - Alta   4 - Baixa  5 - Fechar
+		String valores[] = new String[8];
+		
+		int maximoVezesBusca = 300;
+		int contador = 0;
+		boolean buscar = true;
+		int posicaoFimTD = 0;
+		
+		int i;
+		//para todos os dias que faltam
+		while(buscar)
+		{
+			//evita que fique em loop infinito
+			contador++;
+			if (contador == maximoVezesBusca)
+				break;
+			
+			//Le os valores do HTML
+			pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTDInicialDia));
+			posicaoFimTD = pedacoHtml.indexOf(fimTD);
+			//Pega a data
+			valores[0] = pedacoHtml.substring(tagTDInicialDia.length(), posicaoFimTD);
+			
+			//verifica se ja chegou ao fim para sair do loop, senao continua a extrair
+			if(valores[0].equalsIgnoreCase(dataFimDaLista))
+				break;
+			
+			//Pega o ano
+			valores[1] = valores[0].substring(valores[0].length() - 4);
+			
+			
+			//Pega os valores da cotacao
+			i = 2;
+			while (i < 8) 
+			{
+				pedacoHtml = pedacoHtml.substring(pedacoHtml.indexOf(tagTD));
+//				System.out.println(pedacoHtml);
+				posicaoFimTD = pedacoHtml.indexOf(fimTD);
+//				System.out.println(posicaoFimTD);
+//				System.out.println(tagTD.length());
+				valores[i] = pedacoHtml.substring(tagTD.length(), posicaoFimTD);
+//				System.out.println(valores[i]);
+				pedacoHtml = pedacoHtml.substring(posicaoFimTD);
+				i++;
+			}
+			CotacaoAtivoTO caTO = new CotacaoAtivoTO();
+			caTO.setCodigo(acao);
+			//Formata para a data padrao yyyyMMdd
+			valores[0] = formataDataFromInfoMoney(valores[0]);
+			caTO.setPeriodo(valores[0]); //data corrente de insercao
+			caTO.setAno(valores[1]);
+			caTO.setTipoPeriodo("D");
+			caTO.setAbertura(valores[4].replace(",", ""));
+			caTO.setMaxima(valores[7].replace(",", ""));
+			caTO.setMinima(valores[5].replace(",", ""));
+			caTO.setFechamento(valores[3].replace(",", ""));
+			listaCotacoesAtivo.add(caTO);
+		}
+		return listaCotacoesAtivo;
+	}
+	
 }
+

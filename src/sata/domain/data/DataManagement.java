@@ -33,7 +33,7 @@ public class DataManagement {
 		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
 		List<String> listaDeAcoes = ativoDAO.getCodigosAtivos();
 		for (String acao : listaDeAcoes) {
-//			if (acao.equalsIgnoreCase("GOLL4")) {
+			if (acao.equalsIgnoreCase("GOLL4")) {
 				//pega o ultimo dia cadastrado da acao
 				String dataUltimoCadastroAtivo = caDAO.getDataUltimoCadastro(acao); //Ex: "2/5/2011"
 				System.out.println(dataUltimoCadastroAtivo);
@@ -50,7 +50,7 @@ public class DataManagement {
 					System.out.println(caTO.getFechamento());
 					caDAO.insertCotacaoDoAtivo(caTO);
 				}
-//			}
+			}
 		}
 
 	}
