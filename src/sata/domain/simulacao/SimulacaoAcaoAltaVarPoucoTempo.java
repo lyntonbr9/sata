@@ -11,6 +11,9 @@ import sata.domain.to.ResultadoSimulacaoTO;
 import sata.metastock.robos.Cotacao;
 
 public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
+	
+	
+	private ArrayList chaves;
 
 	@Override
 	public void setQtdTotalOperacoesRiscoStop(int qtdTotalOperacoesRiscoStop) {
@@ -26,7 +29,7 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		System.out.println(listaDasCotacoes.size());
 		
 		double[] valor = getDiasDeVariacao(listaDasCotacoes);
-		ArrayList chaves = marcaDiasChave(getDiasDeVariacao(listaDasCotacoes));
+		chaves = marcaDiasChave(getDiasDeVariacao(listaDasCotacoes));
 		
 		ArrayList dias = calculaNumeroDiasAteRetorno(chaves,listaDasCotacoes,valor);
 		
@@ -42,10 +45,15 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 			CotacaoAtivoTO cotacao = listaDasCotacoes.get(((Integer)chaves.get(i)).intValue());
 			System.out.println(cotacao.getPeriodo() + " " + ((Integer)dias.get(i)).toString().toString());
 		}
-		
+				
 		return null;
 	}
 
+	public ArrayList getIndicesIndicadosSimulacao(){
+		return chaves;
+		
+	}
+	
 	public static void main(String[] args) {
 		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();
 		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
