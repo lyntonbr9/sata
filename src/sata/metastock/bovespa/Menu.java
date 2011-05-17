@@ -160,7 +160,6 @@ public class Menu extends JPanel{
             MainFrame.setAcao(textfield.getText());
         }
 
-	
     }
     
     class ultimoCandleListener implements ActionListener {

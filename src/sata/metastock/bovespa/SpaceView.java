@@ -16,10 +16,15 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import sata.domain.dao.DAOFactory;
+import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.simulacao.SimulacaoAcaoAltaVarPoucoTempo;
+import sata.domain.to.CotacaoAtivoTO;
+import sata.metastock.data.ValuesMeta;
 import sata.metastock.exceptions.VetorMenor;
 import sata.metastock.indices.ATR;
 import sata.metastock.indices.IFR;
@@ -109,11 +114,7 @@ class SpaceView extends JPanel {
 	private double menorPto  =  20000000;
 	private double maiorPto  = 0;
 	
-    double open[] = null;
-    double high[] = null;
-    double low[] = null;
-    double close[] = null;
-    String data[] = null;
+
     int pontoXInicial[] = null;
     int pontoXFinal[] = null;
      
@@ -132,6 +133,8 @@ class SpaceView extends JPanel {
     
     private boolean comprado = false;
     private Capital capital = new Capital();
+    
+    private List<CotacaoAtivoTO> candles;
 	
     //=================================== constructor
     public SpaceView () {
@@ -149,54 +152,26 @@ class SpaceView extends JPanel {
        
         g.clearRect(0,0,1024,768);
         //setBackground(new Color(200,200,200,0));
-        Calculo c =new Calculo();
+ 
+        ValuesMeta values = new ValuesMeta(acao,"");
+      //  ValuesMeta values = new ValuesMeta("USIM5","");
+        candles = values.getValores();
+        
+        /*Simulação*/
+		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();				
+		s.getResultado(candles, null);
+		ArrayList indicesIndicados = s.getIndicesIndicadosSimulacao();
         
         if(reload || !acao.equals(acaoAnterior)){
         	reload = false;
             acaoAnterior = acao;
-        	
-            valores = c.getAcoesMM(mm,acao,diasCandle);
+            dias = candles.size();
             
-            open = c.getOpen();
-            high = c.getHigh();
-            low = c.getLow();
-            close = c.getClose();
-            data = c.getDatas();
-            dias = open.length;
+         //   if(dias < intervalo) intervalo = dias;
             
-            if(dias < intervalo) intervalo = dias;
-            
-            pontoXInicial = new int[dias];
-            pontoXFinal = new int[dias];
+        
              
-            valores2 = c.getAcoesMM(mm2,acao,diasCandle);
-            
-            valores3 = c.getAcoesMM(mm3,acao,diasCandle);
-            
-            
-            
-            IFR ifr = new IFR(valores[0],ifr1,0);
-            ifrs = ifr.getIFR();
-            
-            calcIFRsFuturos(valores[0],ifr1);
-           
-            Stochastic stc = new Stochastic(valores[0], stoc1,slowingStoc);
-           
-            try {
-    			stcs = stc.getStochastic();
-    		} catch (VetorMenor e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    		
-    		ATR atr = new ATR(ATRaverage,low,high,valores[0]);
-    		atr.getATR();
-    		atrEntry = atr.getEntrySignal(ATRllv);
-			atrExit = atr.getExitSignal(ATRllv);
-    		
-
         }
-
         
         if(yDireitoClick < inicioGrafprincipal && clicouDireito){
         	clicouDireito = false;
@@ -216,6 +191,9 @@ class SpaceView extends JPanel {
         
    //------------------------ ACERTO DO NUMERO DE CANDLES EXIBIDOS E QUAIS SERÃO EXIBIDOS -----------------------------     
         
+        pontoXInicial = new int[intervalo];
+        pontoXFinal = new int[intervalo];
+        
         inicio = primeiro;
         fim = ultimo;
         
@@ -226,26 +204,40 @@ class SpaceView extends JPanel {
         	ultimo = intervalo;
         } 
         
-        if(fim > low.length -1){
+        if(fim > candles.size() -1 ){
         	
-        	inicio = low.length - intervalo;
-        	fim = low.length -1;        	
-        	primeiro = low.length - intervalo;
-        	ultimo = low.length -1;
+        	inicio = candles.size() - intervalo;
+        	fim = candles.size() -1;        	
+        	primeiro = candles.size() - intervalo;
+        	ultimo = candles.size() -1;
         }
+        
+        if(candles.size()<intervalo){
+        	
+        	inicio = 0;
+        	fim = candles.size() -1;        	
+        	primeiro = 0;
+        	ultimo = candles.size() -1;
+            pontoXInicial = new int[candles.size()];
+            pontoXFinal = new int[candles.size()];
+        	
+        }
+      
         
       //------------------------FIM ACERTO DO NUMERO DE CANDLES EXIBIDOS E QUAIS SERÃO EXIBIDOS -----------------------------       
         
+        
+       //--------verifica maior e menor valor exibido no spaço dos candles -------------------- 
         menorPto  =  20000000;
         maiorPto  = 0;
         for(int i=inicio;i<fim;i++){
-        	
+        	CotacaoAtivoTO candle = (CotacaoAtivoTO) candles.get(i);
         	if(i>0){
-	        	if(low[i]<menorPto){
-	        		menorPto = low[i];
+	        	if(Integer.parseInt(candle.getMinima())<menorPto){
+	        		menorPto = Integer.parseInt(candle.getMinima());
 	        	}
-	        	if(high[i]>maiorPto){
-	        		maiorPto = high[i];
+	        	if(Integer.parseInt(candle.getMaxima())>maiorPto){
+	        		maiorPto = Integer.parseInt(candle.getMaxima());
 	        	}
 	        	
         	}	
@@ -305,21 +297,35 @@ class SpaceView extends JPanel {
 //---------------------------DESENHA CANDLE ---------------------------------------------------------
         for(int i=inicio;i<fim;i++){
 	        	
-	    		int ptoC =  new Double(escala*(valores[0][i]/fator- menorPto)).intValue();
-	        	int ptoO =  new Double(escala*(open[i]/fator- menorPto)).intValue();
-	        	int ptoL =  new Double(escala*(low[i]/fator- menorPto)).intValue();
-	        	int ptoH =  new Double(escala*(high[i]/fator- menorPto)).intValue(); 
+        		CotacaoAtivoTO candle = (CotacaoAtivoTO) candles.get(i);
+        	
+	    		int ptoC =  new Double(escala*(Integer.parseInt(candle.getFechamento())/fator- menorPto)).intValue();
+	        	int ptoO =  new Double(escala*((Integer.parseInt(candle.getAbertura()))/fator- menorPto)).intValue();
+	        	int ptoL =  new Double(escala*((Integer.parseInt(candle.getMinima()))/fator- menorPto)).intValue();
+	        	int ptoH =  new Double(escala*((Integer.parseInt(candle.getMaxima()))/fator- menorPto)).intValue(); 
         	
 	        	if(ptoO<=ptoC){
 	        		g.setColor(Color.BLUE);
 	        		g.drawRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle,ptoC - ptoO + 1);
+	        		
+	        		/*simulação*/
+	        		if(isIndicado(indicesIndicados, i)){
+	        			g.setColor(Color.BLACK);
+		        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle + 10,3);
+		        	}
 
 	        	}else{
 	        		g.setColor(Color.RED);
 	        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoO-2,largCandle,ptoO - ptoC + 1);
+	        		/*simulação*/
+	        		if(isIndicado(indicesIndicados, i)){
+	        			g.setColor(Color.BLACK);
+		        		g.fillRect(x*espacoDia+espacoDia-largCandle/2,inicioGrafprincipal-ptoC-2,largCandle + 10,3);
+		        	}
 	        	}
-	        	pontoXInicial[i] = x*espacoDia+espacoDia-largCandle/2;
-	        	pontoXFinal[i] = pontoXInicial[i] + largCandle;
+	        		        	
+	        	pontoXInicial[i-inicio] = x*espacoDia+espacoDia-largCandle/2;
+	        	pontoXFinal[i-inicio] = pontoXInicial[i] + largCandle;
 	        	
 	        	g.drawLine(x*espacoDia+espacoDia, inicioGrafprincipal-ptoL,x*espacoDia+espacoDia, inicioGrafprincipal-ptoH);
 	        	
@@ -353,6 +359,18 @@ class SpaceView extends JPanel {
         g.setColor(new Color(174,97,220));
 	        
     }//end paintComponent
+    
+    
+    public boolean isIndicado(ArrayList indices, int indDesenhado){
+    	
+    	for(int i=0;i < indices.size();i++){
+    		if(((Integer)indices.get(i)).intValue()==indDesenhado){
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 	        
     public void setPaginaFrente(){
     	primeiro = primeiro + intervalo;
@@ -388,10 +406,7 @@ class SpaceView extends JPanel {
     }
     
     
-    public void setIntervalo(int i){
-    
-    	this.intervalo = i;
-    }
+  
     
     
     public void setDias(int dias){
@@ -588,15 +603,15 @@ class SpaceView extends JPanel {
 				
 				int dia = inicio + diaRelativo;
 				
-				if(data != null && dia < data.length){
-					String date = data[dia].substring(6,8) + "/" + data[dia].substring(4,6) + "/" + data[dia].substring(0,4);  
+				if(candles != null && dia < candles.size()){
+					String date = candles.get(dia).getPeriodo();
 					
 					MainFrame.showPreco("Data: " + date + " Preço:" 
 							+ getPreco(e.getPoint().y,menorPto,fator,escala,inicioGrafprincipal) 
-							+ " A: " + open[dia] / 100 
-							+ " Max: " + high[dia] / 100
-							+ " Min: " + low[dia] / 100
-							+ " F: " + close[dia] / 100);
+							+ " A: " + candles.get(dia).getAbertura() 
+							+ " Max: " + candles.get(dia).getMaxima()
+							+ " Min: " + candles.get(dia).getMinima()
+							+ " F: " + candles.get(dia).getFechamento());
 				}
 			}
 			else{
