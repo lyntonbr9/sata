@@ -28,6 +28,8 @@ public class ValuesMeta {
 	private double[] open = null;
 	private String[] data = null;
 	
+	private List<CotacaoAtivoTO> listaCotacoes;
+	
 	public ValuesMeta(String acao){
 		acao = acao.replace("D.txt", "");
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
@@ -54,7 +56,19 @@ public class ValuesMeta {
         }
 	        
 	}
+	
+	public ValuesMeta(String acao, String dois){
+		
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
+		listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
+				
+	}
 
+	
+	public List<CotacaoAtivoTO> getValores(){
+		return listaCotacoes;
+	}
 	
 //	public ValuesMeta(String acao){
 //		
