@@ -148,6 +148,8 @@ class SpaceView extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        System.out.println("DDDDDDDDDDDDDDDDDDDD");
+        
         g.setColor(Color.BLACK);
        
         g.clearRect(0,0,1024,768);
@@ -295,7 +297,7 @@ class SpaceView extends JPanel {
         
 	        	
 //---------------------------DESENHA CANDLE ---------------------------------------------------------
-        for(int i=inicio;i<fim;i++){
+        for(int i=inicio;i<=fim;i++){
 	        	
         		CotacaoAtivoTO candle = (CotacaoAtivoTO) candles.get(i);
         	
