@@ -46,7 +46,7 @@ class SpaceView extends JPanel {
 	private int mm2 = 21;
 	private int mm3 = 60;
 	
-	private int intervalo = 200;
+	private int intervalo = 100;
 	
 	private boolean reload = false;
 	private int diasCandle = 1;
@@ -102,11 +102,11 @@ class SpaceView extends JPanel {
 	
 	/*dias setados manualmente*/
 	private int primeiro = 0;
-	private int ultimo = intervalo;
+	private int ultimo = intervalo-1;
 	
 	/*dias mostrados*/
 	private int inicio = 0;
-	private int fim = intervalo;
+	private int fim = intervalo-1;
 	
 
 	private double fator = 1;
@@ -193,17 +193,17 @@ class SpaceView extends JPanel {
         
    //------------------------ ACERTO DO NUMERO DE CANDLES EXIBIDOS E QUAIS SERÃO EXIBIDOS -----------------------------     
         
-        pontoXInicial = new int[intervalo];
-        pontoXFinal = new int[intervalo];
+        pontoXInicial = new int[candles.size()];
+        pontoXFinal = new int[candles.size()];
         
         inicio = primeiro;
         fim = ultimo;
         
         if(inicio < 0){
         	inicio = 0;
-        	fim = intervalo;
+        	fim = intervalo-1;
         	primeiro = 0;
-        	ultimo = intervalo;
+        	ultimo = intervalo-1;
         } 
         
         if(fim > candles.size() -1 ){
@@ -220,8 +220,7 @@ class SpaceView extends JPanel {
         	fim = candles.size() -1;        	
         	primeiro = 0;
         	ultimo = candles.size() -1;
-            pontoXInicial = new int[candles.size()];
-            pontoXFinal = new int[candles.size()];
+            
         	
         }
       
@@ -291,11 +290,9 @@ class SpaceView extends JPanel {
         		desenha = true;
         	}
         }
-        
-        
+                
         int x=0;
-        
-	        	
+        	        	
 //---------------------------DESENHA CANDLE ---------------------------------------------------------
         for(int i=inicio;i<=fim;i++){
 	        	
@@ -326,8 +323,8 @@ class SpaceView extends JPanel {
 		        	}
 	        	}
 	        		        	
-	        	pontoXInicial[i-inicio] = x*espacoDia+espacoDia-largCandle/2;
-	        	pontoXFinal[i-inicio] = pontoXInicial[i] + largCandle;
+	        	pontoXInicial[i] = x*espacoDia;
+	        	pontoXFinal[i] = pontoXInicial[i] + espacoDia;
 	        	
 	        	g.drawLine(x*espacoDia+espacoDia, inicioGrafprincipal-ptoL,x*espacoDia+espacoDia, inicioGrafprincipal-ptoH);
 	        	
@@ -375,13 +372,13 @@ class SpaceView extends JPanel {
     }
 	        
     public void setPaginaFrente(){
-    	primeiro = primeiro + intervalo;
-    	ultimo = ultimo + intervalo;
+    	primeiro = primeiro + intervalo-1;
+    	ultimo = ultimo + intervalo-1;
     }
         	
     public void setPaginaAtras(){
-    	primeiro = primeiro - intervalo;
-    	ultimo = ultimo - intervalo;
+    	primeiro = primeiro - intervalo-1;
+    	ultimo = ultimo - intervalo-1;
         	
     }
 	        
@@ -394,7 +391,7 @@ class SpaceView extends JPanel {
     	primeiro = primeiro - 1;
     	ultimo = ultimo - 1;
 
-        }
+    }
         
     public void setPrimeiroCandle(){
     	primeiro = -1;
@@ -589,21 +586,21 @@ class SpaceView extends JPanel {
 		 */
 		public void mouseMoved(MouseEvent e) {
 						
-			int diaRelativo = -1 ;
+			int dia = -1 ;
 
 			//procura o dia relativo que o mouse passa por cima
-			for(int i=0; i < pontoXFinal.length; i++){ 
+			for(int i=inicio; i <= fim; i++){ 
 				//se o ponto x esta dentro do intervalo da candle na coordenada X
 				if(e.getPoint().x >= pontoXInicial[i] && e.getPoint().x <= pontoXFinal[i])
-					diaRelativo = i;
+					dia = i;
 			}
 			
 //			System.out.println("e.getPoint().x = " + e.getPoint().x);
 //			System.out.println("diaRelativo = " + diaRelativo);
 			
-			if(diaRelativo != -1){
+			if(dia != -1){
 				
-				int dia = inicio + diaRelativo;
+				
 				
 				if(candles != null && dia < candles.size()){
 					String date = candles.get(dia).getPeriodo();
