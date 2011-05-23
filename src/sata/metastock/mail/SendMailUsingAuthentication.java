@@ -59,8 +59,7 @@ public class SendMailUsingAuthentication implements IConstants{
 
 	// Add List of Email address to who email needs to be sent to
 	private static final String[] emailList = { "lyntonbr@gmail.com",
-			"lyntonbr@hotmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br" };
-//	flaviogc@br.com.br
+			"lyntonbr@hotmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br" };
 
 	public static void main(String args[]) throws Exception {
 //		List<String> listaAcoesOperAltaVarPoucoTempo = new ArrayList<String>();
