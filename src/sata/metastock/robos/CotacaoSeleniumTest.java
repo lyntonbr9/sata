@@ -1,16 +1,19 @@
 package sata.metastock.robos;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.runner.JUnitCore;
 
+import sata.domain.alert.OperacaoDeAltaVarPoucoTempo;
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.simulacao.SimulacaoAcaoAltaVarPoucoTempo;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.util.SATAUtil;
-import sata.metastock.bovespa.MainFrame;
+import sata.metastock.data.ValuesMeta;
+import sata.metastock.mail.SendMailUsingAuthentication;
 
 import com.thoughtworks.selenium.SeleneseTestCase;
 
@@ -74,5 +77,7 @@ public class CotacaoSeleniumTest extends SeleneseTestCase {
 	}
 	public static void main(String[] args) {
 		JUnitCore.main("sata.metastock.robos.CotacaoSeleniumTest");
+		OperacaoDeAltaVarPoucoTempo.alerta();
 	}
+		
 }

@@ -386,5 +386,15 @@ public class SATAUtil implements IConstants{
 		return listaCotacoesAtivo;
 	}
 	
+	public static boolean indicePertence(ArrayList<Integer> listaIndices, int indice){
+    	
+    	for(int i=0;i < listaIndices.size();i++){
+    		if(listaIndices.get(i).intValue()==indice){
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 }
 
