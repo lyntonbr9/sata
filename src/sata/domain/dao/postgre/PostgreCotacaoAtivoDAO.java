@@ -17,12 +17,35 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 	public PostgreCotacaoAtivoDAO(Connection postgreConnection){
 		this.con = postgreConnection;
 	}
-	
-	public CotacaoAtivoTO getCotacaoAtivo(String codigo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) {
+		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
+		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
+			+ " \"codigoAtivo\" = '" + codigoAtivo + "' "
+			+ " ORDER BY periodo ASC";
+		try {
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
+				caTO.setCodigo(rs.getString("codigoAtivo"));
+				caTO.setPeriodo(SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"),false));
+				caTO.setAbertura(rs.getString("abertura"));
+				caTO.setMaxima(rs.getString("maxima"));
+				caTO.setMinima(rs.getString("minima"));
+				caTO.setFechamento(rs.getString("fechamento"));
+				caTO.setAno(rs.getString("ano"));
+				listaCotacoesDoAtivo.add(caTO);
+			}
+			PostgreDAOFactory.returnConnection(con);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return listaCotacoesDoAtivo;
+	}
+	
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
@@ -100,7 +123,6 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 		return false;
 	}
 
-	@Override
 	public String getDataUltimoCadastro(String codigoAtivo) {
 		
 		String dataUltimoCadastro = "";
