@@ -47,7 +47,7 @@ public class MainFrame {
 	    frame = new JFrame(title);
 	   
 	    //seta a opacidade da janela
-	    setOpacidade(1.0f);
+	    setOpacidade(0.5f);
 	    
 	    //frame = new JTransFrame(0,0,0);
 	    // Create a component to add to the frame

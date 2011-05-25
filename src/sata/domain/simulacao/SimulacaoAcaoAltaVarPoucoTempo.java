@@ -6,6 +6,7 @@ import java.util.List;
 
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 import sata.metastock.robos.Cotacao;
@@ -56,10 +57,9 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 	
 	public static void main(String[] args) {
 		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();
-		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		ICotacaoAtivoDAO caDAO = factory.getCotacaoAtivoDAO();
+//		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo("USIM5", "2011");
-		
 		
 		s.getResultado(listaDasCotacoes, null);
 	}

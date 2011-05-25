@@ -77,9 +77,13 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) {
 		
-		String sqlStmt = "INSERT INTO \"CotacaoAtivo\"" 
-			+ "(\"codigoAtivo\", periodo, tipoperiodo, abertura, maxima, minima, fechamento, ano) "
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		String tabela = "CotacaoAtivo"; //tabela das acoes
+		if (caTO.getCodigo().length() != 5)
+			tabela = "CotacaoOpcao"; //tabela das opções
+		
+		String sqlStmt = "INSERT INTO \"" + tabela + "\"" 
+			+ "(\"codigoAtivo\", periodo, tipoperiodo, abertura, maxima, minima, fechamento, ano, volume) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1,caTO.getCodigo());
@@ -90,6 +94,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO {
 			ps.setString(6,caTO.getMinima());
 			ps.setString(7,caTO.getFechamento());
 			ps.setString(8,caTO.getAno());
+			ps.setString(9, caTO.getVolume());
 			ps.executeUpdate();
 			
 			PostgreDAOFactory.returnConnection(con);

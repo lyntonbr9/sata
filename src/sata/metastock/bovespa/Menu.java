@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.metastock.data.Merge2;
 
 
@@ -68,8 +69,7 @@ public class Menu extends JPanel{
 	
     public Menu() {
     	
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
+		IAtivoDAO ativoDAO = SATAFactoryFacade.getAtivoDAO();
 		List<String> listaAtivos = ativoDAO.getCodigosAtivos();
 		acoes = new String[listaAtivos.size()];
 		for(int i=0; i < listaAtivos.size(); i++)

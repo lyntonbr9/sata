@@ -40,7 +40,27 @@ public class PostgreAtivoDAO implements IAtivoDAO {
 		}
 		return listaCodigosAtivos;
 	}
-	
-	
 
+	@Override
+	public List<String> getCodigosOpcoesLiquidas(String ano) {
+		List<String> listaCodigosOpcoesLiquidas = new ArrayList<String>();
+		String sqlStmt = "SELECT * FROM \"OpcoesLiquidas\" "
+				+ " WHERE ano = ?";
+		try {
+			PreparedStatement ps  = con.prepareStatement(sqlStmt);
+			ps.setString(1, ano);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				String ativo = rs.getString("codigoAtivo");
+				listaCodigosOpcoesLiquidas.add(ativo);
+			}
+			
+			PostgreDAOFactory.returnConnection(con);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return listaCodigosOpcoesLiquidas;
+	}
 }
