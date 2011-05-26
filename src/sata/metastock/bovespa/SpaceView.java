@@ -42,22 +42,12 @@ class SpaceView extends JPanel {
 	
 	private String acao = "";
 	private String acaoAnterior = "c";
-	private int mm = 4;
-	private int mm2 = 21;
-	private int mm3 = 60;
+
 	
-	private int intervalo = 100;
+	private int intervalo = 120;
 	
 	private boolean reload = false;
 	private int diasCandle = 1;
-	
-	private int ifr1 = 9;
-	
-	private int stoc1 = 14;
-	private int slowingStoc = 3;
-	
-	private int ATRaverage = 10;
-	private int ATRllv = 10;
 	
 	private int xDireitoClick = 0;
 	private int yDireitoClick = 0;
@@ -95,7 +85,11 @@ class SpaceView extends JPanel {
 	
 	//candle
 	private int espacoDia = 7;
-	private int largCandle = 3;
+	private int largCandle = 5;
+	
+	//zoom
+	
+	private int z = 3;
 	
 	//dias
 	private int dias;	
@@ -405,8 +399,49 @@ class SpaceView extends JPanel {
     }
     
     
-  
-    
+  public void zoomMais(){
+	  
+	   if(z==2){
+		   intervalo = 120;
+		   espacoDia = 7;
+		   largCandle = 5;
+		   z = 3;
+		   
+	   }else if(z==1){
+		   intervalo = 200;
+		   espacoDia = 5;
+		   largCandle = 3;
+		   z = 2;
+	   }else{
+		   intervalo = 120;
+		   espacoDia = 7;
+		   largCandle = 5;
+		   z = 3;
+	   }
+	  primeiro = Integer.MAX_VALUE;
+   	  ultimo = Integer.MAX_VALUE;
+  }
+  public void zoomMenos(){
+	  
+	   if(z==3){
+		   intervalo = 200;
+		   espacoDia = 5;
+		   largCandle = 3;
+		   z = 2;
+	   }else if(z==2){
+		   intervalo = 300;
+		   espacoDia = 3;
+		   largCandle = 2;
+		   z = 1;
+	   }else{
+		   intervalo = 300;
+		   espacoDia = 3;
+		   largCandle = 2;
+		   z = 1;
+	   }
+	   primeiro = Integer.MAX_VALUE;
+   	   ultimo = Integer.MAX_VALUE;
+ }
     
     public void setDias(int dias){
     	System.out.println("Setou dias");
@@ -424,18 +459,6 @@ class SpaceView extends JPanel {
 	 */
 	public void setAcao(String acao) {
 		this.acao = acao;
-	}
-	/**
-	 * @return Returns the mm.
-	 */
-	public int getMm() {
-		return mm;
-	}
-	/**
-	 * @param mm The mm to set.
-	 */
-	public void setMm(int mm) {
-		this.mm = mm;
 	}
 	
 	public void setDiasCandle(int d){

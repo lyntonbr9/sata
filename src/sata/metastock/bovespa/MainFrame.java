@@ -148,6 +148,16 @@ public class MainFrame {
 		grafico.repaint();
 	}
 	
+	public static void zoomMais(){
+		grafico.zoomMais();
+		grafico.repaint();
+	}
+	
+	public static void zoomMenos(){
+		grafico.zoomMenos();
+		grafico.repaint();
+	}
+	
 	public static void setOpacidade(float opacidade){
 		try {
 			metodoOpacidade.invoke(null, frame, new Float(opacidade));	

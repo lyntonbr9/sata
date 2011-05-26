@@ -49,7 +49,8 @@ public class Menu extends JPanel{
     JButton paginaFrente = new JButton(">>");
     JButton fim = new JButton("Fim"); 
 	
-    JButton verifica = new JButton("Verifica Percentual");
+    JButton zoomMais = new JButton("Zoom +");
+    JButton zoomMenos = new JButton("Zoom -");
 	
     JLabel labelDiario = new JLabel("D");
     JRadioButton bDiario = new JRadioButton();
@@ -83,6 +84,8 @@ public class Menu extends JPanel{
 		diaFrente.addActionListener(new FrenteDiaIntervaloListener());
 		inicio.addActionListener(new primeiroCandleListener());
 		fim.addActionListener(new ultimoCandleListener());
+		zoomMais.addActionListener(new ZoomMaisListener());
+		zoomMenos.addActionListener(new ZoomMenosListener());
 //        bDiario.addActionListener(new DiaCandleListener());       
 //        bSemanal.addActionListener(new SemanaCandleListener());       
 //        bMensal.addActionListener(new MesCandleListener());
@@ -113,6 +116,8 @@ public class Menu extends JPanel{
     	this.add(paginaAtras);
     	this.add(paginaFrente);
     	this.add(fim);
+    	this.add(zoomMais);
+    	this.add(zoomMenos);
     	this.add(labelDiario);
     	this.add(bDiario);
     	this.add(labelSemanal);
@@ -209,6 +214,21 @@ public class Menu extends JPanel{
     class AtrasDiaIntervaloListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
         	MainFrame.lastDia();
+        }
+    }
+    
+    
+    class ZoomMaisListener implements ActionListener {
+        public void actionPerformed(ActionEvent evt) {
+        	MainFrame.zoomMais();
+           	   	
+        }
+    }
+
+    class ZoomMenosListener implements ActionListener {
+        public void actionPerformed(ActionEvent evt) {
+        	
+        	MainFrame.zoomMenos();
         }
     }
 //    class NextListener implements ActionListener {
