@@ -1,0 +1,4 @@
+Ativo: ABCB4 	 Fazer operacao = true data indicativo: 27/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: CIEL3 	 Fazer operacao = true data indicativo: 27/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: CSNA3 	 Fazer operacao = true data indicativo: 27/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: TAMM4 	 Fazer operacao = true data indicativo: 27/4/2011 SE OPERA NO PROXIMO DIA

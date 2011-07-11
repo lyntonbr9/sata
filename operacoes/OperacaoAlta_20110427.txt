@@ -1,0 +1,13 @@
+Ativo: ABCB4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: BRFS3 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: CIEL3 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: CSNA3 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: FIBR3 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: GGBR4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: GOLL4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA - BOA PRA FAZER A OPERACAO ESTOCASTICO BAIXO
+Ativo: ITSA4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA - BOA PRA FAZER A OPERACAO ESTOCASTICO BAIXO
+Ativo: RSID3 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: TAMM4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA - VERIFICAR A OPERACAO ESTOCASTICO CAIU
+Ativo: TCSL4 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA
+Ativo: VALE5 	 Fazer operacao = true data indicativo: 26/4/2011 SE OPERA NO PROXIMO DIA - VERIFICAR A OPERACAO ESTOCASTICO SUBINDO
+
