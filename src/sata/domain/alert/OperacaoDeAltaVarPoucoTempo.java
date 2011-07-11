@@ -24,7 +24,7 @@ public class OperacaoDeAltaVarPoucoTempo {
 		List<String> listaDeAcoes = ativoDAO.getCodigosAtivos();
 		List<CotacaoAtivoTO> listaCotacoesAtivoTO;
 		for (String acao : listaDeAcoes) {
-//			if(acao.equalsIgnoreCase("LAME4")){
+			if(acao.equalsIgnoreCase("VALE5")){
 				ValuesMeta values = new ValuesMeta(acao,"");
 				listaCotacoesAtivoTO = values.getValores();
 				s.getResultado(listaCotacoesAtivoTO, null);
@@ -32,12 +32,15 @@ public class OperacaoDeAltaVarPoucoTempo {
 				if (SATAUtil.indicePertence(indicesIndicados, listaCotacoesAtivoTO.size() - 3)){
 					listaDeAcoesParaAlerta.add(acao);
 				}				
-//			}
+			}
 		}
 		//envia o e-mail caso tenha acoes em alerta
 		if (listaDeAcoesParaAlerta.size() > 0){
-			SendMailUsingAuthentication.sendEmailOperAltaVarPoucoTempo(listaDeAcoesParaAlerta);
+			System.out.println("Vai enviar o e-mail de alerta");
+			SendMailUsingAuthentication.sendEmailOperAltaVarPoucoTempo(listaDeAcoesParaAlerta);	
 		}
+		else
+			System.out.println("Nenhum ativo indicando Operacao de Alta Variacao Pouco Tempo");
 	}
 	
 }

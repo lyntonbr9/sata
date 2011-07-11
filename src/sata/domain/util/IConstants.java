@@ -8,4 +8,7 @@ public interface IConstants {
 	
 	public String mesesYahooFinances[] = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
 	
+	public String ARQ_SATA_CONF = "sata-conf";
+	public String PROP_CANDLE_PCTGEMPAVIOGRANDE = "candlestick.param.pctgem.paviogrande";
+	
 }
