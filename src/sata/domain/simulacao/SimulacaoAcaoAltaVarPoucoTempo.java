@@ -3,17 +3,17 @@ package sata.domain.simulacao;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-import sata.domain.dao.DAOFactory;
-import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
-import sata.metastock.robos.Cotacao;
+import sata.domain.util.IConstants;
+import sata.domain.util.SATAPropertyLoader;
 
-public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
+public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao, IConstants{
 	
 	
-	private ArrayList chaves;
+	private ArrayList<Integer> chaves;
 
 	@Override
 	public void setQtdTotalOperacoesRiscoStop(int qtdTotalOperacoesRiscoStop) {
@@ -26,12 +26,12 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 			List<CotacaoAtivoTO> listaDasCotacoes, Object[] parametros) {
 		
 		
-		System.out.println(listaDasCotacoes.size());
+//		System.out.println(listaDasCotacoes.size());
 		
 		double[] valor = getDiasDeVariacao(listaDasCotacoes);
-		chaves = marcaDiasChave(getDiasDeVariacao(listaDasCotacoes));
+		chaves = marcaDiasChave(valor);
 		
-		ArrayList dias = calculaNumeroDiasAteRetorno(chaves,listaDasCotacoes,valor);
+		ArrayList<Integer> dias = calculaNumeroDiasAteRetorno(chaves,listaDasCotacoes,valor);
 		
 	/*	for(int i=0;i<listaDasCotacoes.size();i++){
 			
@@ -43,27 +43,17 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 			
 			//System.out.println(((CotacaoAtivoTO)listaDasCotacoes.get(i)).getCodigo());
 			CotacaoAtivoTO cotacao = listaDasCotacoes.get(((Integer)chaves.get(i)).intValue());
-			System.out.println(cotacao.getPeriodo() + " " + ((Integer)dias.get(i)).toString().toString());
+			System.out.println("Dia de variacao: " + cotacao.getPeriodo() 
+							+ " Num dias ate o retorno: " + dias.get(i));
 		}
 				
 		return null;
 	}
 
-	public ArrayList getIndicesIndicadosSimulacao(){
+	public ArrayList<Integer> getIndicesIndicadosSimulacao(){
 		return chaves;
-		
 	}
-	
-	public static void main(String[] args) {
-		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();
-		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		ICotacaoAtivoDAO caDAO = factory.getCotacaoAtivoDAO();
-		List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo("USIM5", "2011");
 		
-		
-		s.getResultado(listaDasCotacoes, null);
-	}
-	
 	public double[] getDiasDeVariacao(List<CotacaoAtivoTO> listaDasCotacoes){
 		
 		
@@ -81,27 +71,33 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		return prc;
 	}
 	
-	public ArrayList marcaDiasChave(double[] var){
-		
-		
+	public ArrayList<Integer> marcaDiasChave(double[] var){
+				
 		int alta = 0;
 		int baixa = 0;
-		ArrayList chaves = new ArrayList();
+		ArrayList<Integer> chaves = new ArrayList<Integer>();
+		Properties SATAProps = SATAPropertyLoader.loadProperties(ARQ_SATA_CONF);
+		double pctgemVariacao = Double.parseDouble(SATAProps.getProperty(PROP_PCTGEM_VARIACAOALTAPOUCOTEMPO));
 		
 		for(int i=2;i<var.length;i++){
-			if(var[i] >= 0.05){
+			if(var[i] >= pctgemVariacao){
 				alta++;
-				if(baixa>=2){
+				
+				System.out.println("indice do dia variacao de Alta: " + i );
+				//TODO: Perguntar pro flavio pq deste if
+//				if(baixa>=2){
 					
 					chaves.add(new Integer(i-2));
-				}
+//				}
 				baixa =0 ;
-			}else if (var[i] <= -0.05){
+			}else if (var[i] <= ((-1)*pctgemVariacao)){
 				baixa++;
-				if(alta>=2){
+				System.out.println("indice do dia variacao de Baixa: " + i );
+				//TODO: Perguntar pro flavio pq deste if
+//				if(alta>=2){
 					
 					chaves.add(new Integer(i-2));
-				}
+//				}
 				alta=0;
 			}
 		}
@@ -110,10 +106,10 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		return chaves;
 	}
 	
-	public ArrayList calculaNumeroDiasAteRetorno(ArrayList chaves, List<CotacaoAtivoTO> listaDasCotacoes,double[] valor){
+	public ArrayList<Integer> calculaNumeroDiasAteRetorno(ArrayList<Integer> chaves, List<CotacaoAtivoTO> listaDasCotacoes,double[] valor){
 		
 		
-		ArrayList nDias = new ArrayList();
+		ArrayList<Integer> nDias = new ArrayList<Integer>();
 		
 		for(int i=0;i<chaves.size();i++){
 		
@@ -157,6 +153,14 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao{
 		return nDias;
 	}
 	
-	
+//	public static void main(String[] args) {
+//		SimulacaoAcaoAltaVarPoucoTempo s = new SimulacaoAcaoAltaVarPoucoTempo();
+//		DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+//		ICotacaoAtivoDAO caDAO = factory.getCotacaoAtivoDAO();
+//		List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo("USIM5", "2011");
+//		
+//		
+//		s.getResultado(listaDasCotacoes, null);
+//	}
 
 }

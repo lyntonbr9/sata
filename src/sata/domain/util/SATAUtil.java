@@ -315,7 +315,7 @@ public class SATAUtil implements IConstants{
 		String tagTDInicialDia = "<td>";
 		
 		if(html.indexOf(dataFimDaLista) == -1){
-			System.out.println("Nao encontrou data do ultimo cadastro do ativo");
+			System.out.println("Nao encontrou data do ultimo cadastro do ativo " + acao);
 			return listaCotacoesAtivo;
 		}
 			

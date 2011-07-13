@@ -5,21 +5,26 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-class ConnectionPoolManager
-{
+import sata.domain.util.IConstants;
+import sata.domain.util.SATAPropertyLoader;
 
-	String databaseUrl = "jdbc:postgresql://pbr00zcja.br.biz:5432/db_sata";
-//	String databaseUrl = "jdbc:postgresql://localhost:5432/db_sata";
-	String userName = "postgres";
-	String password = "adminsata";
-//	String password = "admin";
+class ConnectionPoolManager implements IConstants{
+
+	private static Properties SATAProps;
+	private String databaseUrl = SATAProps.getProperty(PROP_SATA_DB_URL);
+	private String userName = SATAProps.getProperty(PROP_SATA_DB_USERNAME);
+	private String password = SATAProps.getProperty(PROP_SATA_DB_PASSWORD);
 	
 	List<Connection> connectionPool = new ArrayList<Connection>();
 
 	static {
 		try {
-			Class.forName("org.postgresql.Driver");
+			//vai carregar os properties de configuracao do SATA
+			SATAProps = SATAPropertyLoader.loadProperties(ARQ_SATA_CONF);
+			
+			Class.forName(SATAProps.getProperty(PROP_SATA_DB_JDBC_DRIVER));
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -32,12 +37,7 @@ class ConnectionPoolManager
 		initialize();
 	}
 
-	public ConnectionPoolManager(
-		//String databaseName,
-		String databaseUrl,
-		String userName,
-		String password
-		)
+	public ConnectionPoolManager(String databaseUrl, String userName, String password)
 	{
 		this.databaseUrl = databaseUrl;
 		this.userName = userName;
@@ -64,11 +64,10 @@ class ConnectionPoolManager
 
 	private synchronized boolean checkIfConnectionPoolIsFull()
 	{
-		final int MAX_POOL_SIZE = 5;
-
+		int maxPoolSize = Integer.parseInt(SATAProps.getProperty(PROP_SATA_DB_MAXPOOLSIZE));
+		
 		//Check if the pool size
-		if(connectionPool.size() < 5)
-		{
+		if(connectionPool.size() < maxPoolSize){
 			return false;
 		}
 
