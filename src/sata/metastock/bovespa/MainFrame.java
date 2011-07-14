@@ -47,7 +47,7 @@ public class MainFrame {
 	    frame = new JFrame(title);
 	   
 	    //seta a opacidade da janela
-	    setOpacidade(1.0f);
+	    setOpacidade(0.5f);
 	    
 	    //frame = new JTransFrame(0,0,0);
 	    // Create a component to add to the frame
@@ -145,6 +145,16 @@ public class MainFrame {
 	
 	public static void setDias(String dias){
 		grafico.setDias(Integer.parseInt(dias));
+		grafico.repaint();
+	}
+	
+	public static void zoomMais(){
+		grafico.zoomMais();
+		grafico.repaint();
+	}
+	
+	public static void zoomMenos(){
+		grafico.zoomMenos();
 		grafico.repaint();
 	}
 	

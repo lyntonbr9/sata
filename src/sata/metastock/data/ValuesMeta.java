@@ -10,6 +10,7 @@ import java.util.List;
 
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.util.SATAUtil;
 
@@ -32,9 +33,8 @@ public class ValuesMeta {
 	
 	public ValuesMeta(String acao){
 		acao = acao.replace("D.txt", "");
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
-		List<CotacaoAtivoTO> listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
+		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+		List<CotacaoAtivoTO> listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
 		
         closes = new double[listaCotacoes.size()];
         high = new double[listaCotacoes.size()];
@@ -59,9 +59,9 @@ public class ValuesMeta {
 	
 	public ValuesMeta(String acao, String dois){
 		
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		ICotacaoAtivoDAO caDAO = daoFactory.getCotacaoAtivoDAO();
-		listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
+		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+//		listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
+		listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
 				
 	}
 

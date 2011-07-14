@@ -8,5 +8,6 @@ public interface IAtivoDAO {
 	
 	public AtivoTO getAtivo(String codigo);
 	public List<String> getCodigosAtivos();
+	public List<String> getCodigosOpcoesLiquidas(String ano);
 	
 }

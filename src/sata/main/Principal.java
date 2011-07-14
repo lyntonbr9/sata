@@ -1,28 +1,21 @@
 package sata.main;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import sata.domain.alert.OperacaoDeAlta;
-import sata.domain.dao.DAOFactory;
-import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.SATAFactoryFacade;
+import sata.domain.data.DataManagement;
 import sata.domain.simulacao.ISimulacao;
 import sata.domain.simulacao.SimulacaoAcaoOperacaoDeAlta;
-import sata.domain.simulacao.SimulacaoAcaoOperacaoDeAltaBasico;
-import sata.domain.simulacao.SimulacaoAcaoOperacaoDeBaixa;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
-import sata.domain.util.DataManagement;
 
 public class Principal {
 
 	
 	public static void simulaAcao(String codigoAcao, String ano){
 		System.out.println("testando Simulacao " + codigoAcao + " ano de " + ano);
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
+		ICotacaoAtivoDAO cotacaoAtivoDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
 		Object[] paramSimulacao = {10, 12, 0.5}; //{stopGain, stopLoss, probStopLoss}
 		ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAlta();
@@ -42,13 +35,13 @@ public class Principal {
 		System.out.println("");
 	}
 	
-	public static void insereAcaoDB(String codigoAcao, String ano){
-		System.out.println("inserindo acao " + codigoAcao + " ano de " + ano);
-		DataManagement dm = new DataManagement();
-		String pathArqListaDeCotacoesDaAcao = ano + "\\saida_" + codigoAcao + "_" + ano + ".txt";
-		dm.setArquivoListaCotacaoDeAtivos(pathArqListaDeCotacoesDaAcao);
-		dm.importarArqCotacaoToDB(codigoAcao, ano);
-	}
+//	public static void insereAcaoDB(String codigoAcao, String ano){
+//		System.out.println("inserindo acao " + codigoAcao + " ano de " + ano);
+//		DataManagement dm = new DataManagement();
+//		String pathArqListaDeCotacoesDaAcao = ano + "\\saida_" + codigoAcao + "_" + ano + ".txt";
+//		dm.setArquivoListaCotacaoDeAtivos(pathArqListaDeCotacoesDaAcao);
+//		dm.importarArqCotacaoToDB(codigoAcao, ano);
+//	}
 	
 	public static void insereCotacaoAcaoHistoricoBovespaDB(String codigoAcao, String ano){
 		System.out.println("inserindo acao " + codigoAcao + " ano de " + ano);
@@ -77,47 +70,33 @@ public class Principal {
 //		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 //		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
 //		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
-//		while(i.hasNext()){
+//		while(i.hasNext())
+//		{
 //			String codigoAcao = i.next();
-//			//if (codigoAcao.equalsIgnoreCase("PETR4"))	
-//				//insereAcaoDB(codigoAcao, ano);
-////				simulaAcao(codigoAcao, ano);
-//				insereCotacaoAcaoHistoricoBovespaDB(codigoAcao, ano);
+////			if (codigoAcao.equalsIgnoreCase("PETR4"))
+////			{
+//				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
+//				List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
+//				List<CotacaoAtivoTO> listaParaAlerta = new ArrayList<CotacaoAtivoTO>();
+////				//for(int j = 70; j < 74; j ++){
+//				for(int j = listaCotacoesAtivo.size() - 4; j < listaCotacoesAtivo.size(); j ++){
+//					CotacaoAtivoTO caTO = listaCotacoesAtivo.get(j);
+//					listaParaAlerta.add(caTO);
+////					if(j > 3){
+////						OperacaoDeAlta oper = new OperacaoDeAlta();
+////						System.out.println("Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) + " j= " + j);
+////						listaParaAlerta.remove(0);
+////					}
+//				}
+//
+//				OperacaoDeAlta oper = new OperacaoDeAlta();
+//				if(oper.analisaFazerOperacao(listaParaAlerta, null))
+//					System.out.println("Ativo: " + codigoAcao + " \t Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) 
+//							+ " data indicativo: " + listaParaAlerta.get(listaParaAlerta.size()-1).getPeriodo() + " SE OPERA NO PROXIMO DIA");
+//				
+////			}
 //		}
 
-		//simula o alerta
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		IAtivoDAO ativoDAO = daoFactory.getAtivoDAO();
-		Iterator<String> i = ativoDAO.getCodigosAtivos().iterator();
-		while(i.hasNext())
-		{
-			String codigoAcao = i.next();
-//			if (codigoAcao.equalsIgnoreCase("PETR4"))
-//			{
-				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
-				List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
-				List<CotacaoAtivoTO> listaParaAlerta = new ArrayList<CotacaoAtivoTO>();
-//				//for(int j = 70; j < 74; j ++){
-				for(int j = listaCotacoesAtivo.size() - 4; j < listaCotacoesAtivo.size(); j ++){
-					CotacaoAtivoTO caTO = listaCotacoesAtivo.get(j);
-					listaParaAlerta.add(caTO);
-//					if(j > 3){
-//						OperacaoDeAlta oper = new OperacaoDeAlta();
-//						System.out.println("Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) + " j= " + j);
-//						listaParaAlerta.remove(0);
-//					}
-				}
-
-				OperacaoDeAlta oper = new OperacaoDeAlta();
-				if(oper.analisaFazerOperacao(listaParaAlerta, null))
-					System.out.println("Ativo: " + codigoAcao + " \t Fazer operacao = " + oper.analisaFazerOperacao(listaParaAlerta, null) 
-							+ " data indicativo: " + listaParaAlerta.get(listaParaAlerta.size()-1).getPeriodo() + " SE OPERA NO PROXIMO DIA");
-				
-//			}
-		}
-
-		
-//		String ano="2010";
 //		
 //		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.ARQUIVO);
 //		ArquivoAtivoDAO ativoDAO = (ArquivoAtivoDAO) daoFactory.getAtivoDAO();
