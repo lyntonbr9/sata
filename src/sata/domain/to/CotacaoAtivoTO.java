@@ -10,7 +10,16 @@ public class CotacaoAtivoTO {
 	private String periodo;
 	private String tipoPeriodo;
 	private String ano;
+	private String volume;
 	
+	public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(String volume) {
+		this.volume = volume;
+	}
+
 	public String getAno() {
 		return ano;
 	}
