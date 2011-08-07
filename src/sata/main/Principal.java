@@ -2,6 +2,7 @@ package sata.main;
 
 import java.util.List;
 
+import sata.domain.alert.OperacaoDeAltaVarPoucoTempo;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.data.DataManagement;
@@ -9,6 +10,7 @@ import sata.domain.simulacao.ISimulacao;
 import sata.domain.simulacao.SimulacaoAcaoOperacaoDeAlta;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
+import sata.metastock.simulacao.SimulaGanhoOpcoes;
 
 public class Principal {
 
@@ -52,9 +54,20 @@ public class Principal {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
+	
+//		switch(Integer.parseInt(args[0])){
+//			case 1:
+//				//Vai alertar as acoes que tiveram alta variacao em pouco tempo
+//				OperacaoDeAltaVarPoucoTempo.alerta();
+//				break;
+//			case 2:
+//				//Vai alertar com a simulacao de ganho nas opcoes
+//				SimulaGanhoOpcoes.SimulaGanhoEmOpcoes();
+//				break;
+//		}
 		
-		String ano="2011";
+//		String ano="2011";
 //		String ano="2010";
 //		String ano="2009";
 		

@@ -60,6 +60,8 @@ public class SendMailUsingAuthentication implements IConstants{
 	// Add List of Email address to who email needs to be sent to
 	private static final String[] emailList = { "lyntonbr@gmail.com",
 			"lyntonbr@hotmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br" };
+	
+	private static final String[] emailListSimulaGanhoOpcoes = { "tobebendo@gmail.com", "flaviogc@br.com.br" };
 
 	public static void main(String args[]) throws Exception {
 //		List<String> listaAcoesOperAltaVarPoucoTempo = new ArrayList<String>();
@@ -70,6 +72,22 @@ public class SendMailUsingAuthentication implements IConstants{
 //		listaAcoesOperAltaVarPoucoTempo.add(ativoTO2);
 //		listaAcoesOperAltaVarPoucoTempo.add(ativoTO3);
 //		sendEmailOperAltaVarPoucoTempo(listaAcoesOperAltaVarPoucoTempo);
+	}
+	
+	public static void sendEmailSimulaGanhoOpcoes(String emailMsgTxt){
+
+		String emailSubjectTxt = "[SATA-Alerta] VE p/ VENDA COBERTA";
+		String emailFromAddress = SMTP_AUTH_USER;
+
+		try {
+			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
+			smtpMailSender.postMail(emailListSimulaGanhoOpcoes, emailSubjectTxt, emailMsgTxt,
+					emailFromAddress);
+			System.out.println("E-mail enviado com sucesso.");			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 	public static void sendEmailOperAltaVarPoucoTempo(List<String> listaAcoesOperAltaVarPoucoTempo){
@@ -88,7 +106,7 @@ public class SendMailUsingAuthentication implements IConstants{
 			e.printStackTrace();
 		}
 	}
-	
+		
 	public static String getMsgTxt(List<String> listaAcoesOperAltaVarPoucoTempo){
 		String emailMsg="Lista de Ativos do alerta da Operacao de Alta Variacao em Pouco Tempo:" + NOVA_LINHA ;
 		for (String acao : listaAcoesOperAltaVarPoucoTempo)

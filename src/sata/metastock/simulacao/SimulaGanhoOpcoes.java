@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.mail.MessagingException;
 
 import sata.metastock.mail.Email;
+import sata.metastock.mail.SendMailUsingAuthentication;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SimulaGanhoOpcoes {
@@ -93,16 +94,16 @@ public class SimulaGanhoOpcoes {
 		}
 		return resultado;
 	}
-
-	public static void main(String[] args) throws InterruptedException, MessagingException {
-
+	
+	public static void SimulaGanhoEmOpcoes() throws InterruptedException, MessagingException 
+	{
+		
 		while (true) 
 		{
 			Date dt = new Date();
-			System.out.println(dt.getHours());
-//			Thread.currentThread().sleep(60000);
+			System.out.println("Hora: " + dt.getHours());
+			Thread.currentThread().sleep(60000);
 
-			// if(true){
 			if (dt.getHours() >= 10 && dt.getHours() < 18) 
 			{
 				String mensagem = "";
@@ -112,14 +113,19 @@ public class SimulaGanhoOpcoes {
 
 				System.out.println(mensagem);
 				
-//				Email mail = new Email();
-//				mail.sendSSLMessage(emails, "VE p/ VENDA COBERTA", mensagem,
-//						"flaviogc@gmail.com");
+				System.out.println("Vai enviar o e-mail de alerta");
+				SendMailUsingAuthentication.sendEmailSimulaGanhoOpcoes(mensagem);	
+
 
 				System.out.println("t1");
 				Thread.currentThread().sleep(1800000);
 				System.out.println("t2");
 			}
 		}
+	}
+
+	public static void main(String[] args) throws InterruptedException, MessagingException 
+	{
+		SimulaGanhoEmOpcoes();
 	}
 }

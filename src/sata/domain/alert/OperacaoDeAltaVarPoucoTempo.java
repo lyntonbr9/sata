@@ -13,6 +13,10 @@ import sata.metastock.mail.SendMailUsingAuthentication;
 
 public class OperacaoDeAltaVarPoucoTempo {
 	
+	public static void main(String[] args){
+		alerta();
+	}
+	
 	public static void alerta(){
 		
 		/* verifica se vai enviar o alerta por e-mail */
@@ -23,7 +27,8 @@ public class OperacaoDeAltaVarPoucoTempo {
 		List<String> listaDeAcoes = ativoDAO.getCodigosAtivos();
 		List<CotacaoAtivoTO> listaCotacoesAtivoTO;
 		for (String acao : listaDeAcoes) {
-			if(acao.equalsIgnoreCase("VALE5")){
+//			if(acao.equalsIgnoreCase("VALE5")){
+				System.out.println("Acao: " + acao);
 				ValuesMeta values = new ValuesMeta(acao,"");
 				listaCotacoesAtivoTO = values.getValores();
 				s.getResultado(listaCotacoesAtivoTO, null);
@@ -31,7 +36,7 @@ public class OperacaoDeAltaVarPoucoTempo {
 				if (SATAUtil.indicePertence(indicesIndicados, listaCotacoesAtivoTO.size() - 3)){
 					listaDeAcoesParaAlerta.add(acao);
 				}				
-			}
+//			}
 		}
 		//envia o e-mail caso tenha acoes em alerta
 		if (listaDeAcoesParaAlerta.size() > 0){
@@ -41,5 +46,5 @@ public class OperacaoDeAltaVarPoucoTempo {
 		else
 			System.out.println("Nenhum ativo indicando Operacao de Alta Variacao Pouco Tempo");
 	}
-	
+
 }
