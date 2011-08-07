@@ -62,10 +62,10 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao, IConstants{
 		for(int i=2;i<listaDasCotacoes.size();i++){
 			BigDecimal cot1 = new BigDecimal(Integer.parseInt(((CotacaoAtivoTO)listaDasCotacoes.get(i-2)).getFechamento()));
 			BigDecimal cot2 = new BigDecimal(Integer.parseInt(((CotacaoAtivoTO)listaDasCotacoes.get(i)).getFechamento()));
-			cot2.multiply(new BigDecimal(-1));
-			prc[i] = cot2.add(cot1.multiply(new BigDecimal(-1))).divide(cot1,BigDecimal.ROUND_HALF_EVEN,6).doubleValue();
-			//System.out.println(prc[i]);
-			
+			BigDecimal prcVariacao;
+			prcVariacao = cot2.subtract(cot1).divide(cot1, 6, BigDecimal.ROUND_HALF_EVEN);
+			prc[i] = prcVariacao.doubleValue();
+//			System.out.println(prc[i]);
 		}
 		
 		return prc;
@@ -85,23 +85,20 @@ public class SimulacaoAcaoAltaVarPoucoTempo implements ISimulacao, IConstants{
 				
 				System.out.println("indice do dia variacao de Alta: " + i );
 				//TODO: Perguntar pro flavio pq deste if
-//				if(baixa>=2){
-					
+				if(baixa>=2){
 					chaves.add(new Integer(i-2));
-//				}
+				}
 				baixa =0 ;
 			}else if (var[i] <= ((-1)*pctgemVariacao)){
 				baixa++;
 				System.out.println("indice do dia variacao de Baixa: " + i );
 				//TODO: Perguntar pro flavio pq deste if
-//				if(alta>=2){
-					
+				if(alta>=2){
 					chaves.add(new Integer(i-2));
-//				}
+				}
 				alta=0;
 			}
 		}
-		
 		
 		return chaves;
 	}
