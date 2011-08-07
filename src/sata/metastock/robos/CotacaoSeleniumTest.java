@@ -35,7 +35,7 @@ public class CotacaoSeleniumTest extends SeleneseTestCase {
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		List<String> listaDeAcoes = ativoDAO.getCodigosAtivos();
 		for (String acao : listaDeAcoes) {
-			if (acao.equalsIgnoreCase("CYRE3")) {
+//			if (acao.equalsIgnoreCase("CYRE3")) {
 				selenium.open("/" + acao + "/historico");
 				selenium.waitForPageToLoad("30000");
 				
@@ -73,7 +73,7 @@ public class CotacaoSeleniumTest extends SeleneseTestCase {
 				}
 //				System.out.println("EI" + htmlSource);
 				
-			}
+//			}
 
 		}
 		System.out.println("Terminou de importar as cotacoes");
