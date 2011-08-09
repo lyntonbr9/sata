@@ -25,7 +25,7 @@ public class DataManagement {
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 	public void importarArqCotacaoToDB(String codigoAtivo, String ano){
 		
 		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
@@ -59,7 +59,7 @@ public class DataManagement {
 				}
 			}
 		}
-	}
+	}*/
 
 	public void importarArqCotacaoHistoricaBovespaToDB(String codigoAtivo, String ano){
 		
@@ -73,7 +73,6 @@ public class DataManagement {
 
 		if (this.fisArqListaCotacoesDoAtivo != null)
 		{
-			DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
 			DataInputStream disEntrada = new DataInputStream(this.fisArqListaCotacoesDoAtivo);
 			BufferedReader brEntrada = new BufferedReader(new InputStreamReader(disEntrada));
 			try {
@@ -93,7 +92,7 @@ public class DataManagement {
 					tamStrNomeParametro = 4;
 				}
 				
-				ICotacaoAtivoDAO cotacaoAtivoDAO = daoFactory.getCotacaoAtivoDAO();
+				ICotacaoAtivoDAO cotacaoAtivoDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 				String conteudoLinha = "";
 				String periodo="";
 				while((conteudoLinha = brEntrada.readLine()) != null)
