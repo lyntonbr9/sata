@@ -45,16 +45,18 @@ public class Principal {
 //		dm.importarArqCotacaoToDB(codigoAcao, ano);
 //	}
 	
-	public static void insereCotacaoAcaoHistoricoBovespaDB(String codigoAcao, String ano){
-		System.out.println("inserindo acao " + codigoAcao + " ano de " + ano);
+	public static void insereCotacaoAcaoHistoricoBovespaDB(String codigoAtivo, String ano){
+		System.out.println("inserindo acao(opcao) " + codigoAtivo + " ano de " + ano);
 		DataManagement dm = new DataManagement();
-		dm.importarArqCotacaoHistoricaBovespaToDB(codigoAcao, ano);
+		dm.importarArqCotacaoHistoricaBovespaToDB(codigoAtivo, ano);
 	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception{
+		
+		insereCotacaoAcaoHistoricoBovespaDB("VALE", "2011");
 	
 //		switch(Integer.parseInt(args[0])){
 //			case 1:
