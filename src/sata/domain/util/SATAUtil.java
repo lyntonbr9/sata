@@ -14,7 +14,12 @@ import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
 	
+	//Ex: se passado 5 retorna 05
+	public static String getStrDoisDigitos(int valor){		 		
+		return (valor < 10) ? "0" + valor : String.valueOf(valor);
+	}
 	
+	//converve yyyyMMdd em TimeStamp
 	public static Timestamp getTimeStampPeriodoCotacao(String periodo){
 		Calendar cal = new GregorianCalendar();
 		cal.set(Integer.valueOf(periodo.substring(0,4)), Integer.valueOf(periodo.substring(4,6)) - 1, Integer.valueOf(periodo.substring(6,8)),0,0,0);
@@ -27,12 +32,23 @@ public class SATAUtil implements IConstants{
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(ts);
 		String tempoFormatado = "";
-		if (comHora == false)
-			tempoFormatado = cal.get(Calendar.DAY_OF_MONTH)+ "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR);
-		else
-			tempoFormatado = cal.get(Calendar.DAY_OF_MONTH)+ "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR)
-				+ " " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+		String diaStr = getStrDoisDigitos(cal.get(Calendar.DAY_OF_MONTH));
+		String mesStr = getStrDoisDigitos(cal.get(Calendar.MONTH) + 1);
+		
+		if (comHora == false){
+			tempoFormatado = diaStr + "/" + mesStr + "/" + cal.get(Calendar.YEAR);
+		}
+		else{
+			tempoFormatado = diaStr + "/" + mesStr  + "/" + cal.get(Calendar.YEAR)
+			+ " " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+		}
 		return tempoFormatado;
+	}
+	
+	//formata dd/MM/yyyy em yyyyMMdd
+	public static String getDataFormatadaParaBD(String data){
+		
+		return data.substring(6,10) + data.substring(3,5) + data.substring(0,2);
 	}
 	
 	public static int[] getCandles(List<CotacaoAtivoTO> listaDasCotacoes){
