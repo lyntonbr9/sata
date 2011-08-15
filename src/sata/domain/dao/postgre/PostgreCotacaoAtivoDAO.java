@@ -200,20 +200,30 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 //		List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", SATAUtil.getDataFormatadaParaBD("21/06/2011"), SATAUtil.getDataFormatadaParaBD("18/07/2011"));
 		
-		String[] datasInicioSerie = {"03/01/2011","18/01/2011","18/02/2011","22/03/2011","19/04/2011","17/05/2011","21/06/2011","19/07/2011"};
-		String[] datasFimSerie = {"17/01/2011","17/02/2011","21/03/2011","18/04/2011","16/05/2011","20/06/2011","18/07/2011","15/08/2011"};
+//		String[] datasInicioSerie = {"03/01/2011","18/01/2011","18/02/2011","22/03/2011","19/04/2011","17/05/2011","21/06/2011","19/07/2011"};
+//		String[] datasFimSerie = {"17/01/2011","17/02/2011","21/03/2011","18/04/2011","16/05/2011","20/06/2011","18/07/2011","15/08/2011"};
+		
+//		String[] datasInicioSerie = {"02/01/2009","20/01/2009","17/02/2009","17/03/2009","22/04/2009","19/05/2009","16/06/2009","21/07/2009","18/08/2009","22/09/2009","20/10/2009","17/11/2009"};
+//		String[] datasFimSerie = {"19/01/2009","16/02/2009","16/03/2009","20/04/2009","18/05/2009","15/06/2009","20/07/2009","17/08/2009","21/09/2009","19/10/2009","16/11/2009","21/12/2009"};
+
+		String[] datasInicioSerie = {"02/01/2007","16/01/2007","13/02/2007","20/03/2007","17/04/2007","19/05/2007","19/06/2007","17/07/2007","20/08/2007","18/09/2007","16/10/2007","21/11/2007"};
+		String[] datasFimSerie = {"15/01/2007","12/02/2007","19/03/2007","16/04/2007","21/05/2007","18/06/2007","16/07/2007","17/08/2007","17/09/2007","15/10/2007","19/11/2007","17/12/2007"};
+
 //		String dataInicioSerie = "";
 //		String dataFimSerie = "";
 		
-		for (int i = 0; i < 7; i++)
+		String resultadoOperacao = "";
+		
+		for (int i = 0; i < datasFimSerie.length; i++)
 		{
 			List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", SATAUtil.getDataFormatadaParaBD(datasInicioSerie[i]), SATAUtil.getDataFormatadaParaBD(datasFimSerie[i]));
 
 			for(CotacaoAtivoTO cotacaoAcaoTO : listaCotacoesAcao){
 				System.out.println(cotacaoAcaoTO.getCodigo() + ": " + Double.parseDouble(cotacaoAcaoTO.getFechamento())/100 + " dia: " + cotacaoAcaoTO.getPeriodo());
-				analisaMelhorOpcaoCompra(cotacaoAcaoTO, i, datasInicioSerie[i], datasFimSerie[i]);
+				resultadoOperacao += analisaMelhorOpcaoCompra(cotacaoAcaoTO, i, datasInicioSerie[i], datasFimSerie[i]);
 			}
 		}
+		System.out.println(resultadoOperacao);
 	}
 	public static String analisaMelhorOpcaoCompra(CotacaoAtivoTO cotacaoAcaoTO, int indiceSerieOpcao, String dataInicial, String dataFinal){
 
@@ -224,13 +234,14 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		int qtdDiasFaltamParaVencimentoPUT = Integer.parseInt((String)SATAProps.get(PROP_QTD_DIAS_FALTAM_VENCIMENTO_PUT));
 		int qtdDiasFaltamParaVencimentoCALL = Integer.parseInt((String)SATAProps.get(PROP_QTD_DIAS_FALTAM_VENCIMENTO_CALL));
 
-		
 		int valorAcaoArredondado = Integer.parseInt(cotacaoAcaoTO.getFechamento())/100;
 		System.out.println("valor acao arredondado: " + valorAcaoArredondado);
 		
+		String resultadoOpcaoPUT ="";
+		String resultadoOpcaoCALL ="";
 		System.out.println("ANALISANDO OPCOES DE VENDA PUT");
 		//procura nas puts OTMs da acao
-		for(int i = valorAcaoArredondado; i >= valorAcaoArredondado - 3; i--)
+		for(int i = valorAcaoArredondado; i >= valorAcaoArredondado - 4; i--)
 		{
 			String nomeOpcao = "PETR" + SERIES_PUT[indiceSerieOpcao] + i;
 			System.out.println("nomeOpcao: " + nomeOpcao);
@@ -265,14 +276,15 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 					System.out.println("diaDaOpcao: " + j);
 					if(valorOpcao <= valorMaximoOpcaoPUT && j < listaTodasCotacoesOpcaoPUT.size() - qtdDiasFaltamParaVencimentoPUT)
 					{
-						System.out.println("[PUT] Melhor opcao put: " + caTO.getCodigo() + " data compra: " + caTO.getPeriodo());
-						System.out.println("[PUT] PRECO DE COMPRA: " + listaTodasCotacoesOpcaoPUT.get(j-1).getFechamento());
-						System.out.println("[PUT] PRECO DE VENDA 75%: " + listaTodasCotacoesOpcaoPUT.get(j).getFechamento());
-						System.out.println("[PUT] PRECO DE VENDA 25%: " + listaTodasCotacoesOpcaoPUT.get(j+1).getFechamento()); 
+						resultadoOpcaoPUT += "[PUT] Melhor opcao put: " + caTO.getCodigo() + " data compra: " + caTO.getPeriodo() + "\n";
+						resultadoOpcaoPUT += "[PUT] PRECO DE COMPRA: " + listaTodasCotacoesOpcaoPUT.get(j-1).getFechamento() + "\n";
+						resultadoOpcaoPUT += "[PUT] PRECO DE VENDA 75%: " + listaTodasCotacoesOpcaoPUT.get(j).getFechamento() + "\n";
+						resultadoOpcaoPUT += "[PUT] PRECO DE VENDA 25%: " + listaTodasCotacoesOpcaoPUT.get(j+1).getFechamento() + "\n";
 						//ver o resto das cotacoes
 						for(int k=j+2; k<listaTodasCotacoesOpcaoPUT.size(); k++)
-							System.out.println("[PUT] diaDaOpcao: " + k + " valor: " + listaTodasCotacoesOpcaoPUT.get(k).getFechamento());
-
+							resultadoOpcaoPUT += "[PUT] diaDaOpcao: " + k + " valor: " + listaTodasCotacoesOpcaoPUT.get(k).getFechamento() + "\n";
+						
+						System.out.println(resultadoOpcaoPUT);
 						break;
 					}					
 				}
@@ -282,7 +294,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		
 		System.out.println("ANALISANDO OPCOES DE COMPRA CALL");
 		//procura nas calls OTMs da acao
-		for(int i = valorAcaoArredondado; i <= valorAcaoArredondado + 3; i++)
+		for(int i = valorAcaoArredondado; i <= valorAcaoArredondado + 4; i++)
 		{
 			String nomeOpcao = "PETR" + SERIES_CALL[indiceSerieOpcao] + i;
 			System.out.println("nomeOpcao: " + nomeOpcao);
@@ -312,13 +324,15 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 					System.out.println("qtd cotacoes opcao: " + listaTodasCotacoesOpcaoCall.size());
 					if(valorOpcao <= valorMaximoOpcaoCALL && j < listaTodasCotacoesOpcaoCall.size() - qtdDiasFaltamParaVencimentoCALL)
 					{
-						System.out.println("[CALL] Melhor opcao call: " + caTO.getCodigo() + " data compra: " + caTO.getPeriodo());
-						System.out.println("[CALL] PRECO DE COMPRA: " + listaTodasCotacoesOpcaoCall.get(j-1).getFechamento());
-						System.out.println("[CALL] PRECO DE VENDA 75%: " + listaTodasCotacoesOpcaoCall.get(j).getFechamento());
-						System.out.println("[CALL] PRECO DE VENDA 25%: " + listaTodasCotacoesOpcaoCall.get(j+1).getFechamento()); 
+						resultadoOpcaoCALL += "[CALL] Melhor opcao call: " + caTO.getCodigo() + " data compra: " + caTO.getPeriodo() + "\n";
+						resultadoOpcaoCALL += "[CALL] PRECO DE COMPRA: " + listaTodasCotacoesOpcaoCall.get(j-1).getFechamento() + "\n";
+						resultadoOpcaoCALL += "[CALL] PRECO DE VENDA 75%: " + listaTodasCotacoesOpcaoCall.get(j).getFechamento() + "\n";
+						resultadoOpcaoCALL += "[CALL] PRECO DE VENDA 25%: " + listaTodasCotacoesOpcaoCall.get(j+1).getFechamento() + "\n";
 						//ver o resto das cotacoes
 						for(int k=j+2; k<listaTodasCotacoesOpcaoCall.size(); k++)
-							System.out.println("[CALL] diaDaOpcao: " + k + " valor: " + listaTodasCotacoesOpcaoCall.get(k).getFechamento());
+							resultadoOpcaoCALL += "[CALL] diaDaOpcao: " + k + " valor: " + listaTodasCotacoesOpcaoCall.get(k).getFechamento() + "\n";
+						
+						System.out.println(resultadoOpcaoCALL);
 						break;
 					}					
 				}
@@ -326,7 +340,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			System.out.println("###################");
 		}
 		
-		return null;
+		return resultadoOpcaoPUT + resultadoOpcaoCALL;
 	}
 }
 
