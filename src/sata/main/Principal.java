@@ -56,7 +56,7 @@ public class Principal {
 	 */
 	public static void main(String[] args) throws Exception{
 		
-		insereCotacaoAcaoHistoricoBovespaDB("VALE", "2011");
+		insereCotacaoAcaoHistoricoBovespaDB("PETR4", "2007");
 	
 //		switch(Integer.parseInt(args[0])){
 //			case 1:
