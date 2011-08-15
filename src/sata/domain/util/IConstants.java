@@ -8,6 +8,9 @@ public interface IConstants {
 	
 	public String mesesYahooFinances[] = {"jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"};
 	
+	public String[] SERIES_CALL = {"A","B","C","D","E","F","G","H","I","J","K","L"};
+	public String[] SERIES_PUT = {"M","N","O","P","Q","R","S","T","U","V","W","X"};
+	
 	public String ARQ_SATA_CONF = "sata-conf";
 	
 	public String PROP_SATA_DB_JDBC_DRIVER = "sata.db.jdbc.driver";
@@ -18,6 +21,11 @@ public interface IConstants {
 	
 	public String PROP_PCTGEM_VARIACAOALTAPOUCOTEMPO = "pctgem.variacaoAltaPoucoTempo";
 	public String PROP_CANDLE_PCTGEMPAVIOGRANDE = "candlestick.pctgem.paviogrande";
+	
+	public String PROP_VALORMAX_OPCAO_PUT = "opcao.put.valormaximo";
+	public String PROP_QTD_DIAS_FALTAM_VENCIMENTO_PUT = "opcao.put.qtdDiasFaltamParaVencimento";
+	public String PROP_VALORMAX_OPCAO_CALL = "opcao.call.valormaximo";
+	public String PROP_QTD_DIAS_FALTAM_VENCIMENTO_CALL = "opcao.call.qtdDiasFaltamParaVencimento";
 	
 }
 
