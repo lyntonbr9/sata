@@ -22,7 +22,7 @@ public class CotacaoSeleniumTest extends SeleneseTestCase {
 	
 	public void setUp() throws Exception{
 		
-		setUp("http://www.infomoney.com.br", "*firefox");
+		setUp("http://www.infomoney.com.br", "*iexplore");
 	}
 
 	public void testCotacao() throws Exception{

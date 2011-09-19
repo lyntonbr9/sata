@@ -300,14 +300,14 @@ public class SATAUtil implements IConstants{
 		String mes;
 		
 		if (Integer.parseInt(valoresSplit[0]) < 10)
-			dia = "0" + valoresSplit[0].toString();
+			dia = "0" + Integer.parseInt(valoresSplit[0]);
 		else
-			dia = valoresSplit[0].toString();
+			dia = valoresSplit[0];
 		
 		if (Integer.parseInt(valoresSplit[1]) < 10)
-			mes = "0" + valoresSplit[1].toString();
+			mes = "0" + Integer.parseInt(valoresSplit[1]);
 		else
-			mes = valoresSplit[1].toString();
+			mes = valoresSplit[1];
 		
 		return dia + "/" + mes + "/" + valoresSplit[2];
 	}
@@ -328,7 +328,7 @@ public class SATAUtil implements IConstants{
 		
 //		String pedacoHtml = html.substring(html.indexOf(dataInicioLista));
 //		System.out.println(pedacoHtml);
-		String tagTDInicialDia = "<td>";
+		String tagTDInicialDia = "<TD>";
 		
 		if(html.indexOf(dataFimDaLista) == -1){
 			System.out.println("Nao encontrou data do ultimo cadastro do ativo " + acao);
@@ -337,8 +337,8 @@ public class SATAUtil implements IConstants{
 			
 		String pedacoHtml = html.substring(html.indexOf(tagTDInicialDia));
 //		System.out.println(pedacoHtml);
-		String tagTD = "<td class=\"numbers\">";
-		String fimTD = "</td>";
+		String tagTD = "<TD class=\"numbers\">";
+		String fimTD = "</TD>";
 		
 		//Ordem de leitura dos valores:
 		// 0 - Dia  1 - Ano  2 - Abertura  3 - Alta   4 - Baixa  5 - Fechar

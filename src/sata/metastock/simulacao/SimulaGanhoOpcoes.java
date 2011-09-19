@@ -12,19 +12,20 @@ import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SimulaGanhoOpcoes {
 
-	static String[] opcoesPETR4 = { "petrh20", "petrh22", "petrh23", "petrh24",
-			"petrh25", "petri20", "petri22", "petri23", "petri24", "petri25" };
+	static String[] opcoesPETR4 = { "petri16", "petri18", "petri19", "petri20",
+			"petri21", "petrj19", "petrj20", "petrj21", "petrj22" };
 	
-	static double[] strikesPETR4 = { 19.83, 21.83, 22.66, 23.83, 24.66, 19.83,
-		21.83, 22.83, 23.83, 24.83 };
+	static double[] strikesPETR4 = { 16.00, 17.83, 19.00, 19.83, 20.83,
+		19.00, 19.83, 20.83, 21.83 };
 
 /*	static double[] strikesPETR4 = { 20.00, 22.00, 22.83, 24.00, 24.83, 20.00,
 			22.00, 23.00, 24.00, 25.00 }; */
 
-	static String[] opcoesVALE5 = { "valeh42", "valeh44", "valeh45", "valeh46",
-			"valeh47", "valei42", "valei44", "valei45", "valei46", "valei47" };
-	static double[] strikesVALE5 = { 42.00, 44.00, 45.00, 46.00, 46.48, 41.48,
-			44.00, 45.83, 46.00, 46.48 };
+	static String[] opcoesVALE5 = { "valei37", "valei38", "valei39", "valei40",
+			"valej36", "valej38", "valej40", "valej41", "valej43" };
+	
+	static double[] strikesVALE5 = { 36.00, 38.00, 39.00, 40.00, 36.00, 38.00,
+			40.00, 41.00, 43.00 };
 
 	static String[] emails = { "flaviogc@gmail.com",
 			"flaviogc@br-petrobras.com.br", "tobebendo@gmail.com" };
