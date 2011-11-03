@@ -51,11 +51,11 @@ public class SimulacaoReinvestimento implements ISimulacao{
 			
 			//calcula ganhoVEVendaCobertaMuitoITM
 			//se a acao nao cair ate o ITM voce ganha 1% de VE
-			double ganhoVE = 0.0;
-			if (i == 20) //Se for a primeira vez da simulacao, tem que contar o primeiro lancamento da venda coberta
-				ganhoVE = 0.01 * fechamentoAnterior + 0.01 * fechamentoCorrente;
-			else
-				ganhoVE = 0.01 * fechamentoCorrente;
+			double ganhoVE = 0.01 * fechamentoAnterior;;
+//			if (i == 20) //Se for a primeira vez da simulacao, tem que contar o primeiro lancamento da venda coberta
+//				ganhoVE = 0.01 * fechamentoAnterior + 0.01 * fechamentoCorrente;
+//			else
+//			ganhoVE = 0.01 * fechamentoCorrente;
 			
 			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVE;
 			totalGanhoVEVendaCobMuitoITM+=ganhoVE;
@@ -74,6 +74,12 @@ public class SimulacaoReinvestimento implements ISimulacao{
 				entradaVI[indiceOperacao] = 0;
 			}
 			
+			//calcula o ganho na 2 ATM de call caso a acao tenha subido
+			if(variacaoAcao[indiceOperacao] > 0)
+			{
+				ganhoCall[indiceOperacao] = variacaoAcao[indiceOperacao];
+				totalGanhoCall+=variacaoAcao[indiceOperacao];
+			}
 			
 			//calcula para ver se faz a operacao da compra de 2 CALL TAM
 			//caso se tenha dinheiro em caixa (caixa mais o ganho com as calls ATM)
@@ -87,14 +93,7 @@ public class SimulacaoReinvestimento implements ISimulacao{
 				totalCaixa-=gastoCompra2ATM; //retira o dinheiro das 2 CALLs ATM do caixa
 				totalGastoCall+=gastoCompra2ATM;
 			}
-			
-			//calcula o ganho na 2 ATM de call caso a acao tenha subido
-			if(variacaoAcao[indiceOperacao] > 0)
-			{
-				ganhoCall[indiceOperacao] = variacaoAcao[indiceOperacao];
-				totalGanhoCall+=variacaoAcao[indiceOperacao];
-			}
-			
+
 			indiceOperacao++; //parte para a proxima operacao
 			i--; //para quando incrementar o i no for acertar
 
