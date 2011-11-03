@@ -1,3 +1,14 @@
+-- Create database db_sata
+-- DROP DATABASE db_sata;
+CREATE DATABASE db_sata
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'Portuguese_Brazil.1252'
+       LC_CTYPE = 'Portuguese_Brazil.1252'
+       CONNECTION LIMIT = -1;
+
+
 -- DROP TABLE "Ativo";
 -- DROP TABLE "CotacaoAtivo";
 -- DROP TABLE "CotacaoOpcao";
@@ -58,6 +69,7 @@ ALTER TABLE "CotacaoConsultaOpcao" OWNER TO postgres;
 
 -- Table: "CotacaoOpcao"
 CREATE TABLE "CotacaoOpcao"
+(
   "codigoAtivo" character varying(10) NOT NULL,
   periodo timestamp without time zone NOT NULL,
   tipoperiodo character varying(4),
