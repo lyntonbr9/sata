@@ -85,8 +85,13 @@ public class SimulaGanhoOpcoes {
 			resultado += msgTemp;
 			
 			//razao do VI com o VE
+			
 			String alerta=" ";
-			BigDecimal razaoVI_VE = VI.divide(VE, BigDecimal.ROUND_HALF_EVEN, precisao);
+			BigDecimal razaoVI_VE;
+			if(VE.doubleValue() != 0.0)
+				razaoVI_VE = VI.divide(VE, BigDecimal.ROUND_HALF_EVEN, precisao);
+			else
+				razaoVI_VE = new BigDecimal(0);
 			if (razaoVI_VE.doubleValue() >= 2.0 && razaoVI_VE.doubleValue() <= 3.0)
 				alerta+= " <========";
 			msgTemp = "VI/VE: " + razaoVI_VE.setScale(precisao,BigDecimal.ROUND_HALF_EVEN) + alerta + "\n";
@@ -103,10 +108,10 @@ public class SimulaGanhoOpcoes {
 		{
 			Date dt = new Date();
 			System.out.println("Hora: " + dt.getHours());
-			Thread.currentThread().sleep(60000);
+//			Thread.currentThread().sleep(60000);
 
-			if (dt.getHours() >= 10 && dt.getHours() < 18) 
-			{
+//			if (dt.getHours() >= 10 && dt.getHours() < 18) 
+//			{
 				String mensagem = "";
 				
 				mensagem+= getResultadoSimulacao("petr4", opcoesPETR4, strikesPETR4);
@@ -115,13 +120,13 @@ public class SimulaGanhoOpcoes {
 				System.out.println(mensagem);
 				
 				System.out.println("Vai enviar o e-mail de alerta");
-				SendMailUsingAuthentication.sendEmailSimulaGanhoOpcoes(mensagem);	
+//				SendMailUsingAuthentication.sendEmailSimulaGanhoOpcoes(mensagem);	
 
 
 				System.out.println("t1");
 				Thread.currentThread().sleep(1800000);
 				System.out.println("t2");
-			}
+//			}
 		}
 	}
 
