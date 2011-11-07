@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="/Libs/Selenium/junit-dep-4.8.1.jar"/>
 	<classpathentry kind="lib" path="/Libs/Selenium/selenium-java-2.0b3.jar"/>
 	<classpathentry kind="lib" path="/Libs/Selenium/hamcrest-all-1.1.jar"/>
+	<classpathentry kind="lib" path="/Libs/log4j-1.2.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
