@@ -5,6 +5,7 @@ import java.util.List;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 
+@Deprecated
 public class SimulacaoAcaoOperacaoDeAltaBasico implements ISimulacao{
 	
 	private int stopGain;

@@ -6,6 +6,7 @@ import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 import sata.domain.util.IConstants;
 
+@Deprecated
 public class SimulacaoAcaoOperacaoDeBaixa implements ISimulacao, IConstants{
 
 	//TODO: Ver o algoritmo parece meio ruim para operacao de baixa

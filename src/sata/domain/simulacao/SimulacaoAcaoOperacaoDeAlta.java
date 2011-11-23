@@ -7,6 +7,7 @@ import sata.domain.to.ResultadoSimulacaoTO;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
+@Deprecated
 public class SimulacaoAcaoOperacaoDeAlta implements ISimulacao, IConstants {
 
 	
