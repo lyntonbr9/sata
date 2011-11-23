@@ -17,7 +17,8 @@ public class SimulacaoReinvestimento implements ISimulacao{
 	public ResultadoSimulacaoTO getResultado(
 			List<CotacaoAtivoTO> listaDasCotacoes, Object[] parametros) {
 		
-		int tamanhoArray = listaDasCotacoes.size()/20 + 1; //Tamanho para guardar as operacoes
+		int QTD_DIAS_OPCAO = 20;
+		int tamanhoArray = listaDasCotacoes.size()/QTD_DIAS_OPCAO + 1; //Tamanho para guardar as operacoes
 		double variacaoAcao[] = new double[tamanhoArray];
 		double variacaoATM[] = new double[tamanhoArray];
 		double entradaVInoCaixa[] = new double[tamanhoArray];
@@ -33,50 +34,50 @@ public class SimulacaoReinvestimento implements ISimulacao{
 		int indiceOperacao = 0;
 		
 		double fechamentoAnterior = 0.0;
-		double fechamentoCorrente = 0.0;
+		double fechamentoAcaoNoVencimentoDaOpcao = 0.0;
 		double fechamentoAcaoNaATM = 0.0;
 		
 		int QTD_CALLS = 1;
 		double PCTE_CALL_ITM = 0.01;
-		double PCTE_CALL_ATM = 0.032;
-		int DIA_ATM = 1;
+		double PCTE_CALL_ATM = 0.035;
+		int DIA_ATM = 0;
 		int j = DIA_ATM;
 		for(int i = 0; i <listaDasCotacoes.size(); i++)
 		{
 			CotacaoAtivoTO caTOAnterior = listaDasCotacoes.get(i); //pega a cotacao anterior
 			fechamentoAnterior = Double.parseDouble(caTOAnterior.getFechamento());
 			logger.info(caTOAnterior.getCodigo() + ": " + i + " " + caTOAnterior.getPeriodo() + " - F: " + fechamentoAnterior);
-			i = i + 19; //vai para o vencimento da opcao (a opcao dura 20 dias uteis) soma 19 pq a lista comeca no indice 0
+			
+			i = i + QTD_DIAS_OPCAO - 1; //vai para o vencimento da opcao (a opcao dura 20 dias uteis) diminui 1 pq a lista comeca no indice 0
 			if (i >= listaDasCotacoes.size()) 
 				break; //se depois no futuro ultrapassar o tamanho da lista termina a simulacao
-			
 			CotacaoAtivoTO caTOCorrente = listaDasCotacoes.get(i); //pega a cotacao corrente no vencimento da opcao
-			fechamentoCorrente = Double.parseDouble(caTOCorrente.getFechamento());
-			logger.info(caTOCorrente.getCodigo() + ": " + i + " " + caTOCorrente.getPeriodo() + " - F: " + fechamentoCorrente);
+			fechamentoAcaoNoVencimentoDaOpcao = Double.parseDouble(caTOCorrente.getFechamento());
+			logger.info(caTOCorrente.getCodigo() + ": " + i + " " + caTOCorrente.getPeriodo() + " - F: " + fechamentoAcaoNoVencimentoDaOpcao);
 
 			//calcula a variacao da acao
-			variacaoAcao[indiceOperacao] = fechamentoCorrente - fechamentoAnterior; //pega a variacao da acao
+			variacaoAcao[indiceOperacao] = fechamentoAcaoNoVencimentoDaOpcao - fechamentoAnterior; //pega a variacao da acao
 			logger.info("variacaoAcao[" + indiceOperacao + "]=" + variacaoAcao[indiceOperacao]);
 			
 			//calcula ganhoVEVendaCobertaMuitoITM
 			//se a acao nao cair ate o preco de exercicio da ITM voce ganha 1% de VE
-			double ganhoVE = PCTE_CALL_ITM * fechamentoAnterior;
-			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVE;
+			double ganhoVEdaITM = PCTE_CALL_ITM * fechamentoAnterior;
+			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVEdaITM;
 			logger.info("ganhoVEVendaCobMuitoITM[" + indiceOperacao + "]=" + ganhoVEVendaCobMuitoITM[indiceOperacao]);
-			totalGanhoVEVendaCobMuitoITM+=ganhoVE;
+			totalGanhoVEVendaCobMuitoITM+=ganhoVEdaITM;
 
-			//atualiza o caixa com acrescimo quando o lancamento coberto perde VI
-			//e decrescimo no caixa quando a acao ganha valor pq para recomprar
-			//a ITM vai precisar gastar o valor que subiu da acao
+			//atualiza o caixa acrescendo quando o lancamento coberto perde VI
+			//e decrescendo no caixa quando a acao ganha valor pq para recomprar
+			//a ITM e zerar a posicao vai precisar gastar o valor que subiu da acao
 			entradaVInoCaixa[indiceOperacao] = variacaoAcao[indiceOperacao] * (-1);
 			totalCaixa+=entradaVInoCaixa[indiceOperacao];
 			logger.info("entradaVInoCaixa[" + indiceOperacao + "]=" + entradaVInoCaixa[indiceOperacao]);
 			
-			//calcula o ganho na call ATM caso a acao tenha subido
-			CotacaoAtivoTO caTONaATMAnterior = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
-			fechamentoAcaoNaATM = Double.parseDouble(caTONaATMAnterior.getFechamento());
-			logger.info(caTOAnterior.getCodigo() + " na ATM: " + j + " " + caTONaATMAnterior.getPeriodo() + " - F: " + fechamentoAcaoNaATM);
-			variacaoATM[indiceOperacao] = fechamentoCorrente - fechamentoAcaoNaATM;
+			//calcula o ganho ou perda da call ATM
+			CotacaoAtivoTO caTONaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
+			fechamentoAcaoNaATM = Double.parseDouble(caTONaATM.getFechamento());
+			logger.info(caTOAnterior.getCodigo() + " na ATM: " + j + " " + caTONaATM.getPeriodo() + " - F: " + fechamentoAcaoNaATM);
+			variacaoATM[indiceOperacao] = fechamentoAcaoNoVencimentoDaOpcao - fechamentoAcaoNaATM;
 			if(variacaoATM[indiceOperacao] > 0)
 			{
 				ganhoCall[indiceOperacao] = QTD_CALLS * variacaoATM[indiceOperacao];
@@ -85,13 +86,13 @@ public class SimulacaoReinvestimento implements ISimulacao{
 			logger.info("ganhoCall[" + indiceOperacao + "]=" + ganhoCall[indiceOperacao]);
 			
 			//calcula o gasto na call ATM
-			double gastoCallNaATM = PCTE_CALL_ATM * fechamentoAcaoNaATM;
-			valorCall[indiceOperacao] = gastoCallNaATM;
-			double gastoCompraATM = QTD_CALLS * gastoCallNaATM;
+			double gastoCallATM = PCTE_CALL_ATM * fechamentoAcaoNaATM;
+			valorCall[indiceOperacao] = gastoCallATM;
+			double gastoCompraATM = QTD_CALLS * gastoCallATM;
 			gastoCall[indiceOperacao] = gastoCompraATM;
 			totalCaixa-=gastoCompraATM; //retira o dinheiro da call ATM do caixa
 			totalGastoCall+=gastoCompraATM;
-			j = j + 19; //vai para a proxima ATM
+			j = j + QTD_DIAS_OPCAO - 1; //vai para a proxima ATM
 				
 			logger.info("valorCall[" + indiceOperacao + "]=" + valorCall[indiceOperacao]);
 			logger.info("gastoCall[" + indiceOperacao + "]=" + gastoCall[indiceOperacao]);
@@ -121,19 +122,19 @@ public class SimulacaoReinvestimento implements ISimulacao{
 		double primeiraCotacaoAcao = Double.parseDouble(listaDasCotacoes.get(0).getFechamento());
 		logger.info("GANHOS COM A ACAO APENAS:");
 		logger.info("primeiraCotacaoAcao=" + primeiraCotacaoAcao);
-		logger.info("ultimaCotacaoAcao=" + fechamentoCorrente);
-		double totalGanhoAcao = fechamentoCorrente - primeiraCotacaoAcao;
+		logger.info("ultimaCotacaoAcao=" + fechamentoAcaoNoVencimentoDaOpcao);
+		double totalGanhoAcao = fechamentoAcaoNoVencimentoDaOpcao - primeiraCotacaoAcao;
 		logger.info("totalGanhoAcao=" + totalGanhoAcao);
 		double pctGanhoAcao=totalGanhoAcao*100/primeiraCotacaoAcao;
 		logger.info("pctGanhoAcao=" + pctGanhoAcao);
 		
 		//calcula o valor total ganho
 		logger.info("GANHOS COM A SIMULACAO DE REINVESTIMENTO:");
-		logger.info("ultimaCotacaoAcao=" + fechamentoCorrente);
+		logger.info("ultimaCotacaoAcao=" + fechamentoAcaoNoVencimentoDaOpcao);
 		logger.info("totalCaixa=" + totalCaixa);
 		logger.info("totalGanhoCall=" + totalGanhoCall);
 		logger.info("totalGanhoVEVendaCobMuitoITM=" + totalGanhoVEVendaCobMuitoITM);
-		double totalFinalGanhoSimulacao = fechamentoCorrente + totalCaixa + totalGanhoCall + totalGanhoVEVendaCobMuitoITM;
+		double totalFinalGanhoSimulacao = fechamentoAcaoNoVencimentoDaOpcao + totalCaixa + totalGanhoCall + totalGanhoVEVendaCobMuitoITM;
 		logger.info("totalFinalGanhoSimulacao=ultimaCotacaoAcao + totalCaixa + totalGanhoCall + totalGanhoVEVendaCobMuitoITM=" + totalFinalGanhoSimulacao);
 		
 		//calcula a porcentagem em relacao ao comeco do investimetno
@@ -188,7 +189,7 @@ public class SimulacaoReinvestimento implements ISimulacao{
 		sr.getResultado(novaLista, null);
 		*/
 		/* Simulacao 2009 */
-		for(int i=2009; i < 2012; i++){
+		for(int i=1998; i < 2001; i++){
 			logger.info("ANO " + String.valueOf(i));
 //			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("BVMF3", String.valueOf(i));
 			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("PETR4", String.valueOf(i));
