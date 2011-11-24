@@ -49,7 +49,8 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 		int QTD_CALLS = 1;
 		double PCTE_2_CALL_ITM = 0.01; //valor de 2 ITM sendo que foi comprado 2 lotes de ações
 		double PCTE_1_CALL_ATM = 0.035; //metade 0.0175 (3,5% a CALL) quando se trabalha com 2 lotes
-		double PCTE_1_PUT_ATM = 0.03; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
+//		double PCTE_1_PUT_ATM = 0.03; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
+		double PCTE_1_PUT_ATM = 0.026; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
 		int QTD_LOTES = 2;
 		int j = 0; //indice para as ATMs (CALL e PUT)
 		for(int i = 0; i <listaDasCotacoes.size(); i++)
@@ -157,7 +158,7 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 		logger.info("totalFinalGanhoSimulacao=primeiraCotacaoAcao + totalCaixa=" + totalFinalGanhoSimulacao);
 		
 		//calcula a porcentagem em relacao ao comeco do investimetno
-		double pctGanhoFinalGanhoSimulacao = (totalFinalGanhoSimulacao-primeiraCotacaoAcao)*100/primeiraCotacaoAcao;
+		double pctGanhoFinalGanhoSimulacao = (totalFinalGanhoSimulacao-primeiraCotacaoAcao)*100/(primeiraCotacaoAcao*QTD_LOTES);
 		logger.info("pctGanhoFinalGanhoSimulacao=" + pctGanhoFinalGanhoSimulacao);
 		
 		logger.info(" ");
@@ -210,7 +211,7 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 		*/
 		/* Simulacao 2009 */
 		
-		for(int i=2006; i <= 2007; i++){
+		for(int i=1998; i <= 2002; i++){
 			logger.info("ANO " + String.valueOf(i));
 //			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("BVMF3", String.valueOf(i));
 			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("PETR4", String.valueOf(i));
