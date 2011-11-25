@@ -2,98 +2,128 @@ package sata.metastock.util;
 
 import java.math.BigDecimal;
 
+import sata.domain.util.IConstants;
 
-/*************************************************************************
- *  Compilation:  javac BlackScholes.java MyMath.java
- *  Execution:    java BlackScholes S X r sigma T
- *  
- *  Reads in five command line inputs and calculates the option price
- *  according to the Black-Scholes formula.
- *
- *  % java BlackScholes 23.75 15.00 0.01 0.35 0.5
- *  8.879159279691955                                  (actual =  9.10)
- *      
- *  % java BlackScholes 30.14 15.0 0.01 0.332 0.25
- *  15.177462481562186                                 (actual = 14.50)
- *
- *
- *  Information calculated based on closing data on Monday, June 9th 2003.
- *
- *      Microsoft:   share price:             23.75
- *                   strike price:            15.00
- *                   risk-free interest rate:  1%
- *                   volatility:              35%          (historical estimate)
- *                   time until expiration:    0.5 years
- *
- *       GE:         share price:             30.14
- *                   strike price:            15.00
- *                   risk-free interest rate   1%
- *                   volatility:              33.2%         (historical estimate)
- *                   time until expiration     0.25 years
- *
- *
- *  Reference:  http://www.hoadley.net/options/develtoolsvolcalc.htm
- *
- *************************************************************************/
+public class BlackScholes implements IConstants{
 
+    /**
+     * Prices European style options usign the Black-Scholes formula.
+     * @param call true for call options, false for puts
+     * @param precoAcao the price of the underlying
+     * @param precoExercicioOpcao the strike of the option
+     * @param tempoParaVencimentoOpcaoEmAnos the time to expiration, in years
+     * @param taxaDeJuros the risk free interest rate
+     * @param volatilidade the volatility
+     * @return the Black-Scholes option price
+     */
+    public static double blackScholes(boolean call, double precoAcao, double precoExercicioOpcao, double tempoParaVencimentoOpcaoEmAnos, double taxaDeJuros, double volatilidade)
+    {
+        double d1, d2;
 
-public class BlackScholes {
+        double sqrtT = Math.sqrt(tempoParaVencimentoOpcaoEmAnos);
+        double vsqrtT = volatilidade * sqrtT;
+        d1 = (Math.log(precoAcao / precoExercicioOpcao) + (taxaDeJuros + volatilidade * volatilidade / 2) * tempoParaVencimentoOpcaoEmAnos) / vsqrtT;
+        d2 = d1 - vsqrtT;
 
-    // Black-Scholes formula
-    public static double callPrice(double S, double X, double r, double sigma, double T) {
-        double d1 = (Math.log(S/X) + (r + sigma * sigma/2) * T) / (sigma * Math.sqrt(T));
-        double d2 = d1 - sigma * Math.sqrt(T);
-        return S * Gaussian.Phi(d1) - X * Math.exp(-r * T) * Gaussian.Phi(d2);
+        if (call)
+            return precoAcao * N(d1) - precoExercicioOpcao * Math.exp(-taxaDeJuros * tempoParaVencimentoOpcaoEmAnos) * N(d2);
+        else
+            return precoExercicioOpcao * Math.exp(-taxaDeJuros * tempoParaVencimentoOpcaoEmAnos) * N(-d2) - precoAcao * N(-d1);
     }
 
-    // estimate by Monte Carlo simulation
-    public static double call(double S, double X, double r, double sigma, double T) {
-        int N = 10000;
-        double sum = 0.0;
-        for (int i = 0; i < N; i++) {
-            double eps = StdRandom.gaussian();
-            double price = S * Math.exp(r*T - 0.5*sigma*sigma*T + sigma*eps*Math.sqrt(T));
-            double value = Math.max(price - X, 0);
-            sum += value;
-        }
-        double mean = sum / N;
-     
-        return Math.exp(-r*T) * mean;
-    }
+    /**
+     * @param X the value
+     * @return the cumulative normal distribution for the value
+     */
+    public static double N(double X)
+    {
+        double L, K, w;
+        double a1 = 0.31938153, a2 = -0.356563782, a3 = 1.781477937, a4 = -1.821255978, a5 = 1.330274429;
 
-    // estimate by Monte Carlo simulation
-    public static double call2(double S, double X, double r, double sigma, double T) {
-        int N = 10000;
-        double sum = 0.0;
-        for (int i = 0; i < N; i++) {
-            double price = S;
-            double dt = T/10000.0;
-            for (double t = 0; t <= T; t = t + dt) {
-                price += r*price*dt +sigma*price*Math.sqrt(dt)*StdRandom.gaussian();
-            }
-            double value = Math.max(price - X, 0);
-            sum += value;
-        }
-        double mean = sum / N;
-     
-        return Math.exp(-r*T) * mean;
-    }
+        L = Math.abs(X);
+        K = 1.0 / (1.0 + 0.2316419 * L);
+        w = 1.0 - 1.0 / Math.sqrt(2.0 * Math.PI) * Math.exp(-L * L / 2) * (a1 * K + a2 * K * K + a3
+                * Math.pow(K, 3) + a4 * Math.pow(K, 4) + a5 * Math.pow(K, 5));
 
+        if (X < 0.0)
+            w = 1.0 - w;
+        return w;
+    }
 
 
     public static void main(String[] args) {
     	
-    
-    	
-        double S     = 26.83;   // preço da ação
-        double X     = 27.71; 	// strike
-        double r     = 0.1125;    // taxa de juro
-        double sigma = 0.27;	// volatilidade
-        double T     = new BigDecimal(7).divide(new BigDecimal(365),4,BigDecimal.ROUND_HALF_UP).doubleValue();	// tempo em anos
-        System.out.println(T);
-        System.out.println(callPrice(S, X, r, sigma, T));
-        System.out.println(call(S, X, r, sigma, T));
-     //   System.out.println(call2(S, X, r, sigma, T));
+		double precoAcao = 21.66;   // preço da ação
+        double precoExercicioOpcao = 19.66; 	// strike
+        double qtdDiasFaltaEmAnos = BlackScholes.getQtdDiasEmAnos(QTD_DIAS_FALTA_1_MES_VENC);	// tempo em anos
+        double volatilidade = BlackScholes.getVolatilidade();
+        
+        System.out.println("Pctgem dias em anos: " + qtdDiasFaltaEmAnos);
+        double valorOpcao = BlackScholes.blackScholes(false, precoAcao, precoExercicioOpcao, qtdDiasFaltaEmAnos, TAXA_DE_JUROS, volatilidade); 
+        System.out.println("Valor da Opcao: " + valorOpcao);
+        System.out.println("VI: " + getVI(false, precoAcao, precoExercicioOpcao));
+        getVE(false, precoAcao, precoExercicioOpcao, valorOpcao);
+        
     }
+    
+    public static double getVolatilidade()
+    {
+    	return 0.27; //27%
+    }
+    
+    public static double getQtdDiasEmAnos(int qtdDiasFaltamParaVencimento)
+    {
+    	return new BigDecimal(qtdDiasFaltamParaVencimento).divide(new BigDecimal(QTD_DIAS_ANO), 4, BigDecimal.ROUND_HALF_UP).doubleValue(); //4 casas decimais
+    }
+    
+    public static double getVI(boolean call, double precoAcao, double precoExercicioOpcao)
+    {
+    	if (call) //SE FOR CALL
+    		if (precoAcao >= precoExercicioOpcao)
+    			return precoAcao - precoExercicioOpcao;
+    		else
+    			return 0;
+    	else //SE FOR PUT
+    		if (precoAcao <= precoExercicioOpcao)
+    			return precoExercicioOpcao - precoAcao;
+    		else
+    			return 0;
+    }
+    
+    public static double getVE(boolean call, double precoAcao, double precoExercicioOpcao, double valorOpcao)
+    {
+    	double VI =0;
+    	if (call) //SE FOR CALL
+    		VI = getVI(true, precoAcao, precoExercicioOpcao);
+    	else
+    		VI = getVI(false, precoAcao, precoExercicioOpcao);
+    	
+    	//calcula o VE e a porcentagem em relacao a acao
+    	double VE = valorOpcao - VI; 
+    	double pctgemVE = (VE * 100)/precoAcao;
+    	System.out.println("VE: " + VE);
+        System.out.println("PctgemVE: " + pctgemVE + " %");
+    	return VE;
+    		
+    }
+    /**
+     * 
+     * @param precoAcima Se eh para calcular a opcao acima(true) ou abaixo(false)
+     * @param precoAcao O preco da acao
+     * @param ordem A ordem da acao Ex: 1º ITM, 2º ITM
+     * @return
+     */
+    public static double getPrecoExercicio(boolean precoAcima, double precoAcao, double ordem)
+    {
+    	if (ordem == 0) //na ATM
+    		return precoAcao;
+    	if (precoAcima)
+    		return precoAcao + (ordem * PCTGEM_OPCAO * precoAcao);
+    	else
+    		return precoAcao - (ordem * PCTGEM_OPCAO * precoAcao);
+    }
+    
+    
+    
 }
 

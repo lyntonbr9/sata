@@ -1,5 +1,6 @@
 package sata.domain.simulacao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -9,9 +10,11 @@ import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
+import sata.domain.util.IConstants;
+import sata.metastock.util.BlackScholes;
 
 //TODO TEM QUE RESOLVER ESSE
-public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
+public class SimulacaoReinvestimentoCALLePUT implements ISimulacao, IConstants{
 
 	static Logger logger = Logger.getLogger(SimulacaoReinvestimentoCALLePUT.class.getName());
 	
@@ -46,11 +49,14 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 		double fechamentoAcaoNaCALL_ATM = 0.0;
 		double fechamentoAcaoNaPUT_ATM = 0.0;
 		
+		double volatilidade = BlackScholes.getVolatilidade();
+		double qtdDiasFaltaEmAnos = BlackScholes.getQtdDiasEmAnos(QTD_DIAS_FALTA_1_MES_VENC);
+		
 		int QTD_CALLS = 1;
-		double PCTE_2_CALL_ITM = 0.01; //valor de 2 ITM sendo que foi comprado 2 lotes de ações
-		double PCTE_1_CALL_ATM = 0.035; //metade 0.0175 (3,5% a CALL) quando se trabalha com 2 lotes
+//		double PCTE_2_CALL_ITM = 0.01; //valor de 2 ITM sendo que foi comprado 2 lotes de ações
+//		double PCTE_1_CALL_ATM = 0.035; //metade 0.0175 (3,5% a CALL) quando se trabalha com 2 lotes
 //		double PCTE_1_PUT_ATM = 0.03; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
-		double PCTE_1_PUT_ATM = 0.026; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
+//		double PCTE_1_PUT_ATM = 0.026; //metade 0.015 (3,0% a PUT) quando se trabalha com 2 lotes
 		int QTD_LOTES = 2;
 		int j = 0; //indice para as ATMs (CALL e PUT)
 		for(int i = 0; i <listaDasCotacoes.size(); i++)
@@ -72,26 +78,41 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 			
 			//calcula ganhoVEVendaCobertaMuitoITM
 			//se a acao nao cair ate o preco de exercicio da ITM voce ganha 1% de VE
-			double ganhoVECobertaITM = PCTE_2_CALL_ITM * fechamentoAnterior * QTD_LOTES;
+//			double ganhoVECobertaITM = PCTE_2_CALL_ITM * fechamentoAnterior * QTD_LOTES;
+			
+			double precoExercOpcaoCob2ITM = BlackScholes.getPrecoExercicio(false, fechamentoAnterior, 2); // Pega a 2 ITM para baixo
+			logger.info("precoExercOpcaoCob2ITM: " + precoExercOpcaoCob2ITM);
+			double valorOpcaoCoberta2ITM = BlackScholes.blackScholes(true, fechamentoAnterior, precoExercOpcaoCob2ITM, qtdDiasFaltaEmAnos, TAXA_DE_JUROS, volatilidade);
+			logger.info("valorOpcaoCoberta2ITM: " + valorOpcaoCoberta2ITM);
+			double ganhoVECobertaITM = BlackScholes.getVE(true, fechamentoAnterior, precoExercOpcaoCob2ITM, valorOpcaoCoberta2ITM) * QTD_LOTES;
+			logger.info("ganhoVECobertaITM: " + ganhoVECobertaITM);
 			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVECobertaITM;
 			logger.info("ganhoVEVendaCobMuitoITM[" + indiceOperacao + "]=" + ganhoVEVendaCobMuitoITM[indiceOperacao]);
 			totalGanhoVEVendaCobMuitoITM+=ganhoVECobertaITM;
-			totalCaixa+=ganhoVECobertaITM; //atualiza o caixa com acrescimo quando o lancamento coberto perde VI
+			totalCaixa+=ganhoVECobertaITM; //atualiza o caixa com acrescimo quando o lancamento coberto perde VE
 			
 			//calcula o ganho na call ATM caso a acao tenha subido
 			CotacaoAtivoTO caTONaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
 			fechamentoAcaoNaCALL_ATM = Double.parseDouble(caTONaATM.getFechamento());
-			logger.info(caTOAnterior.getCodigo() + " na ATM: " + j + " " + caTONaATM.getPeriodo() + " - F: " + fechamentoAcaoNaCALL_ATM);
+			logger.info(caTONaATM.getCodigo() + " na ATM: " + j + " " + caTONaATM.getPeriodo() + " - F: " + fechamentoAcaoNaCALL_ATM);
 			variacaoATM[indiceOperacao] = fechamentoCorrente - fechamentoAcaoNaCALL_ATM;
 			if(variacaoATM[indiceOperacao] > 0)
 			{
-				ganhoCALL_ATM[indiceOperacao] = QTD_CALLS * variacaoATM[indiceOperacao];
+				ganhoCALL_ATM[indiceOperacao] =  variacaoATM[indiceOperacao];
 				totalGanhoCALL_ATM+=ganhoCALL_ATM[indiceOperacao];
 				totalCaixa+=ganhoCALL_ATM[indiceOperacao];
 			}
 			logger.info("ganhoCALL_ATM[" + indiceOperacao + "]=" + ganhoCALL_ATM[indiceOperacao]);
+			
 			//calcula o gasto na call ATM
-			double gastoCallNaATM = PCTE_1_CALL_ATM * fechamentoAcaoNaCALL_ATM;
+			double precoExercOpcaoCALL_ATM = BlackScholes.getPrecoExercicio(true, fechamentoAcaoNaCALL_ATM, 0); // Pega a CALL ATM
+			logger.info("precoExercCALL_ATM: " + precoExercOpcaoCALL_ATM);
+			double valorOpcaoCALL_ATM = BlackScholes.blackScholes(true, fechamentoAcaoNaCALL_ATM, precoExercOpcaoCALL_ATM, qtdDiasFaltaEmAnos, TAXA_DE_JUROS, volatilidade);
+			logger.info("valorOpcaoCALL_ATM: " + valorOpcaoCALL_ATM);
+			double gastoCallNaATM = BlackScholes.getVE(true, fechamentoAcaoNaCALL_ATM, precoExercOpcaoCALL_ATM, valorOpcaoCALL_ATM); //perde o VE no vencimento
+			logger.info("gastoCallNaATM: " + gastoCallNaATM);
+			
+//			double gastoCallNaATM = PCTE_1_CALL_ATM * fechamentoAcaoNaCALL_ATM;
 			valorCALL_ATM[indiceOperacao] = gastoCallNaATM;
 			double gastoCompraATM = QTD_CALLS * gastoCallNaATM;
 			gastoCALL_ATM[indiceOperacao] = gastoCompraATM;
@@ -102,7 +123,7 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 			//calcula o ganho na PUT ATM caso a acao tenha caido
 			CotacaoAtivoTO caTOPUTNaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
 			fechamentoAcaoNaPUT_ATM = Double.parseDouble(caTOPUTNaATM.getFechamento());
-			logger.info(caTOAnterior.getCodigo() + " na PUT ATM: " + j + " " + caTOPUTNaATM.getPeriodo() + " - F: " + fechamentoAcaoNaPUT_ATM);
+			logger.info(caTOPUTNaATM.getCodigo() + " na PUT ATM: " + j + " " + caTOPUTNaATM.getPeriodo() + " - F: " + fechamentoAcaoNaPUT_ATM);
 			variacaoPUT[indiceOperacao] = (fechamentoCorrente - fechamentoAcaoNaCALL_ATM) * (-1); //fica positivo caso cair
 			if(variacaoPUT[indiceOperacao] > 0)
 			{
@@ -111,8 +132,16 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 				totalCaixa+=ganhoPUT_ATM[indiceOperacao];
 			}
 			logger.info("ganhoPUT_ATM[" + indiceOperacao + "]=" + ganhoPUT_ATM[indiceOperacao]);
+			
 			//calcula o gasto na PUT ATM
-			double gastoPUTNaATM = PCTE_1_PUT_ATM * fechamentoAcaoNaPUT_ATM;
+			double precoExercOpcaoPUT_ATM = BlackScholes.getPrecoExercicio(true, fechamentoAcaoNaPUT_ATM, 0); // Pega a PUT ATM
+			logger.info("precoExercOpcaoPUT_ATM: " + precoExercOpcaoPUT_ATM);
+			double valorOpcaoPUT_ATM = BlackScholes.blackScholes(false, fechamentoAcaoNaPUT_ATM, precoExercOpcaoPUT_ATM, qtdDiasFaltaEmAnos, TAXA_DE_JUROS, volatilidade);
+			logger.info("valorOpcaoPUT_ATM: " + valorOpcaoPUT_ATM);
+			double gastoPUTNaATM = BlackScholes.getVE(false, fechamentoAcaoNaPUT_ATM, precoExercOpcaoPUT_ATM, valorOpcaoPUT_ATM); //perde o VE no vencimento
+			logger.info("gastoPUTNaATM: " + gastoPUTNaATM);
+
+//			double gastoPUTNaATM = PCTE_1_PUT_ATM * fechamentoAcaoNaPUT_ATM;
 			valorPUT_ATM[indiceOperacao] = gastoPUTNaATM;
 			double gastoCompraPUT_ATM = QTD_CALLS * gastoPUTNaATM;
 			gastoPUT_ATM[indiceOperacao] = gastoCompraPUT_ATM;
@@ -209,23 +238,17 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao{
 		SimulacaoReinvestimento sr = new SimulacaoReinvestimento();
 		sr.getResultado(novaLista, null);
 		*/
-		/* Simulacao 2009 */
-		
-		for(int i=1998; i <= 2002; i++){
+	
+		for(int i=2009; i <= 2011; i++){
 			logger.info("ANO " + String.valueOf(i));
 //			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("BVMF3", String.valueOf(i));
 			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("PETR4", String.valueOf(i));
 			SimulacaoReinvestimentoCALLePUT sr = new SimulacaoReinvestimentoCALLePUT();
 			sr.getResultado(listaDasCotacoes2009, null);			
 		}
-		
+
 //		calculaGanho(30000, 2000, 72, 0.04);
 		
-		/* Simulacao 2009
-		List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("VALE5", "2009");
-		SimulacaoReinvestimento sr = new SimulacaoReinvestimento();
-		sr.getResultado(listaDasCotacoes2009, null);
-		*/
 	}
 	
 	public static void calculaGanho(double valorInicial, double quantiaPorUnidadeTempo, int tempo, double taxa){

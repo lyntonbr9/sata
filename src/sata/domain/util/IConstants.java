@@ -27,5 +27,11 @@ public interface IConstants {
 	public String PROP_VALORMAX_OPCAO_CALL = "opcao.call.valormaximo";
 	public String PROP_QTD_DIAS_FALTAM_VENCIMENTO_CALL = "opcao.call.qtdDiasFaltamParaVencimento";
 	
+	public int QTD_DIAS_ANO = 365;
+	public int QTD_DIAS_FALTA_1_MES_VENC = 29; //quando for saber 1 mes
+	public int QTD_DIAS_FALTA_2_MES_VENC = 59; //quando for saber 2 meses
+	public double TAXA_DE_JUROS = 0.1150; //11,5%
+	public double PCTGEM_OPCAO = 0.05;
+	
 }
 
