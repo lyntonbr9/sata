@@ -102,7 +102,7 @@ public class BlackScholes implements IConstants{
     	double VE = valorOpcao - VI; 
     	double pctgemVE = (VE * 100)/precoAcao;
     	System.out.println("VE: " + VE);
-        System.out.println("PctgemVE: " + pctgemVE + " %");
+        System.out.println("PctgemVE: " + pctgemVE + "%");
     	return VE;
     		
     }

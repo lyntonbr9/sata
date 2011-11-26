@@ -27,7 +27,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		double variacaoATM[] = new double[tamanhoArray];
 		double variacaoPUT[] = new double[tamanhoArray];
 		double ganhoVEVendaCobMuitoITM[] = new double[tamanhoArray];
-		double totalGanhoVEVendaCobMuitoITM = 0.0;
+		double totalGanhoVEVendaCobITM = 0.0;
 		
 		double valorCALL_ATM[] = new double[tamanhoArray];
 		double gastoCALL_ATM[] = new double[tamanhoArray];
@@ -59,12 +59,15 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		int j = 0; //indice para as ATMs (CALL e PUT)
 		for(int i = 0; i <listaDasCotacoes.size(); i++)
 		{
+			if (i + QTD_DIAS_OPCAO -1 >= listaDasCotacoes.size()) 
+				break; //se depois no futuro ultrapassar o tamanho da lista termina a simulacao
+			
 			CotacaoAtivoTO caTOAnterior = listaDasCotacoes.get(i); //pega a cotacao anterior
 			fechamentoAnterior = Double.parseDouble(caTOAnterior.getFechamento());
 			logger.info(caTOAnterior.getCodigo() + ": " + i + " " + caTOAnterior.getPeriodo() + " - F: " + fechamentoAnterior);
 			i = i + QTD_DIAS_OPCAO -1; //vai para o vencimento da opcao (a opcao dura 20 dias uteis) diminui 1 pq a lista comeca com indice 0
-			if (i >= listaDasCotacoes.size()) 
-				break; //se depois no futuro ultrapassar o tamanho da lista termina a simulacao
+//			if (i >= listaDasCotacoes.size()) 
+//				break; //se depois no futuro ultrapassar o tamanho da lista termina a simulacao
 			
 			CotacaoAtivoTO caTOCorrente = listaDasCotacoes.get(i); //pega a cotacao corrente no vencimento da opcao
 			fechamentoCorrente = Double.parseDouble(caTOCorrente.getFechamento());
@@ -78,17 +81,21 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			//se a acao nao cair ate o preco de exercicio da ITM voce ganha 1% de VE
 //			double ganhoVECobertaITM = PCTE_2_CALL_ITM * fechamentoAnterior * QTD_LOTES;
 			
-			double precoExercOpcaoCob2ITM = BlackScholes.getPrecoExercicio(false, fechamentoAnterior, 2); // Pega a 2 ITM para baixo
-			logger.info("precoExercOpcaoCob2ITM: " + precoExercOpcaoCob2ITM);
-			double valorOpcaoCoberta2ITM = BlackScholes.blackScholes(true, fechamentoAnterior, precoExercOpcaoCob2ITM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
-			logger.info("valorOpcaoCoberta2ITM: " + valorOpcaoCoberta2ITM);
-			double ganhoVECobertaITM = BlackScholes.getVE(true, fechamentoAnterior, precoExercOpcaoCob2ITM, valorOpcaoCoberta2ITM) * QTD_LOTES;
-			logger.info("ganhoVECobertaITM: " + ganhoVECobertaITM);
-			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVECobertaITM;
-			logger.info("ganhoVEVendaCobMuitoITM[" + indiceOperacao + "]=" + ganhoVEVendaCobMuitoITM[indiceOperacao]);
-			totalGanhoVEVendaCobMuitoITM+=ganhoVECobertaITM;
-			totalCaixa+=ganhoVECobertaITM; //atualiza o caixa com acrescimo quando o lancamento coberto perde VE
+			logger.info("================= Opcao Coberta 2 ITM =================");
+			logger.info(caTOAnterior.getCodigo() + " na ITM: " + caTOAnterior.getPeriodo() + " - F: " + fechamentoAnterior);
+//			double precoExercOpcaoCob2ITM = BlackScholes.getPrecoExercicio(false, fechamentoAnterior, 2); // Pega a 2 ITM para baixo
+			double precoExercOpcaoCob1ITM = BlackScholes.getPrecoExercicio(false, fechamentoAnterior, 1); // Pega a 1 ITM para baixo
+			logger.info("precoExercOpcaoCob1ITM: " + precoExercOpcaoCob1ITM);
+			double valorOpcaoCoberta1ITM = BlackScholes.blackScholes(true, fechamentoAnterior, precoExercOpcaoCob1ITM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
+			logger.info("valorOpcaoCoberta1ITM: " + valorOpcaoCoberta1ITM);
+			double ganhoVEVendaCobertaITM = BlackScholes.getVE(true, fechamentoAnterior, precoExercOpcaoCob1ITM, valorOpcaoCoberta1ITM) * QTD_LOTES;
+			logger.info("ganhoVEVendaCobertaITM: " + ganhoVEVendaCobertaITM);
+			ganhoVEVendaCobMuitoITM[indiceOperacao] = ganhoVEVendaCobertaITM;
+//			logger.info("ganhoVEVendaCobMuitoITM[" + indiceOperacao + "]=" + ganhoVEVendaCobMuitoITM[indiceOperacao]);
+			totalGanhoVEVendaCobITM+=ganhoVEVendaCobertaITM;
+			totalCaixa+=ganhoVEVendaCobertaITM; //atualiza o caixa com acrescimo quando o lancamento coberto perde VE
 			
+			logger.info("================= Opcao CALL ATM =================");
 			//calcula o ganho na call ATM caso a acao tenha subido
 			CotacaoAtivoTO caTONaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
 			fechamentoAcaoNaCALL_ATM = Double.parseDouble(caTONaATM.getFechamento());
@@ -102,6 +109,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			}
 			logger.info("ganhoCALL_ATM[" + indiceOperacao + "]=" + ganhoCALL_ATM[indiceOperacao]);
 			
+			logger.info("=== CALL ATM Faltando 2 Meses ===");
 			//calcula o gasto na call ATM
 			double precoExercOpcaoCALL_ATM = BlackScholes.getPrecoExercicio(true, fechamentoAcaoNaCALL_ATM, 0); // Pega a CALL ATM
 			logger.info("precoExercCALL_ATM: " + precoExercOpcaoCALL_ATM);
@@ -111,14 +119,16 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			double gastoCallDoisMesesNaATM = BlackScholes.getVE(true, fechamentoAcaoNaCALL_ATM, precoExercOpcaoCALL_ATM, valorOpcaoDoisMesesCALL_ATM); //perde o VE no vencimento
 			logger.info("gastoCallDoisMesesNaATM: " + gastoCallDoisMesesNaATM);
 			
+			logger.info("=== CALL ATM Faltando 1 Mes ===");
 			logger.info("fechamentoAcaoParaCalculoUmMesCALL_ATM: " + fechamentoCorrente);
 			double valorOpcaoUmMesRestanteCALL_ATM = BlackScholes.blackScholes(true, fechamentoCorrente, precoExercOpcaoCALL_ATM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoUmMesRestanteCALL_ATM: " + valorOpcaoUmMesRestanteCALL_ATM);
-			double gastoCallUmMesRestanteNaATM = BlackScholes.getVE(true, fechamentoCorrente, precoExercOpcaoCALL_ATM, valorOpcaoUmMesRestanteCALL_ATM); //perde o VE no vencimento
-			logger.info("gastoCallRestanteNaATM: " + gastoCallUmMesRestanteNaATM);
+			double custoCallUmMesRestanteNaATM = BlackScholes.getVE(true, fechamentoCorrente, precoExercOpcaoCALL_ATM, valorOpcaoUmMesRestanteCALL_ATM); //perde o VE no vencimento
+			logger.info("custoCallUmMesRestanteNaATM: " + custoCallUmMesRestanteNaATM);
 			
-			double gastoCallNaATM = gastoCallDoisMesesNaATM - gastoCallUmMesRestanteNaATM; //perde o VE no vencimento
-			logger.info("gastoCallNaATM: " + gastoCallNaATM);
+			logger.info("=== CALL ATM Resultado ===");
+			double gastoCallNaATM = gastoCallDoisMesesNaATM - custoCallUmMesRestanteNaATM; //perde o VE no vencimento
+			logger.info("gastoCallNaATM: gastoCallDoisMesesNaATM - custoCallUmMesRestanteNaATM=" + gastoCallNaATM);
 			logger.info("Porcentagem gastoCallNaATM: " + (gastoCallNaATM*100)/fechamentoAcaoNaCALL_ATM + "%");
 			
 //			double gastoCallNaATM = PCTE_1_CALL_ATM * fechamentoAcaoNaCALL_ATM;
@@ -128,7 +138,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			totalGastoCALL_ATM+=gastoCompraATM;
 			totalCaixa-=gastoCompraATM; //retira o dinheiro da call ATM do caixa
 			
-
+			logger.info("================= Opcao PUT ATM =================");
 			//calcula o ganho na PUT ATM caso a acao tenha caido
 			CotacaoAtivoTO caTOPUTNaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
 			fechamentoAcaoNaPUT_ATM = Double.parseDouble(caTOPUTNaATM.getFechamento());
@@ -142,8 +152,8 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			}
 			logger.info("ganhoPUT_ATM[" + indiceOperacao + "]=" + ganhoPUT_ATM[indiceOperacao]);
 			
+			logger.info("=== PUT ATM Faltando 2 Meses ===");
 			//calcula o gasto na PUT ATM
-			
 			double precoExercOpcaoPUT_ATM = BlackScholes.getPrecoExercicio(false, fechamentoAcaoNaPUT_ATM, 0); // Pega a PUT ATM
 			logger.info("precoExercOpcaoPUT_ATM: " + precoExercOpcaoPUT_ATM);
 			
@@ -152,13 +162,17 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			double gastoPUTDoisMesesNaATM = BlackScholes.getVE(false, fechamentoAcaoNaPUT_ATM, precoExercOpcaoPUT_ATM, valorOpcaoDoisMesesPUT_ATM); //perde o VE no vencimento
 			logger.info("gastoPUTDoisMesesNaATM: " + gastoPUTDoisMesesNaATM);
 			
+			logger.info("=== PUT ATM Faltando 1 Mes ===");
 			logger.info("fechamentoAcaoParaCalculoUmMesPUT_ATM: " + fechamentoCorrente);
 			double valorOpcaoUmMesRestantePUT_ATM = BlackScholes.blackScholes(false, fechamentoCorrente, precoExercOpcaoPUT_ATM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoUmMesRestantePUT_ATM: " + valorOpcaoUmMesRestantePUT_ATM);
-			double gastoPUTUmRestanteNaATM = BlackScholes.getVE(false, fechamentoCorrente, precoExercOpcaoPUT_ATM, valorOpcaoUmMesRestantePUT_ATM); //perde o VE no vencimento
-			logger.info("gastoPUTUmRestanteNaATM: " + gastoPUTUmRestanteNaATM);
+			double custoPUTUmMesRestanteNaATM = BlackScholes.getVE(false, fechamentoCorrente, precoExercOpcaoPUT_ATM, valorOpcaoUmMesRestantePUT_ATM); //perde o VE no vencimento
+			if(custoPUTUmMesRestanteNaATM < 0) custoPUTUmMesRestanteNaATM = 0;
+			logger.info("custoPUTUmMesRestanteNaATM: " + custoPUTUmMesRestanteNaATM);
 			
-			double gastoPUTNaATM = valorOpcaoDoisMesesPUT_ATM - valorOpcaoUmMesRestantePUT_ATM; //perde o VE no vencimento
+			logger.info("=== PUT ATM Resultado ===");
+			double gastoPUTNaATM = gastoPUTDoisMesesNaATM - custoPUTUmMesRestanteNaATM; //perde o VE no vencimento
+			logger.info("gastoPUTNaATM: gastoPUTDoisMesesNaATM - custoPUTUmMesRestanteNaATM =" + gastoPUTNaATM);
 			logger.info("Porcentagem gastoPUTNaATM: " + (gastoPUTNaATM*100)/fechamentoAcaoNaPUT_ATM + "%");
 			
 //			double gastoPUTNaATM = PCTE_1_PUT_ATM * fechamentoAcaoNaPUT_ATM;
@@ -167,14 +181,24 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			gastoPUT_ATM[indiceOperacao] = gastoCompraPUT_ATM;
 			totalGastoPUT_ATM+=gastoCompraPUT_ATM;
 			totalCaixa-=gastoCompraPUT_ATM; //retira o dinheiro da PUT ATM do caixa
-				
-			logger.info("valorCALL_ATM[" + indiceOperacao + "]=" + valorCALL_ATM[indiceOperacao]);
+			
+			logger.info("================= RESULTADO NO MES =================");
+			logger.info("variacaoAcao[" + indiceOperacao + "]=" + variacaoAcao[indiceOperacao]);
+			logger.info("ganhoVEVendaCobMuitoITM[" + indiceOperacao + "]=" + ganhoVEVendaCobMuitoITM[indiceOperacao]);
+//			logger.info("valorCALL_ATM[" + indiceOperacao + "]=" + valorCALL_ATM[indiceOperacao]);
+			logger.info("ganhoCALL_ATM[" + indiceOperacao + "]=" + ganhoCALL_ATM[indiceOperacao]);
 			logger.info("gastoCALL_ATM[" + indiceOperacao + "]=" + gastoCALL_ATM[indiceOperacao]);
-			logger.info("valorPUT_ATM[" + indiceOperacao + "]=" + valorPUT_ATM[indiceOperacao]);
+//			logger.info("valorPUT_ATM[" + indiceOperacao + "]=" + valorPUT_ATM[indiceOperacao]);
+			logger.info("ganhoPUT_ATM[" + indiceOperacao + "]=" + ganhoPUT_ATM[indiceOperacao]);
 			logger.info("gastoPUT_ATM[" + indiceOperacao + "]=" + gastoPUT_ATM[indiceOperacao]);
 			
+			double resultadoDoMes = ganhoVEVendaCobMuitoITM[indiceOperacao] + ganhoCALL_ATM[indiceOperacao] + ganhoPUT_ATM[indiceOperacao] - gastoCALL_ATM[indiceOperacao] - gastoPUT_ATM[indiceOperacao];
+			logger.info("resultadoDoMes: ganhoVEVendaCobMuitoITM + ganhoCALL_ATM + ganhoPUT_ATM - gastoCALL_ATM - gastoPUT_ATM");
+			logger.info("resultadoDoMes: " + ganhoVEVendaCobMuitoITM[indiceOperacao] + " + " + ganhoCALL_ATM[indiceOperacao] +
+					" + " + ganhoPUT_ATM[indiceOperacao] + " - " + gastoCALL_ATM[indiceOperacao] + " - " + gastoPUT_ATM[indiceOperacao] + " = " + resultadoDoMes);
 			logger.info("totalCaixa[" + indiceOperacao + "]=" + totalCaixa);
 			
+			logger.info(" ");
 			logger.info(" ");
 			
 			j = j + QTD_DIAS_OPCAO - 1; //vai para a proxima ATM
@@ -184,6 +208,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		}
 		
 		//imprime os valores encontrados
+		logger.info("================= RESULTADO FINAL NO ANO =================");
 		//calcula o valor total ganho NA ACAO
 		double primeiraCotacaoAcao = Double.parseDouble(listaDasCotacoes.get(0).getFechamento());
 		logger.info("GANHOS COM A ACAO APENAS:");
@@ -192,12 +217,13 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		double totalGanhoAcao = (fechamentoCorrente - primeiraCotacaoAcao) * QTD_LOTES;
 		logger.info("totalGanhoAcao=" + totalGanhoAcao);
 		double pctGanhoAcao=totalGanhoAcao*100/(primeiraCotacaoAcao * QTD_LOTES);
-		logger.info("pctGanhoAcao=" + pctGanhoAcao);
+		logger.info("pctGanhoAcao=" + pctGanhoAcao + "%");
+		logger.info(" ");
 		
 		//calcula o valor total ganho NAS OPCOES
 		logger.info("GANHOS COM A SIMULACAO DE REINVESTIMENTO:");
 		logger.info("totalCaixa=" + totalCaixa);
-		logger.info("totalGanhoVEVendaCobMuitoITM=" + totalGanhoVEVendaCobMuitoITM);
+		logger.info("totalGanhoVEVendaCobITM=" + totalGanhoVEVendaCobITM);
 		logger.info("totalGanhoCALL_ATM=" + totalGanhoCALL_ATM);
 		logger.info("totalGastoCALL_ATM=" + totalGastoCALL_ATM);
 		logger.info("totalGanhoPUT_ATM=" + totalGanhoPUT_ATM);
@@ -208,7 +234,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		
 		//calcula a porcentagem em relacao ao comeco do investimetno
 		double pctGanhoFinalGanhoSimulacao = (totalFinalGanhoSimulacao-primeiraCotacaoAcao)*100/(primeiraCotacaoAcao*QTD_LOTES);
-		logger.info("pctGanhoFinalGanhoSimulacao=" + pctGanhoFinalGanhoSimulacao);
+		logger.info("pctGanhoFinalGanhoSimulacao=" + pctGanhoFinalGanhoSimulacao + "%");
 		
 		logger.info(" ");
 		
