@@ -56,12 +56,13 @@ public class Principal {
 	 */
 	public static void main(String[] args) throws Exception{
 		
-		String[] acoes = {"PETR4", "VALE5","OGXP3","BVMF3"};
+//		String[] acoes = {"PETR4", "VALE5","OGXP3","BVMF3"};
+		String[] acoes = {"PETR4"};
 //		String[] acoes = {};
 		//BVMF3 - Mais ou menos liguidez
 		//"ITUB4","USIM5","GGBR4","CSNA3","BBAS3","BBDC4"
 		for (int i=0; i < acoes.length; i++)
-			for(int j = 2007; j < 2012; j++)
+			for(int j = 2011; j < 2012; j++)
 				insereCotacaoAcaoHistoricoBovespaDB(acoes[i], String.valueOf(j));
 	
 //		switch(Integer.parseInt(args[0])){

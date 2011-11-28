@@ -32,6 +32,7 @@ public interface IConstants {
 	public int QTD_DIAS_FALTA_2_MES_VENC = 59; //quando for saber 2 meses
 	public double TAXA_DE_JUROS = 0.1150; //11,5%
 	public double PCTGEM_OPCAO = 0.05;
+	public int QTD_DIAS_UTEIS_ANO = 252;
 	
 }
 
