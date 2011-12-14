@@ -1,7 +1,6 @@
 package sata.metastock.util;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -69,7 +68,7 @@ public class BlackScholes implements IConstants{
 		
 		List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo("PETR4", "2011");
 		List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo("PETR4", "2010");		
-		double volatilidade = BlackScholes.getVolatilidadeAnualAcao(listaDasCotacoesAnoPassado, listaDasCotacoesAnoRetrasado);
+		double volatilidade = CalculoUtil.getVolatilidadeAnualAcao(listaDasCotacoesAnoPassado, listaDasCotacoesAnoRetrasado);
 		
 //		List<CotacaoAtivoTO> listaDasCotacoesVol = new ArrayList<CotacaoAtivoTO>(); 
 ////		int i = 0;
@@ -100,11 +99,6 @@ public class BlackScholes implements IConstants{
         System.out.println("VI: " + getVI(true, precoAcao, precoExercicioOpcao));
         getVE(false, precoAcao, precoExercicioOpcao, valorOpcao);
         
-    }
-    
-    public static double getVolatilidade()
-    {
-    	return 0.27; //27%
     }
     
     public static double getQtdDiasEmAnos(int qtdDiasFaltamParaVencimento)
@@ -173,82 +167,6 @@ public class BlackScholes implements IConstants{
     	else
     		return precoAcao - (ordem * PCTGEM_OPCAO * precoAcao);
     }
-    
-    /**
-     * 
-     * @param listaDasCotacoesAnoPassado Lista com as cotacoes do ano passado.
-     * @param listaDasCotacoesAnoRetrasado Lista com as cotacoes do ano retrasado.
-     * @return Retorna a volatilidade anual da acao (considerando o ano passado e utilizando o ano retrasado para completar 252 cotacoes).
-     */
-    public static double getVolatilidadeAnualAcao(List<CotacaoAtivoTO> listaDasCotacoesAnoPassado, List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado)
-    {
-		List<CotacaoAtivoTO> listaDasCotacoesParaCalculoDaVolatilidade = new ArrayList<CotacaoAtivoTO>(); 
-
-		int qtdDiasFaltamParaCalculoVolatilidade = QTD_DIAS_UTEIS_ANO - listaDasCotacoesAnoPassado.size();
-		
-		//pega do ano RETRASADO as cotacoes que faltam para o calculo da volatilidade
-		//no ano tem-se 252 dias uteis entao deve-se conseguir 252 cotacoes
-		if (listaDasCotacoesAnoRetrasado.size() > 0)
-		{
-			for(int i = listaDasCotacoesAnoRetrasado.size() - qtdDiasFaltamParaCalculoVolatilidade; i < listaDasCotacoesAnoRetrasado.size(); i++)
-			{
-				CotacaoAtivoTO caTO = listaDasCotacoesAnoRetrasado.get(i);
-				listaDasCotacoesParaCalculoDaVolatilidade.add(caTO);
-			}			
-		}
-		
-		//pega o restante das cotacoes do ano passado
-		for(int i = 0; i < listaDasCotacoesAnoPassado.size(); i++)
-		{
-			CotacaoAtivoTO caTO = listaDasCotacoesAnoPassado.get(i);
-			listaDasCotacoesParaCalculoDaVolatilidade.add(caTO);
-		}
-        return BlackScholes.getVolatilidade(listaDasCotacoesParaCalculoDaVolatilidade);
-    }
-    
-    /**
-     * 
-     * @param listaCotacoesAtivo Lista com as cotacoes para calculo da volatilidade
-     * @return Retorna a volatilidade da acao
-     */
-    private static double getVolatilidade(List<CotacaoAtivoTO> listaCotacoesAtivo)
-    {
-    	
-    	int numTotalDaAmostra = listaCotacoesAtivo.size();
-    	double mediaVariacoesPrecos = 0;
-    	double desvioPadrao = 0;
-    	double variacoesPrecos[] = new double[numTotalDaAmostra];
-    	double precoFechamentoAnterior = 0;
-    	double precoFechamento = 0;
-    	double somatorioVariacaoDePrecos = 0;
-    	double somatorioVariacaoDePrecosDesvioPadrao = 0;
-    	for(int i=1; i < numTotalDaAmostra; i++)
-    	{	
-    		precoFechamentoAnterior = Double.parseDouble(listaCotacoesAtivo.get(i-1).getFechamento());
-    		precoFechamento = Double.parseDouble(listaCotacoesAtivo.get(i).getFechamento());
-    		variacoesPrecos[i] = Math.log(precoFechamento/precoFechamentoAnterior);
-    	}
-    	
-    	for(int i=1; i < numTotalDaAmostra; i++)
-    	{	
-    		somatorioVariacaoDePrecos = somatorioVariacaoDePrecos + variacoesPrecos[i];
-    	}
-    	
-    	mediaVariacoesPrecos = somatorioVariacaoDePrecos / numTotalDaAmostra;
-    	
-    	for(int i=1; i < numTotalDaAmostra; i++)
-    	{	
-    		somatorioVariacaoDePrecosDesvioPadrao = somatorioVariacaoDePrecosDesvioPadrao + Math.pow((mediaVariacoesPrecos - variacoesPrecos[i]), 2);
-    	}
-    
-    	desvioPadrao = Math.sqrt(somatorioVariacaoDePrecosDesvioPadrao / (numTotalDaAmostra - 1));
-//    	System.out.println("desvioPadrao = " + desvioPadrao);
-    	
-    	//retorna a volatilidade anual = volatilidade diaria * raiz_quadrada(252) //quantidade de dias uteis no ano
-    	desvioPadrao = desvioPadrao * Math.sqrt(QTD_DIAS_UTEIS_ANO);
-    	
-    	return desvioPadrao;    	
-    }
-    
+ 
 }
 

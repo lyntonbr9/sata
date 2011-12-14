@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.experimental.categories.Categories;
-
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
@@ -24,6 +22,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		this.con = postgreConnection;
 	}
 
+	@Deprecated
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
@@ -81,7 +80,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	@Override
+	@Deprecated
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, 
 													String dataFinal) {
 		

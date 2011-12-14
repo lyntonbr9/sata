@@ -33,6 +33,7 @@ public interface IConstants {
 	public double TAXA_DE_JUROS = 0.1150; //11,5%
 	public double PCTGEM_OPCAO = 0.05;
 	public int QTD_DIAS_UTEIS_ANO = 252;
+	public int QTD_DIAS_UTEIS_MES=21;
 	
 }
 

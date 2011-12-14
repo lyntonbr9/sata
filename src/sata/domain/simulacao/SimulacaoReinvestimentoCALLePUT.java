@@ -1,6 +1,5 @@
 package sata.domain.simulacao;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,6 +11,7 @@ import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 import sata.domain.util.IConstants;
 import sata.metastock.util.BlackScholes;
+import sata.metastock.util.CalculoUtil;
 
 //TODO TEM QUE RESOLVER ESSE
 public class SimulacaoReinvestimentoCALLePUT implements ISimulacao, IConstants{
@@ -49,7 +49,7 @@ public class SimulacaoReinvestimentoCALLePUT implements ISimulacao, IConstants{
 		double fechamentoAcaoNaCALL_ATM = 0.0;
 		double fechamentoAcaoNaPUT_ATM = 0.0;
 		
-		double volatilidade = BlackScholes.getVolatilidade();
+		double volatilidade = CalculoUtil.getVolatilidade();
 		double qtdDiasFaltaEmAnos = BlackScholes.getQtdDiasEmAnos(QTD_DIAS_FALTA_1_MES_VENC);
 		
 		int QTD_CALLS = 1;

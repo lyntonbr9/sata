@@ -11,7 +11,26 @@ public class CotacaoAtivoTO {
 	private String tipoPeriodo;
 	private String ano;
 	private String volume;
+	private double volatilidadeAnual;
+	private double volatilidadeMensal;
 	
+	
+	public double getVolatilidadeAnual() {
+		return volatilidadeAnual;
+	}
+
+	public void setVolatilidadeAnual(double volatilidadeAnual) {
+		this.volatilidadeAnual = volatilidadeAnual;
+	}
+
+	public double getVolatilidadeMensal() {
+		return volatilidadeMensal;
+	}
+
+	public void setVolatilidadeMensal(double volatilidadeMensal) {
+		this.volatilidadeMensal = volatilidadeMensal;
+	}
+
 	public String getVolume() {
 		return volume;
 	}
