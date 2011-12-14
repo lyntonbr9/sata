@@ -1,7 +1,5 @@
 package sata.domain.simulacao;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,6 +11,7 @@ import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.ResultadoSimulacaoTO;
 import sata.domain.util.IConstants;
 import sata.metastock.util.BlackScholes;
+import sata.metastock.util.CalculoUtil;
 
 //TODO TEM QUE RESOLVER ESSE
 public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IConstants{
@@ -42,8 +41,9 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		double fechamentoAcaoNaPUT_ATM = 0.0;
 		
 		//Calcula a volatilidade do ano anterior
-		double volatilidade = (Double) parametros[0];
-		System.out.println("VOLATILIDADE UTILIZADA: " + volatilidade);
+		double volatilidade = 0.0;
+//		double volatilidade = (Double) parametros[0];
+//		System.out.println("VOLATILIDADE UTILIZADA: " + volatilidade);
 		
 		double qtdDiasFaltaUmMesVencEmAnos = BlackScholes.getQtdDiasEmAnos(QTD_DIAS_FALTA_1_MES_VENC);
 //		double qtdDiasFaltaUmMesVencEmAnos = BlackScholes.getQtdDiasEmAnos(5);
@@ -85,12 +85,16 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			double precoExercOpcaoCALL_OTM = BlackScholes.getPrecoExercicio(true, fechamentoAcaoNaCALL_OTM, 2); // Pega a CALL 2 OTM
 			logger.info("precoExercOpcaoCALL_OTM: " + precoExercOpcaoCALL_OTM);
 			
+			volatilidade = caTONaOTM.getVolatilidadeAnual();
+			System.out.println("VOLATILIDADE UTILIZADA (CALL 2 OTM): " + volatilidade);
 			double valorOpcaoDoisMesesCALL_OTM = BlackScholes.blackScholes(true, fechamentoAcaoNaCALL_OTM, precoExercOpcaoCALL_OTM, qtdDiasFaltaDoisMesesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoDoisMesesCALL_OTM: " + valorOpcaoDoisMesesCALL_OTM);
 			double ganhoCallDoisMesesNaOTM = BlackScholes.getVE(true, fechamentoAcaoNaCALL_OTM, precoExercOpcaoCALL_OTM, valorOpcaoDoisMesesCALL_OTM); //perde o VE no vencimento
 			logger.info("ganhoCallDoisMesesNaOTM: " + ganhoCallDoisMesesNaOTM);
 			
 			logger.info("=== CALL OTM Faltando 1 Mes ===");
+			volatilidade = caTOCorrente.getVolatilidadeAnual();
+			System.out.println("VOLATILIDADE UTILIZADA (CALL OTM Faltando 1 Mes): " + volatilidade);
 			logger.info("fechamentoAcaoParaCalculoUmMesCALL_OTM: " + fechamentoCorrente);
 			double valorOpcaoUmMesRestanteCALL_OTM = BlackScholes.blackScholes(true, fechamentoCorrente, precoExercOpcaoCALL_OTM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoUmMesRestanteCALL_OTM: " + valorOpcaoUmMesRestanteCALL_OTM);
@@ -110,6 +114,8 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			
 			logger.info("=== PUT ATM Faltando 1 Mes ===");
 			CotacaoAtivoTO caTOPUTNaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
+			volatilidade = caTOPUTNaATM.getVolatilidadeAnual();
+			System.out.println("VOLATILIDADE UTILIZADA (PUT ATM Faltando 1 Mes): " + volatilidade);
 			fechamentoAcaoNaPUT_ATM = Double.parseDouble(caTOPUTNaATM.getFechamento());
 			double precoExercOpcaoPUT_ATM = BlackScholes.getPrecoExercicio(false, fechamentoAcaoNaPUT_ATM, 0); // Pega a PUT ATM
 			logger.info("precoExercOpcaoPUT_ATM: " + precoExercOpcaoPUT_ATM);
@@ -213,15 +219,16 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		{
 			logger.info("ANO " + String.valueOf(ano));
 			double volatilidade = 0;
-			List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano));
-			List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano-1));
-			if (acao.equalsIgnoreCase("PETR4") && (ano == 2009 || ano == 2008)) //SE FOR PETR4 em 2009
-				volatilidade = 0.3;
-			else
-				volatilidade = BlackScholes.getVolatilidadeAnualAcao(listaDasCotacoesAnoPassado, listaDasCotacoesAnoRetrasado);
+//			List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano));
+//			List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano-1));
+//			if (acao.equalsIgnoreCase("PETR4") && (ano == 2009 || ano == 2008)) //SE FOR PETR4 em 2009
+//				volatilidade = 0.3;
+//			else
+//				volatilidade = CalculoUtil.getVolatilidadeAnualAcao(listaDasCotacoesAnoPassado, listaDasCotacoesAnoRetrasado);
 			
 //			volatilidade = 0.49;
-			List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano));
+//			List<CotacaoAtivoTO> listaDasCotacoes = caDAO.getCotacoesDoAtivo(acao, String.valueOf(ano));
+			List<CotacaoAtivoTO> listaDasCotacoes = CalculoUtil.calculaVolatilidade(acao, String.valueOf(ano));
 			SimulacaoReinvestimentoCALLePUT_DoisMeses sr = new SimulacaoReinvestimentoCALLePUT_DoisMeses();
 			sr.getResultado(listaDasCotacoes, new Object[] {volatilidade});			
 		}
