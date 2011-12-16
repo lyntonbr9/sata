@@ -64,11 +64,15 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
 				caTO.setCodigo(rs.getString("codigoAtivo"));
 				caTO.setPeriodo(SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"),false));
+				caTO.setTipoPeriodo(rs.getString("tipoperiodo"));
 				caTO.setAbertura(rs.getString("abertura"));
 				caTO.setMaxima(rs.getString("maxima"));
 				caTO.setMinima(rs.getString("minima"));
 				caTO.setFechamento(rs.getString("fechamento"));
 				caTO.setAno(rs.getString("ano"));
+				caTO.setVolume(rs.getString("volume"));
+				caTO.setVolatilidadeAnual(Double.valueOf(rs.getString("volatilidadeAnual")));
+				caTO.setVolatilidadeMensal(Double.valueOf(rs.getString("volatilidadeMensal")));
 				listaCotacoesDoAtivo.add(caTO);
 			}
 			PostgreDAOFactory.returnConnection(con);
@@ -80,7 +84,6 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	@Deprecated
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, 
 													String dataFinal) {
 		
@@ -103,11 +106,15 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
 				caTO.setCodigo(rs.getString("codigoAtivo"));
 				caTO.setPeriodo(SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"),false));
+				caTO.setTipoPeriodo(rs.getString("tipoperiodo"));
 				caTO.setAbertura(rs.getString("abertura"));
 				caTO.setMaxima(rs.getString("maxima"));
 				caTO.setMinima(rs.getString("minima"));
 				caTO.setFechamento(rs.getString("fechamento"));
 				caTO.setAno(rs.getString("ano"));
+				caTO.setVolume(rs.getString("volume"));
+				caTO.setVolatilidadeAnual(Double.valueOf(rs.getString("volatilidadeAnual")));
+				caTO.setVolatilidadeMensal(Double.valueOf(rs.getString("volatilidadeMensal")));
 				listaCotacoesDoAtivo.add(caTO);
 			}
 			PostgreDAOFactory.returnConnection(con);
@@ -119,6 +126,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 
+	//TODO: Colocar a volatilidade anual e mensal
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) {
 		
 		String tabela = "CotacaoAtivo"; //tabela das acoes
@@ -193,10 +201,63 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		}
 		return dataUltimoCadastro;
 	}
+
+	@Override
+	public int updateCotacaoDoAtivo(CotacaoAtivoTO caTO) {
+		
+		String sqlStmt = "UPDATE \"CotacaoAtivo\" SET " +
+			" tipoperiodo=?, abertura=?, maxima=?, minima=?, fechamento=?, ano=?, volume=?, volatilidadeAnual=?, volatilidadeMensal=? " +
+			" WHERE \"codigoAtivo\"=? AND periodo=?";
+		
+		int numeroLinhasAtualizadas = 0;
+		String periodoFormatadoParaBD = SATAUtil.getDataFormatadaParaBD(caTO.getPeriodo());
+		
+		try {
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, caTO.getTipoPeriodo());
+			ps.setString(2, caTO.getAbertura());
+			ps.setString(3, caTO.getMaxima());
+			ps.setString(4, caTO.getMinima());
+			ps.setString(5, caTO.getFechamento());
+			ps.setString(6, caTO.getAno());
+			ps.setString(7, caTO.getVolume());
+			ps.setString(8, String.valueOf(caTO.getVolatilidadeAnual()));
+			ps.setString(9, String.valueOf(caTO.getVolatilidadeMensal()));
+			ps.setString(10, caTO.getCodigo());
+			ps.setTimestamp(11, SATAUtil.getTimeStampPeriodoCotacao(periodoFormatadoParaBD));
+			numeroLinhasAtualizadas = ps.executeUpdate();
+			PostgreDAOFactory.returnConnection(con);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		// TODO Auto-generated method stub
+		return numeroLinhasAtualizadas;
+	}	
 	
 	public static void main(String[] args) {
 		
-		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+		//PETR4 teve split dividido por 2 em 25/04/2008
+//		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+		
+		//atualizacao da cotacao na PETR4 por causa do split
+//		List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", "20060101", "20080425");
+//		for(CotacaoAtivoTO caTO : listaCotacoesAcao)
+//		{
+//			int aberturaAtualizado = Integer.valueOf(caTO.getAbertura()) / 2;
+//			int fechamentoAtualizado = Integer.valueOf(caTO.getFechamento()) / 2;
+//			int maximaAtualizado = Integer.valueOf(caTO.getMaxima()) / 2;
+//			int minimaAtualizado = Integer.valueOf(caTO.getMinima()) / 2;
+//			System.out.println(caTO.getCodigo() + ": " + " F: " + caTO.getFechamento() + " Data: " + caTO.getPeriodo() + " novaCotacao: " + fechamentoAtualizado);
+//			caTO.setAbertura(String.valueOf(aberturaAtualizado));
+//			caTO.setFechamento(String.valueOf(fechamentoAtualizado));
+//			caTO.setMaxima(String.valueOf(maximaAtualizado));
+//			caTO.setMinima(String.valueOf(minimaAtualizado));
+//			caDAO.updateCotacaoDoAtivo(caTO);
+//		}
+		
+		
 //		List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", SATAUtil.getDataFormatadaParaBD("21/06/2011"), SATAUtil.getDataFormatadaParaBD("18/07/2011"));
 		
 //		String[] datasInicioSerie = {"03/01/2011","18/01/2011","18/02/2011","22/03/2011","19/04/2011","17/05/2011","21/06/2011","19/07/2011"};
@@ -205,24 +266,24 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 //		String[] datasInicioSerie = {"02/01/2009","20/01/2009","17/02/2009","17/03/2009","22/04/2009","19/05/2009","16/06/2009","21/07/2009","18/08/2009","22/09/2009","20/10/2009","17/11/2009"};
 //		String[] datasFimSerie = {"19/01/2009","16/02/2009","16/03/2009","20/04/2009","18/05/2009","15/06/2009","20/07/2009","17/08/2009","21/09/2009","19/10/2009","16/11/2009","21/12/2009"};
 
-		String[] datasInicioSerie = {"02/01/2007","16/01/2007","13/02/2007","20/03/2007","17/04/2007","19/05/2007","19/06/2007","17/07/2007","20/08/2007","18/09/2007","16/10/2007","21/11/2007"};
-		String[] datasFimSerie = {"15/01/2007","12/02/2007","19/03/2007","16/04/2007","21/05/2007","18/06/2007","16/07/2007","17/08/2007","17/09/2007","15/10/2007","19/11/2007","17/12/2007"};
-
-//		String dataInicioSerie = "";
-//		String dataFimSerie = "";
-		
-		String resultadoOperacao = "";
-		
-		for (int i = 0; i < datasFimSerie.length; i++)
-		{
-			List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", SATAUtil.getDataFormatadaParaBD(datasInicioSerie[i]), SATAUtil.getDataFormatadaParaBD(datasFimSerie[i]));
-
-			for(CotacaoAtivoTO cotacaoAcaoTO : listaCotacoesAcao){
-				System.out.println(cotacaoAcaoTO.getCodigo() + ": " + Double.parseDouble(cotacaoAcaoTO.getFechamento())/100 + " dia: " + cotacaoAcaoTO.getPeriodo());
-				resultadoOperacao += analisaMelhorOpcaoCompra(cotacaoAcaoTO, i, datasInicioSerie[i], datasFimSerie[i]);
-			}
-		}
-		System.out.println(resultadoOperacao);
+//		String[] datasInicioSerie = {"02/01/2007","16/01/2007","13/02/2007","20/03/2007","17/04/2007","19/05/2007","19/06/2007","17/07/2007","20/08/2007","18/09/2007","16/10/2007","21/11/2007"};
+//		String[] datasFimSerie = {"15/01/2007","12/02/2007","19/03/2007","16/04/2007","21/05/2007","18/06/2007","16/07/2007","17/08/2007","17/09/2007","15/10/2007","19/11/2007","17/12/2007"};
+//
+////		String dataInicioSerie = "";
+////		String dataFimSerie = "";
+//		
+//		String resultadoOperacao = "";
+//		
+//		for (int i = 0; i < datasFimSerie.length; i++)
+//		{
+//			List<CotacaoAtivoTO> listaCotacoesAcao = caDAO.getCotacoesDoAtivo("PETR4", SATAUtil.getDataFormatadaParaBD(datasInicioSerie[i]), SATAUtil.getDataFormatadaParaBD(datasFimSerie[i]));
+//
+//			for(CotacaoAtivoTO cotacaoAcaoTO : listaCotacoesAcao){
+//				System.out.println(cotacaoAcaoTO.getCodigo() + ": " + Double.parseDouble(cotacaoAcaoTO.getFechamento())/100 + " dia: " + cotacaoAcaoTO.getPeriodo());
+//				resultadoOperacao += analisaMelhorOpcaoCompra(cotacaoAcaoTO, i, datasInicioSerie[i], datasFimSerie[i]);
+//			}
+//		}
+//		System.out.println(resultadoOperacao);
 	}
 	public static String analisaMelhorOpcaoCompra(CotacaoAtivoTO cotacaoAcaoTO, int indiceSerieOpcao, String dataInicial, String dataFinal){
 
@@ -341,5 +402,6 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		
 		return resultadoOpcaoPUT + resultadoOpcaoCALL;
 	}
+
 }
 

@@ -12,4 +12,5 @@ public interface ICotacaoAtivoDAO {
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO);
 	public boolean existeCotacao(String codigoAtivo, String periodo);
 	public String getDataUltimoCadastro(String codigoAtivo);
+	public int updateCotacaoDoAtivo(CotacaoAtivoTO caTO);
 }

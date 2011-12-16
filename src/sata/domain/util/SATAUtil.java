@@ -19,7 +19,12 @@ public class SATAUtil implements IConstants{
 		return (valor < 10) ? "0" + valor : String.valueOf(valor);
 	}
 	
-	//converve yyyyMMdd em TimeStamp
+	
+	/**
+	 * Converte yyyyMMdd em TimeStamp.
+	 * @param periodo Data no formato yyyyMMdd.
+	 * @return A data no formato TimeStamp.
+	 */
 	public static Timestamp getTimeStampPeriodoCotacao(String periodo){
 		Calendar cal = new GregorianCalendar();
 		cal.set(Integer.valueOf(periodo.substring(0,4)), Integer.valueOf(periodo.substring(4,6)) - 1, Integer.valueOf(periodo.substring(6,8)),0,0,0);
@@ -28,6 +33,12 @@ public class SATAUtil implements IConstants{
 		return ts;
 	}
 	
+	/**
+	 * Formata a data em TimeStamp para dd/MM/yyyy.
+	 * @param ts TimeStamp que se deseja formatar.
+	 * @param comHora Se true retorna a data com a hora hh:mm:ss.
+	 * @return Retorna a data no formato dd/MM/yyyy, sendo antes em TimeStamp. 
+	 */
 	public static String getTimeStampFormatado(Timestamp ts, boolean comHora){
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(ts);
@@ -45,7 +56,11 @@ public class SATAUtil implements IConstants{
 		return tempoFormatado;
 	}
 	
-	//formata dd/MM/yyyy em yyyyMMdd
+	/**
+	 * Formata dd/MM/yyyy em yyyyMMdd.
+	 * @param data Data no formato dd/MM/yyyy.
+	 * @return Retorna a data formatada em yyyyMMdd.
+	 */
 	public static String getDataFormatadaParaBD(String data){
 		
 		return data.substring(6,10) + data.substring(3,5) + data.substring(0,2);

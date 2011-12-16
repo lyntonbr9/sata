@@ -215,7 +215,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		
 		String acao = "PETR4";
 //		String acao = "OGXP3";
-		for(int ano=2011; ano <= 2011; ano++)
+		for(int ano=2010; ano <= 2011; ano++)
 		{
 			logger.info("ANO " + String.valueOf(ano));
 			double volatilidade = 0;
