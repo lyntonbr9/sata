@@ -233,10 +233,12 @@ public class CalculoUtil implements IConstants {
 			//tem que preencher com as cotacoes do ano retrasado
 			if (listaDasCotacoesAnoPassado.size() < QTD_DIAS_UTEIS_ANO)
 			{
-				int qtdDiasQueFalta = QTD_DIAS_UTEIS_ANO - listaDasCotacoesAnoPassado.size();
-				for(int i=listaDasCotacoesAnoRetrasado.size() - qtdDiasQueFalta; i < listaDasCotacoesAnoRetrasado.size(); i++)
-					listaDasCotacoesParaCalculo.add(listaDasCotacoesAnoRetrasado.get(i));
-				
+				if(listaDasCotacoesAnoRetrasado.size() > 0)
+				{
+					int qtdDiasQueFalta = QTD_DIAS_UTEIS_ANO - listaDasCotacoesAnoPassado.size();
+					for(int i=listaDasCotacoesAnoRetrasado.size() - qtdDiasQueFalta; i < listaDasCotacoesAnoRetrasado.size(); i++)
+						listaDasCotacoesParaCalculo.add(listaDasCotacoesAnoRetrasado.get(i));
+				}
 			}
 			//termina de preencher com as cotacoes do ano passado
 			for(int i=0; i<listaDasCotacoesAnoPassado.size();i++)

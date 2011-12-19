@@ -86,7 +86,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			logger.info("precoExercOpcaoCALL_OTM: " + precoExercOpcaoCALL_OTM);
 			
 			volatilidade = caTONaOTM.getVolatilidadeAnual();
-			System.out.println("VOLATILIDADE UTILIZADA (CALL 2 OTM): " + volatilidade);
+			logger.info("VOLATILIDADE UTILIZADA (CALL 2 OTM): " + volatilidade);
 			double valorOpcaoDoisMesesCALL_OTM = BlackScholes.blackScholes(true, fechamentoAcaoNaCALL_OTM, precoExercOpcaoCALL_OTM, qtdDiasFaltaDoisMesesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoDoisMesesCALL_OTM: " + valorOpcaoDoisMesesCALL_OTM);
 			double ganhoCallDoisMesesNaOTM = BlackScholes.getVE(true, fechamentoAcaoNaCALL_OTM, precoExercOpcaoCALL_OTM, valorOpcaoDoisMesesCALL_OTM); //perde o VE no vencimento
@@ -94,7 +94,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			
 			logger.info("=== CALL OTM Faltando 1 Mes ===");
 			volatilidade = caTOCorrente.getVolatilidadeAnual();
-			System.out.println("VOLATILIDADE UTILIZADA (CALL OTM Faltando 1 Mes): " + volatilidade);
+			logger.info("VOLATILIDADE UTILIZADA (CALL OTM Faltando 1 Mes): " + volatilidade);
 			logger.info("fechamentoAcaoParaCalculoUmMesCALL_OTM: " + fechamentoCorrente);
 			double valorOpcaoUmMesRestanteCALL_OTM = BlackScholes.blackScholes(true, fechamentoCorrente, precoExercOpcaoCALL_OTM, qtdDiasFaltaUmMesVencEmAnos, TAXA_DE_JUROS, volatilidade);
 			logger.info("valorOpcaoUmMesRestanteCALL_OTM: " + valorOpcaoUmMesRestanteCALL_OTM);
@@ -115,7 +115,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 			logger.info("=== PUT ATM Faltando 1 Mes ===");
 			CotacaoAtivoTO caTOPUTNaATM = listaDasCotacoes.get(j); //pega a cotacao da acao na ATM quando for comprar
 			volatilidade = caTOPUTNaATM.getVolatilidadeAnual();
-			System.out.println("VOLATILIDADE UTILIZADA (PUT ATM Faltando 1 Mes): " + volatilidade);
+			logger.info("VOLATILIDADE UTILIZADA (PUT ATM Faltando 1 Mes): " + volatilidade);
 			fechamentoAcaoNaPUT_ATM = Double.parseDouble(caTOPUTNaATM.getFechamento());
 			double precoExercOpcaoPUT_ATM = BlackScholes.getPrecoExercicio(false, fechamentoAcaoNaPUT_ATM, 0); // Pega a PUT ATM
 			logger.info("precoExercOpcaoPUT_ATM: " + precoExercOpcaoPUT_ATM);
@@ -215,7 +215,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		
 		String acao = "PETR4";
 //		String acao = "OGXP3";
-		for(int ano=2010; ano <= 2011; ano++)
+		for(int ano=2000; ano <= 2011; ano++)
 		{
 			logger.info("ANO " + String.valueOf(ano));
 			double volatilidade = 0;
@@ -243,10 +243,10 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		for (int i=1; i <= tempo; i++){
 			ganho=caixa * taxa;
 			caixa=caixa + ganho + quantiaPorUnidadeTempo;
-			System.out.println("caixa:" + caixa);
+			logger.info("caixa:" + caixa);
 		}
 			
-		System.out.println("caixa:" + caixa);
+		logger.info("caixa:" + caixa);
 	}
 
 }
