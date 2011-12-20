@@ -1,7 +1,8 @@
 package sata.domain.util;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,10 @@ public class SATAUtil implements IConstants{
 		return (valor < 10) ? "0" + valor : String.valueOf(valor);
 	}
 	
+	public static String formataNumero(BigDecimal numero) {
+		DecimalFormat df = new DecimalFormat("0.##");
+        return df.format(numero);
+	}
 	
 	/**
 	 * Converte yyyyMMdd em TimeStamp.
