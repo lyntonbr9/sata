@@ -35,5 +35,6 @@ public interface IConstants {
 	public int QTD_DIAS_UTEIS_ANO = 252;
 	public int QTD_DIAS_UTEIS_MES=21;
 	
+	public double SPREAD = 2.5;
 }
 
