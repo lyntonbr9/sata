@@ -20,8 +20,8 @@ public class Simulacao {
 		resultado.setAnoFinal(anoFinal);
 		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
 			for (int mes=1; mes <= 12; mes++) {
+				DataTO data = new DataTO(mes,ano);
 				for (Operacao operacao : operacoes) {
-					DataTO data = new DataTO(mes,ano);
 					BigDecimal valor = operacao.getValor(data);
 					resultado.setResultadoMensal(operacao, mes, ano, valor);
 				}
