@@ -4,6 +4,7 @@ import static sata.auto.operacao.Operacao.PRIMEIRO_DIA;
 import static sata.auto.operacao.Operacao.ULTIMO_DIA;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import sata.auto.to.DataTO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
+import sata.domain.util.SATAUtil;
 
 public abstract class Ativo {
 	
@@ -38,13 +40,27 @@ public abstract class Ativo {
 	}
 
 	private CotacaoAtivoTO getCotacaoAcao(Acao acao, DataTO data, int dia) {
-		List<CotacaoAtivoTO> cotacoesAtivo = getListaCotacoesAcao(acao, data);
-		if (!cotacoesAtivo.isEmpty()) {
-			int i = 0;
-			if (dia == ULTIMO_DIA) i = cotacoesAtivo.size()-1;
-			if (dia == ULTIMO_DIA) System.out.println("data " + data + " último dia = " + i);
-			if (dia == PRIMEIRO_DIA) System.out.println("data " + data + " primeiro dia = " + i);
-			return cotacoesAtivo.get(i);
+		int diaCotacao = -1;
+		DataTO dataCotacao = data;
+		if (dia == PRIMEIRO_DIA) {
+			dataCotacao = data.getMesAnterior();
+			diaCotacao = SATAUtil.getDiaMes(dataCotacao.getAno(), dataCotacao.getMes(), Calendar.MONDAY, 3);
+		}
+		if (dia == ULTIMO_DIA) {
+			diaCotacao = SATAUtil.getDiaMes(dataCotacao.getAno(), dataCotacao.getMes(), Calendar.MONDAY, 3)-3;
+		}
+		CotacaoAtivoTO cotacao;
+		do {
+			cotacao = getCotacaoAtivoNoDiaEspecifico(acao, dataCotacao, diaCotacao++);
+		} while (cotacao == null);
+		return cotacao;
+	}
+	
+	private CotacaoAtivoTO getCotacaoAtivoNoDiaEspecifico(Acao acao, DataTO data, int dia) {
+		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(acao, data)) {
+			if(data.getDataFormatada(dia,"dd/MM/yyyy").equals(cotacao.getPeriodo())){
+				return cotacao;
+			}
 		}
 		return null;
 	}

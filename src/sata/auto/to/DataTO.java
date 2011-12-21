@@ -1,5 +1,8 @@
 package sata.auto.to;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 public class DataTO implements Comparable<DataTO>{
 	private Integer mes;
 	private Integer ano;
@@ -16,20 +19,30 @@ public class DataTO implements Comparable<DataTO>{
 	}
 	
 	public DataTO getMesAnterior(int qtd) {
-		return new DataTO(mes-qtd, ano);
+		if (mes > qtd)
+			return new DataTO(mes-qtd, ano);
+		else
+			return new DataTO(12-(mes-qtd), ano-1);
 	}
 	
 	public String getDia(Integer dia) {
-		return ano + getMesFormatado() + dia;
+		return getDataFormatada(dia, "yyyyMMdd");
 	}
 	
 	public String getDiaInicial() {
-		return ano + getMesFormatado() + "01";
+		return getDia(1);
 	}
 	
 	public String getDiaFinal() {
-		return ano + getMesFormatado() + "31";
+		return getDia(31);
 	}
+	
+	public String getDataFormatada(Integer dia, String pattern) {
+		SimpleDateFormat formato = new SimpleDateFormat(pattern);  
+		return formato.format(new GregorianCalendar(ano, mes-1, dia).getTime()); 
+	}
+	
+//	"dd/MM/yyyy"
 	
 	@Override
 	public String toString() {

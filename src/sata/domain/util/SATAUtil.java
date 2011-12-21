@@ -20,9 +20,35 @@ public class SATAUtil implements IConstants{
 		return (valor < 10) ? "0" + valor : String.valueOf(valor);
 	}
 	
+	/**
+	 * Formata um número com duas casas decimais
+	 * @param numero o número a ser formatado
+	 * @return o número formatado
+	 */
 	public static String formataNumero(BigDecimal numero) {
 		DecimalFormat df = new DecimalFormat("0.##");
         return df.format(numero);
+	}
+	
+	/**
+	 * Retorna o n-ésimo dia do mês que caia no dia da semana no mês informado 
+	 * @param ano o ano do mês desejado
+	 * @param mes o mês desejado
+	 * @param diaSemana o dia da semana desejado
+	 * @param n o n que define o n-ésimo dia da semana
+	 * @return o n-ésimo dia do mês que caia no dia da semana no mês informado
+	 */
+	public static Integer getDiaMes(int ano, int mes, int diaSemana, int n) {
+		int posicao = 1;
+		for (int i = 1; i <= 31; i++) {
+			GregorianCalendar calendar = new GregorianCalendar(ano, mes-1, i);
+			if (calendar.get(Calendar.DAY_OF_WEEK) == diaSemana) {
+				if (n == posicao++) {
+					return calendar.get(Calendar.DAY_OF_MONTH);
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**
