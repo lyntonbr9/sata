@@ -102,6 +102,4 @@ public class CotacaoAtivoTO {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
-
-
 }

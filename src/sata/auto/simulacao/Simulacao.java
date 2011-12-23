@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.to.DataTO;
 
@@ -22,8 +23,12 @@ public class Simulacao {
 			for (int mes=1; mes <= 12; mes++) {
 				DataTO data = new DataTO(mes,ano);
 				for (Operacao operacao : operacoes) {
-					BigDecimal valor = operacao.getValor(data);
-					resultado.setResultadoMensal(operacao, mes, ano, valor);
+					try {
+						resultado.setResultadoMensal(operacao, mes, ano, operacao.getPreco(data));
+						
+					} catch (CotacaoInexistenteEX e) {
+						resultado.remove(data);
+					}
 				}
 			}
 		}

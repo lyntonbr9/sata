@@ -42,8 +42,6 @@ public class DataTO implements Comparable<DataTO>{
 		return formato.format(new GregorianCalendar(ano, mes-1, dia).getTime()); 
 	}
 	
-//	"dd/MM/yyyy"
-	
 	@Override
 	public String toString() {
 		return getMesFormatado() + "/" + ano;
@@ -54,6 +52,14 @@ public class DataTO implements Comparable<DataTO>{
 		int compAno = ano.compareTo(other.ano);
 		if (compAno != 0) return compAno;
 		else return mes.compareTo(other.mes);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof DataTO))
+			return false;
+		return ((DataTO)other).ano.equals(ano) 
+			&& ((DataTO)other).mes.equals(mes);
 	}
 	
 	private String getMesFormatado() {

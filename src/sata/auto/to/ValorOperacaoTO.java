@@ -1,22 +1,21 @@
 package sata.auto.to;
 
-import java.math.BigDecimal;
-
 import sata.auto.operacao.Operacao;
+import sata.auto.operacao.ativo.preco.Preco;
 import sata.domain.util.SATAUtil;
 
 public class ValorOperacaoTO implements Comparable<ValorOperacaoTO> {
 	
 	private Operacao operacao;
 	private DataTO data;
-	private BigDecimal valor;
+	private Preco preco;
 	
 	public ValorOperacaoTO() {};
 	
-	public ValorOperacaoTO (Operacao operacao, DataTO data, BigDecimal valor) {
+	public ValorOperacaoTO (Operacao operacao, DataTO data, Preco preco) {
 		this.operacao = operacao;
 		this.data = data;
-		this.valor = valor;
+		this.preco = preco;
 	}
 	
 	@Override
@@ -26,7 +25,7 @@ public class ValorOperacaoTO implements Comparable<ValorOperacaoTO> {
 	
 	@Override
 	public String toString() {
-		return operacao + " " + data + " = " + SATAUtil.formataNumero(valor);
+		return operacao + " " + data + " = " + SATAUtil.formataNumero(preco.getValor());
 	}
 	
 	public Operacao getOperacao() {
@@ -41,10 +40,10 @@ public class ValorOperacaoTO implements Comparable<ValorOperacaoTO> {
 	public void setData(DataTO data) {
 		this.data = data;
 	}
-	public BigDecimal getValor() {
-		return valor;
+	public Preco getPreco() {
+		return preco;
 	}
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
+	public void setPreco(Preco preco) {
+		this.preco = preco;
 	}
 }

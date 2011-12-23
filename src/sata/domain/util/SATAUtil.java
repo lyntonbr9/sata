@@ -26,7 +26,7 @@ public class SATAUtil implements IConstants{
 	 * @return o número formatado
 	 */
 	public static String formataNumero(BigDecimal numero) {
-		DecimalFormat df = new DecimalFormat("0.##");
+		DecimalFormat df = new DecimalFormat("0.00");
         return df.format(numero);
 	}
 	
