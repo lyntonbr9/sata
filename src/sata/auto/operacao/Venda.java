@@ -6,21 +6,16 @@ public class Venda extends Operacao {
 	
 	public Venda() {}
 	
-	public Venda(Ativo ativo, int mesesParaVencimento, int dia) {
+	public Venda(Ativo ativo, int mesesParaVencimento, int momento) {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
-		this.dia = dia;
+		this.momento = momento;
 	}
 
 	@Override
-	public int getDiaPrecoAcao() {
-		return dia;
-	}
-
-	@Override
-	public int getDiaPrecoOpcao() {
-		if (dia == ULTIMO_DIA) 
-			return PRIMEIRO_DIA; // Se está vendendo no último dia, buscar o valor do primeiro dia
-		else return dia;
+	public int getMomentoOperacaoOpcao() {
+		if (momento == FECHAMENTO) 
+			return ABERTURA; // Se está vendendo no fechamento, buscar o valor da abertura
+		else return momento;
 	}
 }

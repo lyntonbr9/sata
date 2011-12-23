@@ -36,5 +36,9 @@ public interface IConstants {
 	public int QTD_DIAS_UTEIS_MES=21;
 	
 	public double SPREAD = 2.5;
+	static final char COMPRADO = 'C';
+	static final char VENDIDO = 'V';
+	public static final int ABERTURA = 0;
+	public static final int FECHAMENTO = 1;
 }
 

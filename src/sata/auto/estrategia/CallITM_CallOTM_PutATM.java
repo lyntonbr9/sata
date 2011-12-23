@@ -1,7 +1,7 @@
 package sata.auto.estrategia;
 
-import static sata.auto.operacao.Operacao.PRIMEIRO_DIA;
-import static sata.auto.operacao.Operacao.ULTIMO_DIA;
+import static sata.auto.operacao.Operacao.ABERTURA;
+import static sata.auto.operacao.Operacao.FECHAMENTO;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Acao;
@@ -17,13 +17,13 @@ public class CallITM_CallOTM_PutATM extends Estrategia {
 		Call callOTM = new Call(acao, 2);
 		Put putATM = new Put(acao, 0);
 		
-		simulacao.getOperacoes().add(new Compra(callITM, 1, PRIMEIRO_DIA));
-		simulacao.getOperacoes().add(new Venda(callOTM, 1, PRIMEIRO_DIA));
-		simulacao.getOperacoes().add(new Compra(putATM, 1, PRIMEIRO_DIA));
+		simulacao.getOperacoes().add(new Compra(callITM, 1, ABERTURA));
+		simulacao.getOperacoes().add(new Venda(callOTM, 1, ABERTURA));
+		simulacao.getOperacoes().add(new Compra(putATM, 1, ABERTURA));
 		
-		simulacao.getOperacoes().add(new Venda(callITM, 0, ULTIMO_DIA));
-		simulacao.getOperacoes().add(new Compra(callOTM, 0, ULTIMO_DIA));
-		simulacao.getOperacoes().add(new Venda(putATM, 0, ULTIMO_DIA));
+		simulacao.getOperacoes().add(new Venda(callITM, 0, FECHAMENTO));
+		simulacao.getOperacoes().add(new Compra(callOTM, 0, FECHAMENTO));
+		simulacao.getOperacoes().add(new Venda(putATM, 0, FECHAMENTO));
 		
 		simulacao.setAnoInicial(2008);
 		simulacao.setAnoFinal(2010);

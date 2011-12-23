@@ -1,8 +1,8 @@
 package sata.auto.operacao.ativo;
 
-import java.math.BigDecimal;
-
 import sata.auto.operacao.Operacao;
+import sata.auto.operacao.ativo.preco.Preco;
+import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.to.DataTO;
 
 
@@ -16,7 +16,7 @@ public class Call extends Opcao {
 	}
 
 	@Override
-	public BigDecimal getValor(DataTO data, Operacao operacao) {
-		return blackScholes(true,data,acao,operacao.getMesesParaVencimento(),operacao.getDiaPrecoAcao(),operacao.getDiaPrecoOpcao());
+	public Preco criaPreco(DataTO data, Operacao operacao) {
+		return new PrecoOpcao(true,data,acao,operacao.getMesesParaVencimento(),operacao.getMomento(),operacao.getMomentoOperacaoOpcao(), ordem);
 	}
 }
