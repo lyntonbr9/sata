@@ -6,10 +6,11 @@ public class Venda extends Operacao {
 	
 	public Venda() {}
 	
-	public Venda(Ativo ativo, int mesesParaVencimento, int momento) {
+	public Venda(Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao) {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 		this.momento = momento;
+		this.condicao = condicao;
 	}
 
 	@Override

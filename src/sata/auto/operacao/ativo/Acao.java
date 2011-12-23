@@ -26,15 +26,15 @@ public class Acao extends Ativo {
 	}
 	
 	public BigDecimal getPreco(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return ((PrecoAcao)getPrecoAtivo(data, criaOperacaoFake(momento))).getValor();
+		return getPrecoAtivo(data, criaOperacaoFake(momento)).getValor();
 	}
 	
 	public BigDecimal getVolatilidade(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return ((PrecoAcao)getPrecoAtivo(data, criaOperacaoFake(momento))).getVolatilidade();
+		return getPrecoAtivo(data, criaOperacaoFake(momento)).getVolatilidade();
 	}
 	
 	public String getDia(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return ((PrecoAcao)getPrecoAtivo(data, criaOperacaoFake(momento))).getPeriodo();
+		return getPrecoAtivo(data, criaOperacaoFake(momento)).getPeriodo();
 	}
 	
 	private Operacao criaOperacaoFake(int momento) {

@@ -9,10 +9,11 @@ public class Compra extends Operacao {
 	
 	public Compra() {}
 	
-	public Compra(Ativo ativo, int mesesParaVencimento, int momento) {
+	public Compra(Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao) {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 		this.momento = momento;
+		this.condicao = condicao;
 	}
 	
 	@Override
