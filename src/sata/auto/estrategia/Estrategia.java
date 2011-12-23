@@ -11,17 +11,16 @@ public abstract class Estrategia {
 	Simulacao simulacao = new Simulacao();
 	
 	public static void executa(Estrategia estrategia) {
-		System.out.println("início: " + new Date());
+		System.out.println("Início: " + new Date());
 		estrategia.executa();
 		Resultado resultado = estrategia.simulacao.getResultado();
-		System.out.println("fim do processamento: " + new Date());
 		try {
 			System.out.println(resultado.imprime(true, true, true, true));
 		} catch (CotacaoInexistenteEX e) {
 			System.out.println(e.getMessage());
 		}
 		
-		System.out.println("fim: " + new Date());
+		System.out.println("Fim: " + new Date());
 	}
 	
 	public abstract void executa();

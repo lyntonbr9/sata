@@ -6,6 +6,7 @@ import java.util.List;
 
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
+import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.to.DataTO;
 
 public class Simulacao {
@@ -24,7 +25,10 @@ public class Simulacao {
 				DataTO data = new DataTO(mes,ano);
 				for (Operacao operacao : operacoes) {
 					try {
-						resultado.setResultadoMensal(operacao, mes, ano, operacao.getPreco(data));
+						Preco preco = operacao.getPreco(data);
+						if (operacao.condicaoVerdadeira(preco)) {
+							resultado.setResultadoMensal(operacao, mes, ano, preco);
+						}
 						
 					} catch (CotacaoInexistenteEX e) {
 						resultado.remove(data);

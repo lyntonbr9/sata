@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import sata.auto.exception.CotacaoInexistenteEX;
@@ -100,11 +99,8 @@ public class Resultado {
 	public String imprime(boolean anual, boolean mensal, boolean operacoes, boolean calculos) throws CotacaoInexistenteEX {
 		String string = "";
 		if (calculos) string = string.concat(imprimeCalculos());
-		System.out.println("fim da impressão do cálculos: " + new Date());
 		if (operacoes) string = string.concat("\n"+imprimeOperacoes());
-		System.out.println("fim da impressão das operacoes: " + new Date());
 		if (mensal) string = string.concat("\n"+imprimeResultadosMensais());
-		System.out.println("fim da impressão mensal: " + new Date());
 		if (anual) string = string.concat("\n"+imprimeResultadosAnuais());
 		return string;
 	}

@@ -22,8 +22,6 @@ public class PrecoAcao extends Preco implements IConstants {
 	Acao acao;
 	DataTO data;
 	int momento;
-	BigDecimal volatilidade;
-	String periodo;
 	
 	public PrecoAcao() {}
 	
@@ -95,18 +93,6 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	public void setMomento(int momento) {
 		this.momento = momento;
-	}
-	public void setVolatilidade(BigDecimal volatilidade) {
-		this.volatilidade = volatilidade;
-	}
-	public void setPeriodo(String periodo) {
-		this.periodo = periodo;
-	}
-	public BigDecimal getVolatilidade() {
-		return volatilidade;
-	}
-	public String getPeriodo() {
-		return periodo;
 	}
 
 	@Override

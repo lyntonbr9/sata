@@ -64,6 +64,8 @@ public class PrecoOpcao extends Preco implements IConstants {
 		BigDecimal spread = new BigDecimal(SPREAD/100);
 		BigDecimal precoAcaoOpcao = acao.getPreco(data, momentoPrecoOpcao);
 		precoExercicioOpcao = precoAcaoOpcao.add(precoAcaoOpcao.multiply(new BigDecimal(ordem)).multiply(spread));
+		volatilidade = acao.getVolatilidade(data, momentoPrecoOpcao);
+		periodo = acao.getDia(data, momentoPrecoOpcao);
 		return precoExercicioOpcao;
 	}
 
