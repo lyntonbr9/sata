@@ -1,7 +1,5 @@
 package sata.auto.estrategia;
 
-import static sata.auto.operacao.Operacao.ABERTURA;
-import static sata.auto.operacao.Operacao.FECHAMENTO;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Condicao;
 import sata.auto.operacao.Venda;
@@ -20,15 +18,10 @@ public class PutATM_CallOTM extends Estrategia {
 		Condicao volatilidadeBaixa = new Condicao(Condicao.VOLATILIDADE, Condicao.MENOR, 0.35);
 		Condicao volatilidadeAlta = new Condicao(Condicao.VOLATILIDADE, Condicao.MAIOR_IGUAL, 0.35);
 		
-		simulacao.getOperacoes().add(new Compra(acao, 1, ABERTURA, null));
-		simulacao.getOperacoes().add(new Compra(putATM, 1, ABERTURA, null));
-		simulacao.getOperacoes().add(new Venda(callOTM, 2, ABERTURA, volatilidadeBaixa));
-		simulacao.getOperacoes().add(new Venda(callOTM, 1, ABERTURA, volatilidadeAlta));
-		
-		simulacao.getOperacoes().add(new Venda(acao, 0, FECHAMENTO, null));
-		simulacao.getOperacoes().add(new Venda(putATM, 0, FECHAMENTO, null));
-		simulacao.getOperacoes().add(new Compra(callOTM, 1, FECHAMENTO, volatilidadeBaixa));
-		simulacao.getOperacoes().add(new Compra(callOTM, 0, FECHAMENTO, volatilidadeAlta));
+		simulacao.getOperacoes().add(new Compra(acao, 1, null));
+		simulacao.getOperacoes().add(new Compra(putATM, 1, null));
+		simulacao.getOperacoes().add(new Venda(callOTM, 2, volatilidadeBaixa));
+		simulacao.getOperacoes().add(new Venda(callOTM, 1, volatilidadeAlta));
 		
 		simulacao.setAnoInicial(2000);
 		simulacao.setAnoFinal(2011);

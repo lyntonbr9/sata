@@ -42,7 +42,7 @@ public class PrecoOpcao extends Preco implements IConstants {
 	private BigDecimal blackScholes() throws CotacaoInexistenteEX {
 		int diasParaVencimento = getDiasParaVencemento();
 		double precoAcao = getPrecoAcao().doubleValue();
-		double precoExercicioOpcao = getPrecoExercicioOpcao().doubleValue();
+		double precoExercicioOpcao = calculaPrecoExercicioOpcao().doubleValue();
 		double tempoParaVencimentoOpcaoEmAnos = BlackScholes.getQtdDiasEmAnos(diasParaVencimento);
 		double taxaDeJuros = TAXA_DE_JUROS;
 		double volatilidade = acao.getVolatilidade(data, momentoPrecoAcao).doubleValue();
@@ -60,13 +60,22 @@ public class PrecoOpcao extends Preco implements IConstants {
 		return acao.getPreco(data, momentoPrecoAcao);
 	}
 	
-	private BigDecimal getPrecoExercicioOpcao() throws CotacaoInexistenteEX {
+	private BigDecimal calculaPrecoExercicioOpcao() throws CotacaoInexistenteEX {
 		BigDecimal spread = new BigDecimal(SPREAD/100);
 		BigDecimal precoAcaoOpcao = acao.getPreco(data, momentoPrecoOpcao);
 		precoExercicioOpcao = precoAcaoOpcao.add(precoAcaoOpcao.multiply(new BigDecimal(ordem)).multiply(spread));
 		volatilidade = acao.getVolatilidade(data, momentoPrecoOpcao);
 		periodo = acao.getDia(data, momentoPrecoOpcao);
 		return precoExercicioOpcao;
+	}
+	
+	@Override
+	public String toString() {
+		String opcao = "Call";
+		if (!call) opcao = "Put";
+		return opcao + "("+SATAUtil.formataNumero(precoExercicioOpcao)+")" 
+		+ " = " + SATAUtil.formataNumero(valor)
+		+ "; Dias para vencimento = " + getDiasParaVencemento();
 	}
 
 	public boolean isCall() {
@@ -111,13 +120,10 @@ public class PrecoOpcao extends Preco implements IConstants {
 	public void setOrdem(int ordem) {
 		this.ordem = ordem;
 	}
-	
-	@Override
-	public String toString() {
-		String opcao = "Call";
-		if (!call) opcao = "Put";
-		return opcao + "("+SATAUtil.formataNumero(precoExercicioOpcao)+")" 
-		+ " = " + SATAUtil.formataNumero(valor)
-		+ "; Dias para vencimento = " + getDiasParaVencemento();
+	public BigDecimal getPrecoExercicioOpcao() {
+		return precoExercicioOpcao;
+	}
+	public void setPrecoExercicioOpcao(BigDecimal precoExercicioOpcao) {
+		this.precoExercicioOpcao = precoExercicioOpcao;
 	}
 }
