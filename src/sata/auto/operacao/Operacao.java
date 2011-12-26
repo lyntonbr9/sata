@@ -13,6 +13,9 @@ public abstract class Operacao implements IConstants {
 	int mesesParaVencimento;
 	Condicao condicao;
 	
+	public abstract int getMomentoOperacaoOpcao();
+	public abstract Operacao reversa();
+	
 	public Preco getPreco(DataTO data) throws CotacaoInexistenteEX {
 		return ativo.getPreco(data, this);
 	}
@@ -52,8 +55,6 @@ public abstract class Operacao implements IConstants {
 		
 		return false;
 	}
-	
-	public abstract int getMomentoOperacaoOpcao();
 	
 	@Override
 	public String toString() {

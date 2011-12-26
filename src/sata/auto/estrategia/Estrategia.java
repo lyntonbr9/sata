@@ -20,7 +20,7 @@ public abstract class Estrategia {
 			System.out.println(e.getMessage());
 		}
 		
-		System.out.println("Fim: " + new Date());
+		System.out.println("\nFim: " + new Date());
 	}
 	
 	public abstract void executa();
