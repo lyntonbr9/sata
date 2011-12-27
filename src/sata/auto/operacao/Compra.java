@@ -9,6 +9,10 @@ public class Compra extends Operacao {
 	
 	public Compra() {}
 	
+	public Compra(Ativo ativo) {
+		this.ativo = ativo;
+	}
+	
 	public Compra(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;

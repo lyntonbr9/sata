@@ -6,6 +6,10 @@ public class Venda extends Operacao {
 	
 	public Venda() {}
 	
+	public Venda(Ativo ativo) {
+		this.ativo = ativo;
+	}
+	
 	public Venda(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
