@@ -14,8 +14,8 @@ public class DuasCallOTMAlta extends Estrategia {
 		Call callOTM8 = new Call(acao, 8);
 		Call callOTM10 = new Call(acao, 10);
 		
-		simulacao.getOperacoes().add(new Venda(callOTM8, 1, null));
-		simulacao.getOperacoes().add(new Compra(callOTM10, 1, null));
+		simulacao.getOperacoes().add(new Venda(callOTM8));
+		simulacao.getOperacoes().add(new Compra(callOTM10));
 		
 		simulacao.setAnoInicial(2000);
 		simulacao.setAnoFinal(2011);

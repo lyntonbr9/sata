@@ -8,9 +8,9 @@ import sata.domain.util.IConstants;
 
 public abstract class Operacao implements IConstants {
 	
-	int momento;
+	int momento = ABERTURA;
 	Ativo ativo;
-	int mesesParaVencimento;
+	int mesesParaVencimento = 1;
 	Condicao condicao;
 	
 	public abstract int getMomentoOperacaoOpcao();

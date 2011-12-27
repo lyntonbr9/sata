@@ -15,9 +15,9 @@ public class CallITM_CallOTM_PutATM extends Estrategia {
 		Call callOTM = new Call(acao, 2);
 		Put putATM = new Put(acao, 0);
 		
-		simulacao.getOperacoes().add(new Compra(callITM, 1, null));
-		simulacao.getOperacoes().add(new Venda(callOTM, 1, null));
-		simulacao.getOperacoes().add(new Compra(putATM, 1, null));
+		simulacao.getOperacoes().add(new Compra(callITM));
+		simulacao.getOperacoes().add(new Venda(callOTM));
+		simulacao.getOperacoes().add(new Compra(putATM));
 		
 		simulacao.setAnoInicial(2000);
 		simulacao.setAnoFinal(2010);
