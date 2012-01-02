@@ -1,28 +1,34 @@
 package sata.auto.estrategia;
 
+import sata.auto.enums.Atributo;
+import sata.auto.enums.Operador;
+import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.operacao.Compra;
+import sata.auto.operacao.Stop;
 import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Call;
-import sata.auto.simulacao.Resultado;
+import sata.auto.simulacao.Simulacao;
 
 public class DuasCallOTMAlta extends Estrategia {
 	
 	@Override
-	public void executa() {
+	public void prepara() {
+		anoInicial = 2000;
+		anoFinal = 2011;
 		Acao acao = new Acao("PETR4");
-		Call callOTM8 = new Call(acao, 8);
-		Call callOTM10 = new Call(acao, 10);
 		
-		simulacao.getOperacoes().add(new Venda(callOTM8));
-		simulacao.getOperacoes().add(new Compra(callOTM10));
+		Simulacao simulacao = new Simulacao(
+				new Venda (new Call(acao, 1, true)),
+				new Compra(new Call(acao, 3, true)));
 		
-		simulacao.setAnoInicial(2000);
-		simulacao.setAnoFinal(2011);
-		simulacao.setTipoCalculoValorInvestido(Resultado.DIFERENCA_STRIKES);
+		simulacao.setStop(new Stop(Atributo.PERCENTUAL_OPERACAO, Operador.MENOR_IGUAL, -20));
+		simulacao.setTipoCalculoValorInvestido(TipoCalculoValorInvestido.DIFERENCA_STRIKES);
+		
+		simulacoes.add(simulacao);
 	}
 	
 	public static void main(String[] args) {
-		executa(new DuasCallOTMAlta());
+		new DuasCallOTMAlta().executa(true, true, true, true, false);
 	}
 }

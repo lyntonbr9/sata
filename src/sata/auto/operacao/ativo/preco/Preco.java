@@ -3,12 +3,13 @@ package sata.auto.operacao.ativo.preco;
 import java.math.BigDecimal;
 
 import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.to.Dia;
 
 public abstract class Preco {
 	
 	BigDecimal valor;
 	BigDecimal volatilidade;
-	String periodo;
+	Dia dia;
 
 	public abstract void calculaPreco() throws CotacaoInexistenteEX;
 
@@ -24,10 +25,10 @@ public abstract class Preco {
 	public void setVolatilidade(BigDecimal volatilidade) {
 		this.volatilidade = volatilidade;
 	}
-	public String getPeriodo() {
-		return periodo;
+	public Dia getDia() {
+		return dia;
 	}
-	public void setPeriodo(String periodo) {
-		this.periodo = periodo;
+	public void setDia(Dia dia) {
+		this.dia = dia;
 	}
 }

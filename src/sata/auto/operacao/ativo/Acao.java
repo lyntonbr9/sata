@@ -3,11 +3,10 @@ package sata.auto.operacao.ativo;
 import java.math.BigDecimal;
 
 import sata.auto.exception.CotacaoInexistenteEX;
-import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoAcao;
-import sata.auto.to.DataTO;
+import sata.auto.to.Dia;
 
 
 public class Acao extends Ativo {
@@ -21,26 +20,23 @@ public class Acao extends Ativo {
 	}
 	
 	@Override
-	public Preco criaPreco(DataTO data, Operacao operacao) throws CotacaoInexistenteEX {
-		return new PrecoAcao(this, data, operacao.getMomento());
+	public Preco criaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
+		return new PrecoAcao(this, dia);
 	}
 	
-	public BigDecimal getPreco(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return getPrecoAtivo(data, criaOperacaoFake(momento)).getValor();
+	public BigDecimal getPreco(Dia dia) throws CotacaoInexistenteEX {
+		return calculaPreco(dia, null).getValor();
 	}
 	
-	public BigDecimal getVolatilidade(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return getPrecoAtivo(data, criaOperacaoFake(momento)).getVolatilidade();
+	public BigDecimal getVolatilidade(Dia dia) throws CotacaoInexistenteEX {
+		return calculaPreco(dia, null).getVolatilidade();
 	}
 	
-	public String getDia(DataTO data, int momento) throws CotacaoInexistenteEX {
-		return getPrecoAtivo(data, criaOperacaoFake(momento)).getPeriodo();
-	}
-	
-	private Operacao criaOperacaoFake(int momento) {
-		Operacao compra = new Compra();
-		compra.setMomento(momento);
-		return compra;
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof Acao))
+			return false;
+		return ((Acao)other).nome.equals(nome);
 	}
 	
 	public String getNome() {
