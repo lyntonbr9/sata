@@ -1,14 +1,14 @@
 package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Acao;
-import sata.auto.to.DataTO;
+import sata.auto.to.Dia;
+import sata.auto.to.Mes;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
@@ -17,18 +17,15 @@ import sata.domain.util.SATAUtil;
 
 public class PrecoAcao extends Preco implements IConstants {
 	
-	private static Map<DataTO,List<CotacaoAtivoTO>> cache = new HashMap<DataTO, List<CotacaoAtivoTO>>();
+	private static Map<Mes,List<CotacaoAtivoTO>> cache = new HashMap<Mes, List<CotacaoAtivoTO>>();
 	
 	Acao acao;
-	DataTO data;
-	int momento;
 	
 	public PrecoAcao() {}
 	
-	public PrecoAcao (Acao acao, DataTO data, int momento) {
+	public PrecoAcao (Acao acao, Dia dia) {
 		this.acao = acao;
-		this.data = data;
-		this.momento = momento;
+		this.dia = dia;
 	}
 	
 	@Override
@@ -36,44 +33,80 @@ public class PrecoAcao extends Preco implements IConstants {
 		CotacaoAtivoTO cotacaoAtivo = getCotacaoAcao();
 		valor = new BigDecimal(Double.parseDouble(cotacaoAtivo.getFechamento())/100);
 		volatilidade = new BigDecimal(cotacaoAtivo.getVolatilidadeAnual());
-		periodo = getCotacaoAcao().getPeriodo();
 	}
 
-	private CotacaoAtivoTO getCotacaoAcao() throws CotacaoInexistenteEX {
+	/*private CotacaoAtivoTO getCotacaoAcao() throws CotacaoInexistenteEX {
 		int diaCotacao = -1;
-		DataTO dataCotacao = data;
+		Mes mesCotacao = mes;
 		if (momento == ABERTURA) {
-			dataCotacao = data.getMesAnterior();
-			diaCotacao = SATAUtil.getDiaMes(dataCotacao.getAno(), dataCotacao.getMes(), Calendar.MONDAY, 3);
+			mesCotacao = mes.getMesAnterior();
+			diaCotacao = getDiaAbertura(mesCotacao);
 		}
 		if (momento == FECHAMENTO) {
-			diaCotacao = SATAUtil.getDiaMes(dataCotacao.getAno(), dataCotacao.getMes(), Calendar.MONDAY, 3)-3;
+			diaCotacao = getDiaFechamento(mesCotacao);
 		}
 		CotacaoAtivoTO cotacao;
 		int tentativas = 0;
 		do {
-			cotacao = getCotacaoAtivoNoDiaEspecifico(acao, dataCotacao, diaCotacao++);
+			cotacao = getCotacaoAtivoNoDiaEspecifico(acao, mesCotacao, diaCotacao++);
 		} while (cotacao == null && tentativas++<20);
 		if (cotacao == null)
 			throw new CotacaoInexistenteEX();
 		return cotacao;
 	}
 	
-	private CotacaoAtivoTO getCotacaoAtivoNoDiaEspecifico(Acao acao, DataTO data, int dia) {
-		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(acao, data)) {
-			if(data.getDataFormatada(dia,"dd/MM/yyyy").equals(cotacao.getPeriodo())){
+	private CotacaoAtivoTO getCotacaoAtivoNoDiaEspecifico(Acao acao, Mes mes, int dia) {
+		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(acao, mes)) {
+			if(mes.getDataFormatada(dia,"dd/MM/yyyy").equals(cotacao.getPeriodo())){
 				return cotacao;
 			}
 		}
 		return null;
 	}
 	
-	private List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, DataTO data) {
-		if (!cache.containsKey(data)) {
+	private List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, Mes mes) {
+		if (!cache.containsKey(mes)) {
 			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			cache.put(data,  caDAO.getCotacoesDoAtivo(acao.getNome(), data.getDiaInicial(), data.getDiaFinal()));
+			cache.put(mes,  caDAO.getCotacoesDoAtivo(acao.getNome(), mes.getDiaInicial(), mes.getDiaFinal()));
 		}
-		return cache.get(data);
+		return cache.get(mes);
+	}*/
+	
+	private CotacaoAtivoTO getCotacaoAcao() throws CotacaoInexistenteEX {
+		CotacaoAtivoTO cotacao;
+		int tentativas = 0;
+		do {
+			cotacao = getCotacaoAtivo(acao, dia);
+			if (cotacao == null)
+				dia = dia.getProximoDia();
+		} while (cotacao == null && tentativas++<20);
+		if (cotacao == null)
+			throw new CotacaoInexistenteEX();
+		return cotacao;
+	}
+	
+	private CotacaoAtivoTO getCotacaoAtivo(Acao acao, Dia dia) {
+		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(acao, dia.getMes())) {
+			if(dia.formatoPadrao().equals(cotacao.getPeriodo())){
+				return cotacao;
+			}
+		}
+		return null;
+	}
+	
+	private List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, Mes mes) {
+		if (!cache.containsKey(mes)) {
+			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+			cache.put(mes,  caDAO.getCotacoesDoAtivo(acao.getNome(), mes.getDiaInicial().formatoBanco(), mes.getDiaFinal().formatoBanco()));
+		}
+		return cache.get(mes);
+	}
+	
+	@Override
+	public String toString() {
+		return acao + " " + dia + " = " + SATAUtil.formataNumero(valor)
+		+ "; Volatilidade = " + SATAUtil.formataNumero(volatilidade.multiply(new BigDecimal(100))) + "%";
+
 	}
 
 	public Acao getAcao() {
@@ -81,24 +114,5 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	public void setAcao(Acao acao) {
 		this.acao = acao;
-	}
-	public DataTO getData() {
-		return data;
-	}
-	public void setData(DataTO data) {
-		this.data = data;
-	}
-	public int getMomento() {
-		return momento;
-	}
-	public void setMomento(int momento) {
-		this.momento = momento;
-	}
-
-	@Override
-	public String toString() {
-		return acao + " " + periodo + " = " + SATAUtil.formataNumero(valor)
-		+ "; Volatilidade = " + SATAUtil.formataNumero(volatilidade.multiply(new BigDecimal(100))) + "%";
-
 	}
 }

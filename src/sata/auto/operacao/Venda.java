@@ -4,35 +4,42 @@ import sata.auto.operacao.ativo.Ativo;
 
 public class Venda extends Operacao {
 	
-	public Venda() {}
-	
-	public Venda(Ativo ativo) {
-		this.ativo = ativo;
+	public Venda() {
+		super();
 	}
-	
+
 	public Venda(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.momento = ABERTURA;
-		this.condicao = condicao;
+		super(ativo, mesesParaVencimento, condicao);
 	}
-	
-	protected Venda(Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.momento = momento;
-		this.condicao = condicao;
+
+	public Venda(Ativo ativo, int mesesParaVencimento) {
+		super(ativo, mesesParaVencimento);
 	}
-	
-	@Override
-	public Operacao reversa() {
-		return new Compra(ativo, mesesParaVencimento-1, FECHAMENTO, condicao);
+
+	public Venda(Ativo ativo) {
+		super(ativo);
+	}
+
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			Condicao condicao) {
+		super(qtdLotes, ativo, mesesParaVencimento, condicao);
+	}
+
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			int momento, Condicao condicao, Operacao reversa) {
+		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa);
+	}
+
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento);
+	}
+
+	public Venda(int qtdLotes, Ativo ativo) {
+		super(qtdLotes, ativo);
 	}
 
 	@Override
-	public int getMomentoOperacaoOpcao() {
-		if (momento == FECHAMENTO) 
-			return ABERTURA; // Se está vendendo no fechamento, buscar o valor da abertura
-		else return momento;
+	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso) {
+		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this);
 	}
 }

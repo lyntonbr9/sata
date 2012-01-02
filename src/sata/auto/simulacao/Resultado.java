@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
@@ -13,74 +14,108 @@ import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
-import sata.auto.to.DataTO;
-import sata.auto.to.ValorOperacaoTO;
+import sata.auto.to.Mes;
+import sata.auto.to.ValorOperacao;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public class Resultado implements IConstants {
 	
-	public static final int TOTAL_COMPRADO = 0;
-	public static final int DIFERENCA_STRIKES = 1;
-	
-	private List<ValorOperacaoTO> resultados = new ArrayList<ValorOperacaoTO>();
+	private List<ValorOperacao> resultados = new ArrayList<ValorOperacao>();
 	
 	private Integer anoInicial;
 	private Integer anoFinal;
-	private int tipoCalculoValorInvestido;
+	private TipoCalculoValorInvestido tipoCalculoValorInvestido;
 	
-	public void addValorOperacao(ValorOperacaoTO valorOperacao) {
+	public void addResultado(Resultado resultado) {
+		if (anoInicial == null || anoInicial.intValue() > resultado.anoInicial.intValue())
+			this.anoInicial = resultado.anoInicial;
+		if (anoFinal == null || anoFinal.intValue() < resultado.anoFinal.intValue())
+			this.anoFinal = resultado.anoFinal;
+		this.tipoCalculoValorInvestido = resultado.tipoCalculoValorInvestido;
+		this.resultados.addAll(resultado.resultados);
+	}
+	
+	public void addValorOperacao(ValorOperacao valorOperacao) {
 		resultados.add(valorOperacao);
 	}
 	
-	public void setResultadoMensal(Operacao operacao, Integer mes, Integer ano, Preco preco) {
-		addValorOperacao(new ValorOperacaoTO(operacao, new DataTO(mes,ano), preco));
+	public void setResultadoMensal(Operacao operacao, Mes mes, Preco preco) {
+		setResultadoMensal(operacao, mes.getMes(), mes.getAno(), preco);
 	}
 	
-	public ValorOperacaoTO getValorOperacao(Operacao operacao, Integer mes, Integer ano) {
-		for (ValorOperacaoTO valorOperacao : resultados) {
+	public void setResultadoMensal(Operacao operacao, Integer mes, Integer ano, Preco preco) {
+		ValorOperacao valorOperacao = getValorOperacao(operacao, mes, ano);
+		if (valorOperacao != null)
+			valorOperacao.setPreco(preco);
+		else addValorOperacao(new ValorOperacao(operacao, new Mes(mes,ano), preco));
+	}
+	
+	public ValorOperacao getValorOperacao(Operacao operacao, Mes mes) {
+		return getValorOperacao(operacao, mes.getMes(), mes.getAno());
+	}
+	
+	public ValorOperacao getValorOperacao(Operacao operacao, Integer mes, Integer ano) {
+		for (ValorOperacao valorOperacao : resultados) {
 			if (valorOperacao.getOperacao().equals(operacao) &&
-				valorOperacao.getData().getMes().equals(mes) &&
-				valorOperacao.getData().getAno().equals(ano)) {
+				valorOperacao.getMes().getMes().equals(mes) &&
+				valorOperacao.getMes().getAno().equals(ano)) {
 				return valorOperacao;
 			}
 		}
 		return null;
 	}
 	
+	public BigDecimal getResultadoMensal(Operacao operacao, Mes mes) {
+		return getResultadoMensal(operacao, mes.getMes(), mes.getAno());
+	}
+	
 	public BigDecimal getResultadoMensal(Operacao operacao, Integer mes, Integer ano) {
-		for (ValorOperacaoTO valorOperacao : resultados) {
+		for (ValorOperacao valorOperacao : resultados) {
 			if (valorOperacao.getOperacao().equals(operacao) &&
-				valorOperacao.getData().getMes().equals(mes) &&
-				valorOperacao.getData().getAno().equals(ano)) {
-				return valorOperacao.getPreco().getValor();
+				valorOperacao.getMes().getMes().equals(mes) &&
+				valorOperacao.getMes().getAno().equals(ano)) {
+				return valorOperacao.getValor();
 			}
 		}
 		return BigDecimal.ZERO;
 	}
 	
+	public BigDecimal getResultadoMensal(Mes mes) {
+		return getResultadoMensal(mes.getMes(), mes.getAno());
+	}
+	
 	public BigDecimal getResultadoMensal(Integer mes, Integer ano) {
 		BigDecimal valor =  BigDecimal.ZERO;
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (valorOperacao.getData().getMes().equals(mes) &&
-				valorOperacao.getData().getAno().equals(ano)) {
-				valor = valor.add(valorOperacao.getPreco().getValor());
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().getMes().equals(mes) &&
+				valorOperacao.getMes().getAno().equals(ano)) {
+				valor = valor.add(valorOperacao.getValor());
 			}
 		}
 		return valor;
 	}
 	
+	public BigDecimal getValorInvestido(Mes mes) {
+		return getValorInvestido(mes.getMes(), mes.getAno());
+	}
+	
 	public BigDecimal getValorInvestido(Integer mes, Integer ano) {
 		BigDecimal valor =  BigDecimal.ZERO;
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (valorOperacao.getData().getMes().equals(mes) &&
-					valorOperacao.getData().getAno().equals(ano)) {
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().getMes().equals(mes) &&
+					valorOperacao.getMes().getAno().equals(ano)) {
 				
 				switch (tipoCalculoValorInvestido) {
 				case TOTAL_COMPRADO:
-					if (valorOperacao.getOperacao() instanceof Compra &&
-							valorOperacao.getOperacao().getMomento() == ABERTURA)
-						valor = valor.add(valorOperacao.getPreco().getValor().negate());
+					if (valorOperacao.getOperacao() instanceof Compra)
+						if (valorOperacao.getOperacao().getMomento() == ABERTURA)
+							valor = valor.add(valorOperacao.getValor().negate());
+						else { // Fechamento
+							ValorOperacao operacaoReversa = getValorOperacaoReversa(valorOperacao.getOperacao(), mes, ano);
+							BigDecimal valorReversa = operacaoReversa.getValor();
+							valor = valor.add((valorOperacao.getValor()).add(valorReversa).negate());
+						}
 					break;
 				case DIFERENCA_STRIKES:
 					if (valorOperacao.getOperacao().getAtivo() instanceof Opcao &&
@@ -97,6 +132,10 @@ public class Resultado implements IConstants {
 		return valor;
 	}
 	
+	public BigDecimal getResultadoPercentualMensal(Mes mes) {
+		return getResultadoPercentualMensal(mes.getMes(), mes.getAno());
+	}
+	
 	public BigDecimal getResultadoPercentualMensal(Integer mes, Integer ano) {
 		BigDecimal valorInicial = getValorInvestido(mes, ano);
 		BigDecimal resultadoNominal = getResultadoMensal(mes,ano);
@@ -105,9 +144,9 @@ public class Resultado implements IConstants {
 	
 	public BigDecimal getResultadoAnual(Integer ano) {
 		BigDecimal valor =  BigDecimal.ZERO;
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (valorOperacao.getData().getAno().equals(ano)) {
-				valor = valor.add(valorOperacao.getPreco().getValor());
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().getAno().equals(ano)) {
+				valor = valor.add(valorOperacao.getValor());
 			}
 		}
 		return valor;
@@ -119,12 +158,13 @@ public class Resultado implements IConstants {
 		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
 	}
 	
-	public String imprime(boolean anual, boolean mensal, boolean operacoes, boolean calculos) throws CotacaoInexistenteEX {
+	public String imprime(boolean anual, boolean mensal, boolean operacoes, boolean calculos, boolean csv) throws CotacaoInexistenteEX {
 		String string = "";
 		if (calculos) string = string.concat(imprimeCalculos());
 		if (operacoes) string = string.concat("\n"+imprimeOperacoes());
 		if (mensal) string = string.concat("\n"+imprimeResultadosMensais());
 		if (anual) string = string.concat("\n"+imprimeResultadosAnuais());
+		if (csv) string = string.concat("\n"+imprimeCSV());
 		string = string.concat("\n"+imprimeResultadoConsolidado());
 		return string;
 	}
@@ -132,12 +172,12 @@ public class Resultado implements IConstants {
 	private String imprimeOperacoes() {
 		String string = "";
 		Collections.sort(resultados);
-		DataTO dataAnterior = null;
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (!valorOperacao.getData().equals(dataAnterior))
+		Mes mesAnterior = null;
+		for (ValorOperacao valorOperacao : resultados) {
+			if (!valorOperacao.getMes().equals(mesAnterior))
 				string = string.concat("\n");
 			string = string.concat(valorOperacao + "\n");
-			dataAnterior = valorOperacao.getData();
+			mesAnterior = valorOperacao.getMes();
 		}
 		return string;
 	}
@@ -146,13 +186,13 @@ public class Resultado implements IConstants {
 		String string = "";
 		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
 			string = string.concat("\n");
-			for (int mes=1; mes <= 12; mes++) {
-				DataTO data = new DataTO(mes,ano);
-				if (possui(data)) {
-					string = string.concat(data + " = " 
-							+ SATAUtil.formataNumero(getResultadoPercentualMensal(mes, ano)) 
-							+ "% (" + SATAUtil.formataNumero(getResultadoMensal(mes, ano)) + "/" 
-							+ SATAUtil.formataNumero(getValorInvestido(mes,ano))) + ")\n";
+			for (int iMes=1; iMes <= 12; iMes++) {
+				Mes mes = new Mes(iMes,ano);
+				if (possui(mes)) {
+					string = string.concat(mes + " = " 
+							+ SATAUtil.formataNumero(getResultadoPercentualMensal(mes)) 
+							+ "% (" + SATAUtil.formataNumero(getResultadoMensal(mes)) + "/" 
+							+ SATAUtil.formataNumero(getValorInvestido(mes))) + ")\n";
 				}
 			}
 		}
@@ -187,32 +227,82 @@ public class Resultado implements IConstants {
 	private String imprimeCalculos() throws CotacaoInexistenteEX {
 		String string = "";
 		Collections.sort(resultados);
-		DataTO dataAnterior = null;
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (!valorOperacao.getData().equals(dataAnterior))
+		Mes mesAnterior = null;
+		for (ValorOperacao valorOperacao : resultados) {
+			if (!valorOperacao.getMes().equals(mesAnterior))
 				string = string.concat("\n");
 			string = string.concat(valorOperacao.getPreco() + "\n");
-			dataAnterior = valorOperacao.getData();
+			mesAnterior = valorOperacao.getMes();
 		}
 		return string;
 	}
 	
-	public void remove(DataTO data) {
-		List<ValorOperacaoTO> remover = new ArrayList<ValorOperacaoTO>();
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (valorOperacao.getData().equals(data)) {
+	private String imprimeCSV() {
+		String string = "";
+		Collections.sort(resultados);
+		Mes mesAnterior = null;
+		string = string.concat(resultados.get(0).getMes().toString()+";");
+		for (ValorOperacao valorOperacao : resultados) {
+			if (mesAnterior != null && !valorOperacao.getMes().equals(mesAnterior)) {
+				string = string.concat(SATAUtil.formataNumero(getResultadoMensal(mesAnterior),4) + "\n");
+				string = string.concat(valorOperacao.getMes().toString()+";");
+			}
+			string = string.concat(SATAUtil.formataNumero(valorOperacao.getValor(),4) + ";");
+			mesAnterior = valorOperacao.getMes();
+		}
+		string = string.concat(SATAUtil.formataNumero(getResultadoMensal(mesAnterior),4) + "\n");
+		return string;
+	}
+	
+	public String imprimeTituloCSV() {
+		return "Operação;Dia;Valor;Preço de Exercício;Preço da Ação;Volatilidade";
+	}
+	
+	public String imprimeCSV(Operacao operacao, Mes mes) {
+		String string = "";
+		ValorOperacao valorOperacao = getValorOperacao(operacao, mes);
+		string = string.concat(valorOperacao.getOperacao()+";");
+		string = string.concat(valorOperacao.getPreco().getDia()+";");
+		string = string.concat(SATAUtil.formataNumero(valorOperacao.getValor(),4)+";");
+		if (valorOperacao.getPreco() instanceof PrecoOpcao) {
+			string = string.concat(SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoExercicioOpcao(),4)+";");
+			string = string.concat(SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoAcao(),4)+";");
+		}
+		else string = string.concat(";;");
+		string = string.concat(SATAUtil.formataNumero(valorOperacao.getPreco().getVolatilidade(),4));
+		return string;
+	}
+	
+	public BigDecimal calculaResultadoPercentualMensal(Mes mes, BigDecimal valor) {
+		BigDecimal valorInicial = getValorInvestido(mes);
+		BigDecimal resultadoNominal = getResultadoMensal(mes).add(valor);
+		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+	}
+	
+	public void remove(Mes mes) {
+		List<ValorOperacao> remover = new ArrayList<ValorOperacao>();
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes)) {
 				remover.add(valorOperacao);
 			}
 		}
 		resultados.removeAll(remover);
 	}
 	
-	public boolean possui(DataTO data) {
-		for (ValorOperacaoTO valorOperacao : resultados) {
-			if (valorOperacao.getData().equals(data))
+	public boolean possui(Mes mes) {
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes))
 				return true;
 		}
 		return false;
+	}
+	
+	/*private ValorOperacao getValorOperacaoReversa(Operacao operacao, Mes mes) {
+		return getValorOperacaoReversa(operacao, mes.getMes(), mes.getAno());
+	}*/
+	
+	private ValorOperacao getValorOperacaoReversa(Operacao operacao, Integer mes, Integer ano) {
+		return getValorOperacao(operacao.getReversa(), mes, ano);
 	}
 	
 	public void setAnoInicial(Integer anoInicial) {
@@ -227,10 +317,17 @@ public class Resultado implements IConstants {
 	public Integer getAnoFinal() {
 		return anoFinal;
 	}
-	public void setTipoCalculoValorInvestido(int tipoCalculoValorInvestido) {
-		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
+	public List<ValorOperacao> getResultados() {
+		return resultados;
 	}
-	public int getTipoCalculoValorInvestido() {
+	public void setResultados(List<ValorOperacao> resultados) {
+		this.resultados = resultados;
+	}
+	public TipoCalculoValorInvestido getTipoCalculoValorInvestido() {
 		return tipoCalculoValorInvestido;
+	}
+	public void setTipoCalculoValorInvestido(
+			TipoCalculoValorInvestido tipoCalculoValorInvestido) {
+		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
 	}
 }

@@ -1,40 +1,82 @@
 package sata.auto.operacao;
 
+import sata.auto.enums.Atributo;
+import sata.auto.enums.Operador;
+import sata.auto.operacao.ativo.preco.Preco;
+
 
 public class Condicao {
 	
-	public static final int PRECO = 0;
-	public static final int VOLATILIDADE = 1;
-	
-	public static final int IGUAL = 2;
-	public static final int DIFERENTE = 3;
-	public static final int MAIOR = 4;
-	public static final int MENOR = 5;
-	public static final int MAIOR_IGUAL = 6;
-	public static final int MENOR_IGUAL = 7;
-	
-	int atributo;
-	int operacao;
+	Atributo atributo;
+	Operador operacao;
 	double valor;
 	
 	public Condicao() {}
 	
-	public Condicao(int atributo, int operacao, double valor) {
+	public Condicao(Atributo atributo, Operador operacao, double valor) {
 		this.atributo = atributo;
 		this.operacao = operacao;
 		this.valor = valor;
 	}
+	
+	public boolean verdadeira(Preco preco) {
+		double valorComparacao = 0;
+		
+		switch (atributo) {
+		case PRECO:
+			valorComparacao = preco.getValor().doubleValue();
+			break;
+		case VOLATILIDADE:
+			valorComparacao = preco.getVolatilidade().doubleValue();
+			break;
+		}
+		return verdadeira(valor, valorComparacao, operacao);
+	}
+	
+	public static boolean verdadeira(double valor, double valorComparacao, Operador operador) {
+		switch (operador) {
+		case IGUAL:
+			return valorComparacao == valor;
+			
+		case DIFERENTE:
+			return valorComparacao != valor;
+			
+		case MAIOR:
+			return valorComparacao > valor;
+			
+		case MENOR:
+			return valorComparacao < valor;
+			
+		case MAIOR_IGUAL:
+			return valorComparacao >= valor;
+			
+		case MENOR_IGUAL:
+			return valorComparacao <= valor;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof Condicao))
+			return false;
+		return ((Condicao)other).atributo == atributo
+			&& ((Condicao)other).operacao == operacao
+			&& ((Condicao)other).valor == valor;
+	}
 
-	public int getAtributo() {
+	public Atributo getAtributo() {
 		return atributo;
 	}
-	public void setAtributo(int atributo) {
+	public void setAtributo(Atributo atributo) {
 		this.atributo = atributo;
 	}
-	public int getOperacao() {
+
+	public Operador getOperacao() {
 		return operacao;
 	}
-	public void setOperacao(int operacao) {
+	public void setOperacao(Operador operacao) {
 		this.operacao = operacao;
 	}
 	public double getValor() {

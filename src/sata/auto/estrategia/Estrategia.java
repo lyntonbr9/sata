@@ -1,6 +1,8 @@
 package sata.auto.estrategia;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.simulacao.Resultado;
@@ -8,14 +10,26 @@ import sata.auto.simulacao.Simulacao;
 
 public abstract class Estrategia {
 	
-	Simulacao simulacao = new Simulacao();
+	Integer anoInicial;
+	Integer anoFinal;
 	
-	public static void executa(Estrategia estrategia) {
+	static List<Simulacao> simulacoes = new ArrayList<Simulacao>();
+	
+	public void executa(boolean anual, boolean mensal, boolean operacoes, boolean calculos, boolean csv) {
+		Resultado resultado = new Resultado();
 		System.out.println("Início: " + new Date());
-		estrategia.executa();
-		Resultado resultado = estrategia.simulacao.getResultado();
+		prepara();
+		
+		for (Simulacao simulacao: simulacoes) {
+			if (simulacao.getAnoInicial() == null && anoInicial != null)
+				simulacao.setAnoInicial(anoInicial);
+			if (simulacao.getAnoFinal() == null && anoFinal != null)
+				simulacao.setAnoFinal(anoFinal);
+			resultado.addResultado(simulacao.getResultado());
+		}
+		
 		try {
-			System.out.println(resultado.imprime(true, true, true, true));
+			System.out.println(resultado.imprime(anual, mensal, operacoes, calculos, csv));
 		} catch (CotacaoInexistenteEX e) {
 			System.out.println(e.getMessage());
 		}
@@ -23,6 +37,6 @@ public abstract class Estrategia {
 		System.out.println("\nFim: " + new Date());
 	}
 	
-	public abstract void executa();
+	public abstract void prepara();
 
 }

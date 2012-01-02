@@ -3,46 +3,61 @@ package sata.auto.operacao;
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Ativo;
 import sata.auto.operacao.ativo.preco.Preco;
-import sata.auto.to.DataTO;
+import sata.auto.to.Dia;
 
 public class Compra extends Operacao {
 	
-	public Compra() {}
-	
-	public Compra(Ativo ativo) {
-		this.ativo = ativo;
+	public Compra() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Compra(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.momento = ABERTURA;
-		this.condicao = condicao;
+		super(ativo, mesesParaVencimento, condicao);
+		// TODO Auto-generated constructor stub
 	}
-	
-	protected Compra(Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.momento = momento;
-		this.condicao = condicao;
+
+	public Compra(Ativo ativo, int mesesParaVencimento) {
+		super(ativo, mesesParaVencimento);
+		// TODO Auto-generated constructor stub
 	}
-	
-	@Override
-	public Operacao reversa() {
-		return new Venda(ativo, mesesParaVencimento-1, FECHAMENTO, condicao);
+
+	public Compra(Ativo ativo) {
+		super(ativo);
+		// TODO Auto-generated constructor stub
 	}
-	
-	@Override
-	public Preco getPreco(DataTO data) throws CotacaoInexistenteEX {
-		Preco preco = super.getPreco(data);
-		preco.setValor(preco.getValor().negate());
-		return preco;
+
+	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			Condicao condicao) {
+		super(qtdLotes, ativo, mesesParaVencimento, condicao);
+		// TODO Auto-generated constructor stub
+	}
+
+	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			int momento, Condicao condicao, Operacao reversa) {
+		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa);
+		// TODO Auto-generated constructor stub
+	}
+
+	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento);
+		// TODO Auto-generated constructor stub
+	}
+
+	public Compra(int qtdLotes, Ativo ativo) {
+		super(qtdLotes, ativo);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public int getMomentoOperacaoOpcao() {
-		if (momento == FECHAMENTO) 
-			return ABERTURA; // Se está comprando no fechamento, buscar o valor da abertura
-		else return momento;
+	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso) {
+		return new Venda(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this);
+	}
+	
+	@Override
+	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
+		Preco preco = super.getPreco(dia);
+		preco.setValor(preco.getValor().negate());
+		return preco;
 	}
 }

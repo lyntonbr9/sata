@@ -25,9 +25,21 @@ public class SATAUtil implements IConstants{
 	 * @param numero o número a ser formatado
 	 * @return o número formatado
 	 */
-	public static String formataNumero(BigDecimal numero) {
-		DecimalFormat df = new DecimalFormat("0.00");
+	public static String formataNumero(BigDecimal numero, int casasDecimais) {
+		String zeros = "0";
+		for (int i=1; i<casasDecimais; i++)
+			zeros += "0";
+		DecimalFormat df = new DecimalFormat("0."+zeros);
         return df.format(numero);
+	}
+	
+	/**
+	 * Formata um número com duas casas decimais
+	 * @param numero o número a ser formatado
+	 * @return o número formatado
+	 */
+	public static String formataNumero(BigDecimal numero) {
+        return formataNumero(numero,2);
 	}
 	
 	/**
