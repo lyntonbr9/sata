@@ -36,7 +36,7 @@ public class ValorOperacao implements Comparable<ValorOperacao>, IConstants {
 	
 	@Override
 	public String toString() {
-		return operacao + " " + mes + " = " + SATAUtil.formataNumero(getValor());
+		return mes + " - " + operacao + " = " + SATAUtil.formataNumero(getValor()) + " [" + preco + "] " ;
 	}
 	
 	public Operacao getOperacao() {

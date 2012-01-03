@@ -4,6 +4,11 @@ import sata.auto.operacao.ativo.Ativo;
 
 public class Venda extends Operacao {
 	
+	@Override
+	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso) {
+		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
+	}
+
 	public Venda() {
 		super();
 	}
@@ -21,13 +26,20 @@ public class Venda extends Operacao {
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			Condicao condicao, int mesesParaReversao) {
+		super(qtdLotes, ativo, mesesParaVencimento, condicao, mesesParaReversao);
+	}
+
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
 			Condicao condicao) {
 		super(qtdLotes, ativo, mesesParaVencimento, condicao);
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
-			int momento, Condicao condicao, Operacao reversa) {
-		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa);
+			int momento, Condicao condicao, Operacao reversa,
+			int mesesParaReversao) {
+		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa,
+				mesesParaReversao);
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
@@ -38,8 +50,8 @@ public class Venda extends Operacao {
 		super(qtdLotes, ativo);
 	}
 
-	@Override
-	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso) {
-		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this);
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			int mesesParaReversao) {
+		super(qtdLotes, ativo, mesesParaVencimento, mesesParaReversao);
 	}
 }

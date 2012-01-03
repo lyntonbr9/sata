@@ -3,6 +3,7 @@ package sata.auto.estrategia;
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
 import sata.auto.enums.TipoCalculoValorInvestido;
+import sata.auto.enums.TipoRelatorio;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Stop;
 import sata.auto.operacao.Venda;
@@ -29,6 +30,6 @@ public class DuasCallOTMAlta extends Estrategia {
 	}
 	
 	public static void main(String[] args) {
-		new DuasCallOTMAlta().executa(true, true, true, true, false);
+		new DuasCallOTMAlta().executa(TipoRelatorio.COMPLETO);
 	}
 }

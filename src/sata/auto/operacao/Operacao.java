@@ -48,6 +48,13 @@ public abstract class Operacao implements IConstants {
 		this.mesesParaVencimento = mesesParaVencimento;
 	}
 	
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int mesesParaReversao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.mesesParaReversao = mesesParaReversao;
+	}
+	
 	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao) {
 		this.qtdLotes = qtdLotes;
 		this.ativo = ativo;
@@ -55,16 +62,25 @@ public abstract class Operacao implements IConstants {
 		this.condicao = condicao;
 	}
 	
-	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa) {
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao, int mesesParaReversao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.condicao = condicao;
+		this.mesesParaReversao = mesesParaReversao;
+	}
+	
+	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa, int mesesParaReversao) {
 		this.qtdLotes = qtdLotes;
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 		this.momento = momento;
 		this.condicao = condicao;
 		this.reversa = reversa;
+		this.mesesParaReversao = mesesParaReversao;
 	}
 	
-	public abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso);
+	public abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
 	
 	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
 		return ativo.getPreco(dia, this);
@@ -103,11 +119,13 @@ public abstract class Operacao implements IConstants {
 		if (reversa == null) {
 			int momentoReverso = FECHAMENTO;
 			int mesesParaVencimentoReverso = mesesParaVencimento-1;
+			int mesesParaReveresaoReverso = mesesParaVencimento-1;
 			if (momento == FECHAMENTO) {
 				momentoReverso = ABERTURA;
 				mesesParaVencimentoReverso = mesesParaVencimento+1;
+				mesesParaReveresaoReverso = mesesParaVencimento+1;
 			}
-			reversa = criaOperacaoReversa(mesesParaVencimentoReverso, momentoReverso);
+			reversa = criaOperacaoReversa(mesesParaVencimentoReverso, momentoReverso, mesesParaReveresaoReverso);
 		}
 		return reversa;
 	}

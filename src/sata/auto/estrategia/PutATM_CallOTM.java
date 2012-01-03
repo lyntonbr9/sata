@@ -2,6 +2,7 @@ package sata.auto.estrategia;
 
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
+import sata.auto.enums.TipoRelatorio;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Condicao;
 import sata.auto.operacao.Venda;
@@ -32,6 +33,6 @@ public class PutATM_CallOTM extends Estrategia {
 	}
 	
 	public static void main(String[] args) {
-		new PutATM_CallOTM().executa(true, true, true, true, false);
+		new PutATM_CallOTM().executa(TipoRelatorio.REINVESTIMENTO);
 	}
 }
