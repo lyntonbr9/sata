@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
@@ -20,20 +17,13 @@ import sata.domain.util.SATAUtil;
 
 public class Simulacao implements IConstants {
 	
-	static Logger logger = Logger.getLogger(Simulacao.class.getName());
-	
 	private List<Operacao> operacoes = new ArrayList<Operacao>();
 	private Integer anoInicial;
 	private Integer anoFinal;
-	private TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.TOTAL_COMPRADO;
+	private TipoCalculoValorInvestido tipoCalculoValorInvestido;
 	private Stop stop;
 	
-	public Simulacao() {
-		PropertyConfigurator.configure("log4j.properties");
-	}
-	
 	public Simulacao(Operacao... operacoes) {
-		PropertyConfigurator.configure("log4j.properties");
 		this.operacoes = Arrays.asList(operacoes);
 	}
 	
@@ -74,8 +64,16 @@ public class Simulacao implements IConstants {
 	
 	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
 		for (Operacao operacao : operacoes) {
-			executaOperacao(resultado, operacao.getReversa(), mes, dia);
-			
+			Dia diaReversao = dia;
+			Mes mesReversao = mes;
+			int mesesParaVencimento = operacao.getMesesParaVencimento();
+			for (int i=1; i<operacao.getMesesParaReversao(); i++) {
+				mesReversao = dia.getMes().getMesPosterior();
+				diaReversao = getDiaFechamento(mesReversao);
+				operacao.setMesesParaVencimento(mesesParaVencimento-1);
+			}
+			executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao);
+			operacao.setMesesParaVencimento(mesesParaVencimento);
 		}
 	}
 	
@@ -83,7 +81,6 @@ public class Simulacao implements IConstants {
 		Preco preco = operacao.getPreco(dia);
 		if (operacao.condicaoVerdadeira(preco)) {
 			resultado.setResultadoMensal(operacao, mes, preco);
-//			logger.info(resultado.imprimeCSV(operacao, mes));
 		}
 	}
 	

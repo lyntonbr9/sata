@@ -32,6 +32,10 @@ public class Dia implements Comparable<Dia> {
 		return new Dia(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
 	}
 	
+	public Dia getMesPosterior() {
+		return new Dia(dia, mes.getMesPosterior());
+	}
+	
 	public String formatoBanco() {
 		return format("yyyyMMdd");
 	}
