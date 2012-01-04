@@ -167,7 +167,7 @@ public class Resultado implements IConstants {
 	}
 	
 	public BigDecimal getResultadoComReivestimento(BigDecimal valorInicial) {
-		BigDecimal caixa = valorInicial;
+		BigDecimal caixa = new BigDecimal(valorInicial.doubleValue());
 		Collections.sort(resultados);
 		for (int ano=anoInicial; ano<=anoFinal; ano++) 
 			for (int mes=1; mes<=12; mes++) {
@@ -371,6 +371,19 @@ public class Resultado implements IConstants {
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean possui(Operacao operacao, Mes mes) {
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes) &&
+					valorOperacao.getOperacao().equals(operacao))
+				return true;
+		}
+		return false;
+	}
+	
+	public void limpa() {
+		resultados.clear();
 	}
 	
 	private ValorOperacao getValorOperacaoReversa(Operacao operacao, Integer mes, Integer ano) {

@@ -14,7 +14,7 @@ import sata.auto.simulacao.Simulacao;
 public class DuasCallOTMAlta extends Estrategia {
 	
 	@Override
-	public void prepara() {
+	public void prepara(Integer... parametros) {
 		anoInicial = 2000;
 		anoFinal = 2011;
 		Acao acao = new Acao("PETR4");
@@ -31,5 +31,10 @@ public class DuasCallOTMAlta extends Estrategia {
 	
 	public static void main(String[] args) {
 		new DuasCallOTMAlta().executa(TipoRelatorio.COMPLETO);
+	}
+
+	@Override
+	public String getNomeEstrategia(Integer... parametros) {
+		return null;
 	}
 }

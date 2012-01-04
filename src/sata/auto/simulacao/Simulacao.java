@@ -64,16 +64,20 @@ public class Simulacao implements IConstants {
 	
 	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
 		for (Operacao operacao : operacoes) {
-			Dia diaReversao = dia;
-			Mes mesReversao = mes;
-			int mesesParaVencimento = operacao.getMesesParaVencimento();
-			for (int i=1; i<operacao.getMesesParaReversao(); i++) {
-				mesReversao = dia.getMes().getMesPosterior();
-				diaReversao = getDiaFechamento(mesReversao);
-				operacao.setMesesParaVencimento(mesesParaVencimento-1);
+			if (operacao.isReversivel()) {
+				if (resultado.possui(operacao, mes)) {
+					Dia diaReversao = dia;
+					Mes mesReversao = mes;
+					int mesesParaVencimento = operacao.getMesesParaVencimento();
+					for (int i=1; i<operacao.getMesesParaReversao(); i++) {
+						mesReversao = dia.getMes().getMesPosterior();
+						diaReversao = getDiaFechamento(mesReversao);
+						operacao.setMesesParaVencimento(mesesParaVencimento-1);
+					}
+					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao);
+					operacao.setMesesParaVencimento(mesesParaVencimento);
+				}
 			}
-			executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao);
-			operacao.setMesesParaVencimento(mesesParaVencimento);
 		}
 	}
 	

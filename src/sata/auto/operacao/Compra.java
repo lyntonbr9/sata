@@ -64,4 +64,8 @@ public class Compra extends Operacao {
 	public Compra(int qtdLotes, Ativo ativo) {
 		super(qtdLotes, ativo);
 	}
+
+	public Compra(Ativo ativo, boolean reversivel) {
+		super(ativo, reversivel);
+	}
 }

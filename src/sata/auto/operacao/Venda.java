@@ -54,4 +54,8 @@ public class Venda extends Operacao {
 			int mesesParaReversao) {
 		super(qtdLotes, ativo, mesesParaVencimento, mesesParaReversao);
 	}
+
+	public Venda(Ativo ativo, boolean reversivel) {
+		super(ativo, reversivel);
+	}
 }

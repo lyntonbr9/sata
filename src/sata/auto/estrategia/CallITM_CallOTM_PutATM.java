@@ -11,7 +11,7 @@ import sata.auto.simulacao.Simulacao;
 public class CallITM_CallOTM_PutATM extends Estrategia {
 
 	@Override
-	public void prepara() {
+	public void prepara(Integer... parametros) {
 		anoInicial = 2000;
 		anoFinal = 2011;
 		Acao acao = new Acao("PETR4");
@@ -23,5 +23,10 @@ public class CallITM_CallOTM_PutATM extends Estrategia {
 
 	public static void main(String[] args) {
 		new CallITM_CallOTM_PutATM().executa(TipoRelatorio.COMPLETO);
+	}
+
+	@Override
+	public String getNomeEstrategia(Integer... parametros) {
+		return null;
 	}
 }
