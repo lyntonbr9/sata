@@ -11,7 +11,7 @@ import sata.auto.simulacao.Simulacao;
 public class AcaoMaisTravaAltax3 extends Estrategia {
 	
 	@Override
-	public void prepara() {
+	public void prepara(Integer... parametros) {
 		anoInicial = 2000;
 		anoFinal = 2011;
 		tipoCalculoValorInvestido = TipoCalculoValorInvestido.TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES;
@@ -24,5 +24,10 @@ public class AcaoMaisTravaAltax3 extends Estrategia {
 	
 	public static void main(String[] args) {
 		new AcaoMaisTravaAltax3().executa(TipoRelatorio.OPERACOES);
+	}
+
+	@Override
+	public String getNomeEstrategia(Integer... parametros) {
+		return null;
 	}
 }

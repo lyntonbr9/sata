@@ -17,7 +17,7 @@ import sata.domain.util.SATAUtil;
 
 public class PrecoAcao extends Preco implements IConstants {
 	
-	private static Map<Mes,List<CotacaoAtivoTO>> cache = new HashMap<Mes, List<CotacaoAtivoTO>>();
+	private static Map<String,List<CotacaoAtivoTO>> cache = new HashMap<String, List<CotacaoAtivoTO>>();
 	
 	Acao acao;
 	
@@ -35,43 +35,6 @@ public class PrecoAcao extends Preco implements IConstants {
 		volatilidade = new BigDecimal(cotacaoAtivo.getVolatilidadeAnual());
 	}
 
-	/*private CotacaoAtivoTO getCotacaoAcao() throws CotacaoInexistenteEX {
-		int diaCotacao = -1;
-		Mes mesCotacao = mes;
-		if (momento == ABERTURA) {
-			mesCotacao = mes.getMesAnterior();
-			diaCotacao = getDiaAbertura(mesCotacao);
-		}
-		if (momento == FECHAMENTO) {
-			diaCotacao = getDiaFechamento(mesCotacao);
-		}
-		CotacaoAtivoTO cotacao;
-		int tentativas = 0;
-		do {
-			cotacao = getCotacaoAtivoNoDiaEspecifico(acao, mesCotacao, diaCotacao++);
-		} while (cotacao == null && tentativas++<20);
-		if (cotacao == null)
-			throw new CotacaoInexistenteEX();
-		return cotacao;
-	}
-	
-	private CotacaoAtivoTO getCotacaoAtivoNoDiaEspecifico(Acao acao, Mes mes, int dia) {
-		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(acao, mes)) {
-			if(mes.getDataFormatada(dia,"dd/MM/yyyy").equals(cotacao.getPeriodo())){
-				return cotacao;
-			}
-		}
-		return null;
-	}
-	
-	private List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, Mes mes) {
-		if (!cache.containsKey(mes)) {
-			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			cache.put(mes,  caDAO.getCotacoesDoAtivo(acao.getNome(), mes.getDiaInicial(), mes.getDiaFinal()));
-		}
-		return cache.get(mes);
-	}*/
-	
 	private CotacaoAtivoTO getCotacaoAcao() throws CotacaoInexistenteEX {
 		CotacaoAtivoTO cotacao;
 		int tentativas = 0;
@@ -95,11 +58,11 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	
 	private List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, Mes mes) {
-		if (!cache.containsKey(mes)) {
+		if (!cache.containsKey(mes.toString())) {
 			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			cache.put(mes,  caDAO.getCotacoesDoAtivo(acao.getNome(), mes.getDiaInicial().formatoBanco(), mes.getDiaFinal().formatoBanco()));
+			cache.put(mes.toString(),  caDAO.getCotacoesDoAtivo(acao.getNome(), mes.getDiaInicial().formatoBanco(), mes.getDiaFinal().formatoBanco()));
 		}
-		return cache.get(mes);
+		return cache.get(mes.toString());
 	}
 	
 	@Override

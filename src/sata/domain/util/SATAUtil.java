@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
@@ -18,6 +20,21 @@ public class SATAUtil implements IConstants{
 	//Ex: se passado 5 retorna 05
 	public static String getStrDoisDigitos(int valor){		 		
 		return (valor < 10) ? "0" + valor : String.valueOf(valor);
+	}
+	
+	public static <T> T[] copyToArray(List<T> list, T[] array) {
+		int i=0;
+		for (T item : list) {
+			array[i++] = item;
+		}
+		return array;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T[] reverte(T[] array) {
+		List<T> lista = Arrays.asList(array);
+		Collections.reverse(lista);
+		return (T[]) lista.toArray();
 	}
 	
 	/**

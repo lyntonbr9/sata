@@ -58,8 +58,8 @@ public class Mes implements Comparable<Mes>{
 	public boolean equals(Object other) {
 		if (other == null || !(other instanceof Mes))
 			return false;
-		return ((Mes)other).ano.equals(ano) 
-			&& ((Mes)other).mes.equals(mes);
+		return ((Mes)other).ano.equals(this.ano) 
+			&& ((Mes)other).mes.equals(this.mes);
 	}
 	
 	private String getMesFormatado() {

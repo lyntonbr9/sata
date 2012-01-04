@@ -19,11 +19,17 @@ public abstract class Operacao implements IConstants {
 	Condicao condicao;
 	Operacao reversa;
 	int mesesParaReversao = 1;
+	boolean reversivel = true;
 	
 	public Operacao() {}
 	
 	public Operacao(Ativo ativo) {
 		this.ativo = ativo;
+	}
+	
+	public Operacao(Ativo ativo, boolean reversivel) {
+		this.ativo = ativo;
+		this.reversivel = reversivel;
 	}
 	
 	public Operacao(Ativo ativo, int mesesParaVencimento) {
@@ -80,7 +86,7 @@ public abstract class Operacao implements IConstants {
 		this.mesesParaReversao = mesesParaReversao;
 	}
 	
-	public abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
+	protected abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
 	
 	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
 		return ativo.getPreco(dia, this);
@@ -207,5 +213,11 @@ public abstract class Operacao implements IConstants {
 	}
 	public void setMesesParaReversao(int mesesParaReversao) {
 		this.mesesParaReversao = mesesParaReversao;
+	}
+	public boolean isReversivel() {
+		return reversivel;
+	}
+	public void setReversivel(boolean reversivel) {
+		this.reversivel = reversivel;
 	}
 }
