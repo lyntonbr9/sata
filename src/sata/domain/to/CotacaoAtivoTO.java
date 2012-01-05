@@ -1,6 +1,8 @@
 package sata.domain.to;
 
-public class CotacaoAtivoTO {
+import java.math.BigDecimal;
+
+public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 
 	private String codigo;
 	private String abertura;
@@ -14,6 +16,33 @@ public class CotacaoAtivoTO {
 	private double volatilidadeAnual;
 	private double volatilidadeMensal;
 	
+	public BigDecimal getValorFechamento() {
+		return new BigDecimal(Double.parseDouble(fechamento)/100);
+	}
+	
+	public BigDecimal getValorVolatilidadeAnual() {
+		return new BigDecimal(volatilidadeAnual);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof CotacaoAtivoTO))
+			return false;
+		return ((CotacaoAtivoTO)other).codigo.equals(codigo) 
+			&& ((CotacaoAtivoTO)other).periodo.equals(periodo);
+	}
+	
+	@Override
+	public int compareTo(CotacaoAtivoTO other) {
+		int comp = codigo.compareTo(other.codigo);
+		if (comp != 0) return comp;
+		return periodo.compareTo(other.periodo);
+	}
+	
+	@Override
+	public String toString() {
+		return codigo + " " + periodo + " = " + fechamento;
+	}
 	
 	public double getVolatilidadeAnual() {
 		return volatilidadeAnual;

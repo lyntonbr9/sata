@@ -16,6 +16,8 @@ import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.util.IConstants;
+import sata.metastock.indices.MediaMovel;
+import sata.metastock.indices.MediaMovelSimples;
 
 /**
  * @author Flavio
@@ -24,7 +26,16 @@ import sata.domain.util.IConstants;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CalculoUtil implements IConstants {
-
+	
+	public static double[] calculaMediaMovelSimples(double[] listaDeFechamentos, int periodo){
+		MediaMovelSimples mms = new MediaMovelSimples(listaDeFechamentos, periodo);
+		return mms.calculaMediaMovelSimples();
+	}
+	
+	public static double[] calculaMediaMovel(double[] listaDeFechamentos, int periodo){
+		MediaMovel mms = new MediaMovel(listaDeFechamentos, periodo);
+		return mms.getMediaMovel();
+	}
 	
 	public static double getPerdaMedia(double closes[],boolean[] ptosCompra,int days){
 		

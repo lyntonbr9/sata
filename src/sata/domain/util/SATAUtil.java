@@ -43,6 +43,9 @@ public class SATAUtil implements IConstants{
 	 * @return o número formatado
 	 */
 	public static String formataNumero(BigDecimal numero, int casasDecimais) {
+		if (numero == null || casasDecimais < 0)
+			return "";
+		
 		String zeros = "0";
 		for (int i=1; i<casasDecimais; i++)
 			zeros += "0";
