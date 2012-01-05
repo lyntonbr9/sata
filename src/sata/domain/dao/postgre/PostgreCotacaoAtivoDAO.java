@@ -54,11 +54,12 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
-			+ " \"codigoAtivo\" = '" + codigoAtivo + "' "
-			+ " AND ano = '" + ano + "' " 
+			+ " \"codigoAtivo\" = ? AND ano = ? " 
 			+ " ORDER BY periodo ASC";
 		try {
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, codigoAtivo);
+			ps.setString(2, ano);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
@@ -73,6 +74,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 				caTO.setVolume(rs.getString("volume"));
 				caTO.setVolatilidadeAnual(Double.valueOf(rs.getString("volatilidadeAnual")));
 				caTO.setVolatilidadeMensal(Double.valueOf(rs.getString("volatilidadeMensal")));
+				caTO.setSplit(getSplit(caTO));
 				listaCotacoesDoAtivo.add(caTO);
 			}
 			PostgreDAOFactory.returnConnection(con);
@@ -82,6 +84,38 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			e.printStackTrace();
 		}
 		return listaCotacoesDoAtivo;
+	}
+	
+	public int getSplit(CotacaoAtivoTO caTO){
+		
+		int resultado = 1; //caso nao consiga retornar o split
+		
+		//Formata o periodo para ser utilizado no Banco
+		String periodoFormatadoParaBD = SATAUtil.getDataFormatadaParaBD(caTO.getPeriodo());
+		
+		//EXP(SUM(LOG(split))) eh igual a uma funcao MULTIPLY(split)
+		//que multiplicaria todos os valores da coluna
+//		String sqlStmt = "SELECT EXP(SUM(LOG(split))) AS ProdutoDosSplits FROM \"SplitAtivo\" "
+//			+ " WHERE \"codigoAtivo\" = ? AND periodo >= ? GROUP BY \"codigoAtivo\" ";
+		String sqlStmt = "SELECT split FROM \"SplitAtivo\" "
+			+ " WHERE \"codigoAtivo\" = ? AND periodo >= ? ";
+		try {
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, caTO.getCodigo());
+			ps.setTimestamp(2, SATAUtil.getTimeStampPeriodoCotacao(periodoFormatadoParaBD));
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				resultado *= rs.getInt("split");
+			}
+			PostgreDAOFactory.returnConnection(con);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		System.out.println("periodoFormatadoParaBD= " + periodoFormatadoParaBD + " resultado split: " + resultado);
+		return resultado; 
+		
 	}
 	
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, 
@@ -115,6 +149,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 				caTO.setVolume(rs.getString("volume"));
 				caTO.setVolatilidadeAnual(Double.valueOf(rs.getString("volatilidadeAnual")));
 				caTO.setVolatilidadeMensal(Double.valueOf(rs.getString("volatilidadeMensal")));
+				caTO.setSplit(getSplit(caTO));
 				listaCotacoesDoAtivo.add(caTO);
 			}
 			PostgreDAOFactory.returnConnection(con);

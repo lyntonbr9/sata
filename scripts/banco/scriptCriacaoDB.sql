@@ -49,6 +49,22 @@ WITH (
 );
 ALTER TABLE "CotacaoAtivo" OWNER TO postgres;
 
+-- Table: "SplitAtivo"
+CREATE TABLE "SplitAtivo"
+(
+  "codigoAtivo" character varying(10) NOT NULL,
+  periodo timestamp without time zone NOT NULL,
+  split integer NOT NULL,
+  CONSTRAINT "SplitAtivo_pkey" PRIMARY KEY ("codigoAtivo", periodo),
+  CONSTRAINT "SplitAtivo_codigoativo_fkey" FOREIGN KEY ("codigoAtivo")
+      REFERENCES "Ativo" ("codigoAtivo") MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE "SplitAtivo" OWNER TO postgres;
+
 -- Table: "CotacaoConsultaOpcao"
 CREATE TABLE "CotacaoConsultaOpcao"
 (
