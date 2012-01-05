@@ -15,9 +15,10 @@ public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 	private String volume;
 	private double volatilidadeAnual;
 	private double volatilidadeMensal;
-	
+	private int split;
+
 	public BigDecimal getValorFechamento() {
-		return new BigDecimal(Double.parseDouble(fechamento)/100);
+		return new BigDecimal(Double.parseDouble(fechamento)/(100*split));
 	}
 	
 	public BigDecimal getValorVolatilidadeAnual() {
@@ -131,4 +132,13 @@ public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+	
+	public int getSplit() {
+		return split;
+	}
+
+	public void setSplit(int split) {
+		this.split = split;
+	}
+	
 }
