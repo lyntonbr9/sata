@@ -58,4 +58,8 @@ public class Venda extends Operacao {
 	public Venda(Ativo ativo, boolean reversivel) {
 		super(ativo, reversivel);
 	}
+
+	public Venda(Ativo ativo, Condicao condicao) {
+		super(ativo, condicao);
+	}
 }

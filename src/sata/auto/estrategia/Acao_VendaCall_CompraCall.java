@@ -25,9 +25,9 @@ public class Acao_VendaCall_CompraCall extends Estrategia {
 	public static void main(String[] args) {
 		Acao_VendaCall_CompraCall estrategia = new Acao_VendaCall_CompraCall();
 		estrategia.acao = new Acao("PETR4");
-		estrategia.anoInicial = 2007;
+		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.COMPLETO, -7, 2);
+		estrategia.executa(TipoRelatorio.COMPLETO, 4, -2);
 	}
 
 	@Override

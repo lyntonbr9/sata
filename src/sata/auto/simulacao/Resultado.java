@@ -13,6 +13,7 @@ import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.Venda;
+import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
@@ -87,6 +88,18 @@ public class Resultado implements IConstants {
 		return getResultadoMensal(mes.getMes(), mes.getAno());
 	}
 	
+	public BigDecimal getResultadoMensalAcao(Integer mes, Integer ano) {
+		BigDecimal valor =  BigDecimal.ZERO;
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().getMes().equals(mes) &&
+				valorOperacao.getMes().getAno().equals(ano) &&
+				valorOperacao.getOperacao().getAtivo() instanceof Acao) {
+				valor = valor.add(valorOperacao.getValor());
+			}
+		}
+		return valor;
+	}
+	
 	public BigDecimal getResultadoMensal(Integer mes, Integer ano) {
 		if (tipoCalculoValorInvestido == TipoCalculoValorInvestido.TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES
 				&& mes.equals(1) && ano.equals(anoInicial)) {
@@ -105,6 +118,19 @@ public class Resultado implements IConstants {
 	
 	public BigDecimal getValorInvestido(Mes mes) {
 		return getValorInvestido(mes.getMes(), mes.getAno());
+	}
+	
+	public BigDecimal getValorInvestidoAcao(Integer mes, Integer ano) {
+		BigDecimal valor =  BigDecimal.ZERO;
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().getMes().equals(mes) &&
+					valorOperacao.getMes().getAno().equals(ano) &&
+					valorOperacao.getOperacao() instanceof Compra &&
+					valorOperacao.getOperacao().getAtivo() instanceof Acao) {
+				valor = valor.add(valorOperacao.getValor().negate());
+			}
+		}
+		return valor;
 	}
 	
 	public BigDecimal getValorInvestido(Integer mes, Integer ano) {
@@ -147,6 +173,18 @@ public class Resultado implements IConstants {
 	public BigDecimal getResultadoPercentualMensal(Integer mes, Integer ano) {
 		BigDecimal valorInicial = getValorInvestido(mes, ano);
 		BigDecimal resultadoNominal = getResultadoMensal(mes,ano);
+		if (valorInicial.equals(BigDecimal.ZERO))
+			return BigDecimal.ZERO;
+		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+	}
+	
+	public BigDecimal getResultadoPercentualMensalAcao(Mes mes) {
+		return getResultadoPercentualMensalAcao(mes.getMes(), mes.getAno());
+	}
+	
+	public BigDecimal getResultadoPercentualMensalAcao(Integer mes, Integer ano) {
+		BigDecimal valorInicial = getValorInvestidoAcao(mes, ano);
+		BigDecimal resultadoNominal = getResultadoMensalAcao(mes, ano);
 		if (valorInicial.equals(BigDecimal.ZERO))
 			return BigDecimal.ZERO;
 		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));

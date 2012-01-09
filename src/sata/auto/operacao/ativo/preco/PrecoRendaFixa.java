@@ -25,6 +25,11 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 		valor = calculaPrecoAcao().multiply(new BigDecimal(rendaFixa.getPercentual()));
 	}
 	
+	@Override
+	public BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
+		return rendaFixa.getAcao().getMediaMovel(dia, periodo);
+	}
+	
 	private BigDecimal calculaPrecoAcao() throws CotacaoInexistenteEX {
 		precoAcao = rendaFixa.getAcao().getPreco(dia);
 		volatilidade = rendaFixa.getAcao().getVolatilidade(dia);

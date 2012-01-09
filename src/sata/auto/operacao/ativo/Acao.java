@@ -32,6 +32,10 @@ public class Acao extends Ativo {
 		return calculaPreco(dia, null).getVolatilidade();
 	}
 	
+	public BigDecimal getMediaMovel(Dia dia, Integer periodo) throws CotacaoInexistenteEX {
+		return calculaPreco(dia, null).getMediaMovel(periodo);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (other == null || !(other instanceof Acao))
