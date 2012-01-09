@@ -32,6 +32,11 @@ public class PrecoOpcao extends Preco implements IConstants {
 	public void calculaPreco() throws CotacaoInexistenteEX {
 		valor = blackScholes();
 	}
+	
+	@Override
+	public BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
+		return opcao.getAcao().getMediaMovel(dia, periodo);
+	}
 
 	private BigDecimal blackScholes() throws CotacaoInexistenteEX {
 		double precoAcao = calculaPrecoAcao().doubleValue();

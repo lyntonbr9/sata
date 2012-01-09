@@ -25,6 +25,10 @@ public class Stop {
 		switch (atributo) {
 		case PERCENTUAL_OPERACAO:
 			valorComparacao = resultado.getResultadoPercentualMensal(mes).doubleValue();
+			break;
+		case PERCENTUAL_ACAO:
+			valorComparacao = resultado.getResultadoPercentualMensalAcao(mes).doubleValue();
+			break;
 		}
 		return Condicao.verdadeira(valor, valorComparacao, operacao);
 	}

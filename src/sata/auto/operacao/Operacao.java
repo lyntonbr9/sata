@@ -20,71 +20,7 @@ public abstract class Operacao implements IConstants {
 	Operacao reversa;
 	int mesesParaReversao = 1;
 	boolean reversivel = true;
-	
-	public Operacao() {}
-	
-	public Operacao(Ativo ativo) {
-		this.ativo = ativo;
-	}
-	
-	public Operacao(Ativo ativo, boolean reversivel) {
-		this.ativo = ativo;
-		this.reversivel = reversivel;
-	}
-	
-	public Operacao(Ativo ativo, int mesesParaVencimento) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-	}
-	
-	public Operacao(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.condicao = condicao;
-	}
-	
-	public Operacao(int qtdLotes, Ativo ativo) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-	}
-	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-	}
-	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int mesesParaReversao) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.mesesParaReversao = mesesParaReversao;
-	}
-	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.condicao = condicao;
-	}
-	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao, int mesesParaReversao) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.condicao = condicao;
-		this.mesesParaReversao = mesesParaReversao;
-	}
-	
-	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa, int mesesParaReversao) {
-		this.qtdLotes = qtdLotes;
-		this.ativo = ativo;
-		this.mesesParaVencimento = mesesParaVencimento;
-		this.momento = momento;
-		this.condicao = condicao;
-		this.reversa = reversa;
-		this.mesesParaReversao = mesesParaReversao;
-	}
+	boolean executada = false;
 	
 	protected abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
 	
@@ -92,7 +28,7 @@ public abstract class Operacao implements IConstants {
 		return ativo.getPreco(dia, this);
 	}
 	
-	public boolean condicaoVerdadeira(Preco preco) {
+	public boolean condicaoVerdadeira(Preco preco) throws CotacaoInexistenteEX {
 		if (condicao == null) return true;
 		return condicao.verdadeira(preco);
 	}
@@ -162,6 +98,76 @@ public abstract class Operacao implements IConstants {
 		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
 	}
 	
+public Operacao() {}
+	
+	public Operacao(Ativo ativo) {
+		this.ativo = ativo;
+	}
+	
+	public Operacao(Ativo ativo, boolean reversivel) {
+		this.ativo = ativo;
+		this.reversivel = reversivel;
+	}
+	
+	public Operacao(Ativo ativo, int mesesParaVencimento) {
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+	}
+	
+	public Operacao(Ativo ativo, Condicao condicao) {
+		this.ativo = ativo;
+		this.condicao = condicao;
+	}
+	
+	public Operacao(Ativo ativo, int mesesParaVencimento, Condicao condicao) {
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.condicao = condicao;
+	}
+	
+	public Operacao(int qtdLotes, Ativo ativo) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+	}
+	
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+	}
+	
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int mesesParaReversao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.mesesParaReversao = mesesParaReversao;
+	}
+	
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.condicao = condicao;
+	}
+	
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao, int mesesParaReversao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.condicao = condicao;
+		this.mesesParaReversao = mesesParaReversao;
+	}
+	
+	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa, int mesesParaReversao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.momento = momento;
+		this.condicao = condicao;
+		this.reversa = reversa;
+		this.mesesParaReversao = mesesParaReversao;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (other == null || !(other instanceof Operacao))
@@ -219,5 +225,11 @@ public abstract class Operacao implements IConstants {
 	}
 	public void setReversivel(boolean reversivel) {
 		this.reversivel = reversivel;
+	}
+	public boolean isExecutada() {
+		return executada;
+	}
+	public void setExecutada(boolean executada) {
+		this.executada = executada;
 	}
 }

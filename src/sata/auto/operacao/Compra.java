@@ -1,22 +1,12 @@
 package sata.auto.operacao;
 
-import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Ativo;
-import sata.auto.operacao.ativo.preco.Preco;
-import sata.auto.to.Dia;
 
 public class Compra extends Operacao {
 	
 	@Override
 	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso) {
 		return new Venda(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
-	}
-	
-	@Override
-	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
-		Preco preco = super.getPreco(dia);
-		preco.setValor(preco.getValor().negate());
-		return preco;
 	}
 	
 	public Compra() {
@@ -67,5 +57,9 @@ public class Compra extends Operacao {
 
 	public Compra(Ativo ativo, boolean reversivel) {
 		super(ativo, reversivel);
+	}
+
+	public Compra(Ativo ativo, Condicao condicao) {
+		super(ativo, condicao);
 	}
 }

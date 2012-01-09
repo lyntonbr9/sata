@@ -2,7 +2,10 @@ package sata.auto.operacao;
 
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
+import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.preco.Preco;
+import sata.auto.operacao.ativo.preco.PrecoAcao;
+import sata.auto.operacao.ativo.preco.PrecoOpcao;
 
 
 public class Condicao {
@@ -19,7 +22,7 @@ public class Condicao {
 		this.valor = valor;
 	}
 	
-	public boolean verdadeira(Preco preco) {
+	public boolean verdadeira(Preco preco) throws CotacaoInexistenteEX {
 		double valorComparacao = 0;
 		
 		switch (atributo) {
@@ -29,7 +32,16 @@ public class Condicao {
 		case VOLATILIDADE:
 			valorComparacao = preco.getVolatilidade().doubleValue();
 			break;
+		case MEDIA_MOVEL:
+			valorComparacao = preco.getMediaMovel((int)valor).doubleValue();
+			double precoAcao = 0;
+			if (preco instanceof PrecoAcao)
+				precoAcao = preco.getValor().doubleValue();
+			else if (preco instanceof PrecoOpcao)
+				precoAcao = ((PrecoOpcao)preco).getPrecoAcao().doubleValue();
+			return verdadeira(valorComparacao, precoAcao, operacao);
 		}
+		
 		return verdadeira(valor, valorComparacao, operacao);
 	}
 	
@@ -65,7 +77,7 @@ public class Condicao {
 			&& ((Condicao)other).operacao == operacao
 			&& ((Condicao)other).valor == valor;
 	}
-
+	
 	public Atributo getAtributo() {
 		return atributo;
 	}

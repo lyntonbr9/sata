@@ -1,5 +1,8 @@
 package sata.auto.operacao.ativo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
@@ -7,10 +10,17 @@ import sata.auto.to.Dia;
 
 public abstract class Ativo {
 	
+	Map<Dia,Preco> precos = new HashMap<Dia, Preco>();
+	
 	abstract Preco criaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX;
 	
 	public Preco calculaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
-		Preco preco = criaPreco(dia, operacao); 
+		Preco preco;
+		if (!precos.containsKey(dia)) {
+			preco = criaPreco(dia, operacao);
+			precos.put(dia, preco);
+		}
+		else preco = precos.get(dia);
 		preco.calculaPreco();
 		return preco;
 	}

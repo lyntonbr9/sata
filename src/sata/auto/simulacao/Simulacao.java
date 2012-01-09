@@ -58,13 +58,13 @@ public class Simulacao implements IConstants {
 	
 	private void executaOperacoes(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
 		for (Operacao operacao : operacoes) {
-			executaOperacao(resultado, operacao, mes, dia);
+			executaOperacao(resultado, operacao, mes, dia, false);
 		}
 	}
 	
 	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
 		for (Operacao operacao : operacoes) {
-			if (operacao.isReversivel()) {
+			if (operacao.isReversivel() && operacao.isExecutada()) {
 				if (resultado.possui(operacao, mes)) {
 					Dia diaReversao = dia;
 					Mes mesReversao = mes;
@@ -74,17 +74,20 @@ public class Simulacao implements IConstants {
 						diaReversao = getDiaFechamento(mesReversao);
 						operacao.setMesesParaVencimento(mesesParaVencimento-1);
 					}
-					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao);
+					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao, true);
 					operacao.setMesesParaVencimento(mesesParaVencimento);
 				}
 			}
 		}
 	}
 	
-	private void executaOperacao(Resultado resultado, Operacao operacao, Mes mes, Dia dia) throws CotacaoInexistenteEX {
+	private void executaOperacao(Resultado resultado, Operacao operacao, Mes mes, Dia dia, boolean reversa) throws CotacaoInexistenteEX {
 		Preco preco = operacao.getPreco(dia);
-		if (operacao.condicaoVerdadeira(preco)) {
+		boolean condicaoVerdadeira = operacao.condicaoVerdadeira(preco);
+		if (reversa) condicaoVerdadeira = true;
+		if (condicaoVerdadeira) {
 			resultado.setResultadoMensal(operacao, mes, preco);
+			operacao.setExecutada(true);
 		}
 	}
 	

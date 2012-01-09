@@ -2,6 +2,7 @@ package sata.auto.to;
 
 import java.math.BigDecimal;
 
+import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.domain.util.IConstants;
@@ -22,7 +23,10 @@ public class ValorOperacao implements Comparable<ValorOperacao>, IConstants {
 	}
 	
 	public BigDecimal getValor() {
-		return preco.getValor().multiply(new BigDecimal(operacao.getQtdLotes()));
+		BigDecimal valor = preco.getValor().multiply(new BigDecimal(operacao.getQtdLotes()));
+		if (operacao instanceof Compra)
+			valor = valor.negate();
+		return valor;
 	}
 	
 	@Override
