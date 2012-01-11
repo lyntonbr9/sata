@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="/Libs/Selenium/selenium-java-2.0b3.jar"/>
 	<classpathentry kind="lib" path="/Libs/Selenium/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="/Libs/log4j-1.2.16.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

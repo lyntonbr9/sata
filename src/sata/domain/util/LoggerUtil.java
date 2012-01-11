@@ -15,9 +15,13 @@ public class LoggerUtil {
 	}
 	
 	public static void setup(String nomeArquivo){
+		setup(nomeArquivo,"txt");
+	}
+	
+	public static void setup(String nomeArquivo, String extensao){
 		if (!settedUp) {
 			logger = Logger.getLogger(nomeArquivo);
-			String logFileName = "logs/"+nomeArquivo+".log";
+			String logFileName = "logs/"+nomeArquivo+"."+extensao;
 
 			Properties prop = new Properties();
 			prop.setProperty("log4j.rootLogger","DEBUG, stdout, WORKLOG");

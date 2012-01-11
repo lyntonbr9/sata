@@ -34,7 +34,7 @@ public class DuasCallOTMAlta extends Estrategia {
 	}
 
 	@Override
-	public String getNomeEstrategia(Integer... parametros) {
+	public String getTextoEstrategia(String separador, Integer... parametros) {
 		return null;
 	}
 }

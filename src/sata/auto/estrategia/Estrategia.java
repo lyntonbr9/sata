@@ -10,6 +10,7 @@ import sata.auto.operacao.ativo.Acao;
 import sata.auto.simulacao.Resultado;
 import sata.auto.simulacao.Simulacao;
 import sata.domain.util.LoggerUtil;
+import sata.domain.util.SATAUtil;
 
 public abstract class Estrategia {
 
@@ -22,10 +23,12 @@ public abstract class Estrategia {
 	List<Simulacao> simulacoes = new ArrayList<Simulacao>();
 	
 	public abstract void prepara(Integer... parametros);
-	public abstract String getNomeEstrategia(Integer... parametros);
+	public abstract String getTextoEstrategia(String separador, Integer... parametros);
 	
 	public void executa(TipoRelatorio tipoRelatorio, Integer... parametros) {
-		LoggerUtil.setup(this.getClass());
+		LoggerUtil.setup(getTextoEstrategia("_",parametros),Resultado.getExtensaoArquivoSaida(tipoRelatorio));
+		if (Resultado.imprimeInicioFim(tipoRelatorio)) 
+			LoggerUtil.log("Início: " + SATAUtil.getDataAtualFormatada());
 		if (resultado == null) resultado = new Resultado();
 		else resultado.limpa();
 		prepara(parametros);
@@ -42,11 +45,13 @@ public abstract class Estrategia {
 		
 		try {
 			LoggerUtil.log(resultado.imprime(tipoRelatorio));
+			if (Resultado.imprimeInicioFim(tipoRelatorio)) 
+				LoggerUtil.log("Fim: " + SATAUtil.getDataAtualFormatada());
 		} catch (CotacaoInexistenteEX e) {
 			LoggerUtil.log(e.getMessage());
 		}
 	}
-
+	
 	public Resultado getResultado() {
 		return resultado;
 	}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sata.auto.enums.TipoRelatorio;
-import sata.auto.estrategia.Acao_VendaCall_CompraPut_ComMM;
+import sata.auto.estrategia.Acao_VendaCall_CompraPut_Volat;
 import sata.auto.estrategia.Estrategia;
 import sata.auto.estrategia.SomenteAcao;
 import sata.auto.operacao.ativo.Acao;
@@ -16,14 +16,23 @@ import sata.domain.util.SATAUtil;
 public class DataMining {
 	
 	public static void main(String[] args) throws Exception {
-		Variacao variacaoOpcoes = new Variacao(1);
-		Variacao[] variacoes = {variacaoOpcoes,variacaoOpcoes,variacaoOpcoes,variacaoOpcoes,new Variacao(50,200,10)};
-		dataMine(Acao_VendaCall_CompraPut_ComMM.class, "VALE5", 2000, 2006, variacoes);
+		Variacao qtdLotesCallVolBaixa = new Variacao(1,1);
+		Variacao ordemCallVolBaixa = new Variacao(4,4);
+		Variacao qtdMesesCallVolBaixa = new Variacao(2,2);
+		Variacao ordemPutVolBaixa = new Variacao(0,0);
+		Variacao qtdLotesCallVolAlta = new Variacao(3,3);
+		Variacao ordemCallVolAlta = new Variacao(2,2);
+		Variacao ordemPutVolAlta = new Variacao(-1,-1);
+		Variacao volatilidade = new Variacao(0,100,10);
+		Variacao[] variacoes = {qtdLotesCallVolBaixa,ordemCallVolBaixa,qtdMesesCallVolBaixa,ordemPutVolBaixa,
+				qtdLotesCallVolAlta,ordemCallVolAlta,ordemPutVolAlta,volatilidade};
+		dataMine(Acao_VendaCall_CompraPut_Volat.class, "PETR4", 2000, 2011, variacoes);
 	}
 	
 	public static void dataMine(Class<? extends Estrategia> clazz, String acao, int anoInicial, int anoFinal, Variacao[] variacoes) throws Exception {
 		try {
 			LoggerUtil.setup(clazz.getSimpleName()+"_"+acao+"_"+anoInicial+"_"+anoFinal);
+			LoggerUtil.log("Início: " + SATAUtil.getDataAtualFormatada());
 			BigDecimal valorInicial = new BigDecimal(100);
 			BigDecimal melhorResultado = BigDecimal.ZERO;
 			String melhorSimulacao = "";
@@ -37,7 +46,7 @@ public class DataMining {
 				estrategia.setAnoInicial(anoInicial);
 				estrategia.setAnoFinal(anoFinal);
 				estrategia.executa(TipoRelatorio.NENHUM, parametros);
-				String simulacao = estrategia.getNomeEstrategia(parametros);
+				String simulacao = estrategia.getTextoEstrategia("; ",parametros);
 				BigDecimal resultado = estrategia.getResultado().getResultadoComReivestimento(valorInicial).subtract(valorInicial);
 				LoggerUtil.log(simulacao + " = " + SATAUtil.formataNumero(resultado));
 
@@ -48,6 +57,7 @@ public class DataMining {
 			}
 			LoggerUtil.log("\nMelhor Simulação: " + melhorSimulacao + " = " + SATAUtil.formataNumero(melhorResultado));
 			LoggerUtil.log("\nSomente Ação = " + SATAUtil.formataNumero(getResultadoSomenteAcao(acao, anoInicial, anoFinal, valorInicial)));
+			LoggerUtil.log("\nFim: " + SATAUtil.getDataAtualFormatada());
 		}catch (Exception e) {
 			LoggerUtil.log(e.getStackTrace().toString());
 		}

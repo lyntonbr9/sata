@@ -8,5 +8,5 @@ public enum TipoRelatorio {
 	MENSAL,
 	CSV,
 	CSV_MENSAL,
-	REINVESTIMENTO
+	CSV_REINVESTIMENTO,
 }

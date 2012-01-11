@@ -42,8 +42,11 @@ public class Acao_CompraPut_VendaCall_Volat extends Estrategia {
 	}
 
 	@Override
-	public String getNomeEstrategia(Integer... parametros) {
-		return "Compra Ação; Compra Put("+parametros[0]+"); Venda Call("+parametros[1]+") " +
-			"[2 meses com Volatilidade < "+parametros[2]+"%]";
+	public String getTextoEstrategia(String separador, Integer... parametros) {
+		return "Acao("+acao.getNome()+")" + separador +
+			"CompraPut("+parametros[0]+")"+separador+
+			"VendaCall("+parametros[1]+")"+separador+
+			"2MesesVolat("+parametros[2]+"%)" + separador +
+			anoInicial + separador + anoFinal;
 	}
 }
