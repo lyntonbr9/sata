@@ -41,11 +41,13 @@ public class Acao_VendaCall_CompraPut_ComMM extends Estrategia {
 	}
 
 	@Override
-	public String getNomeEstrategia(Integer... parametros) {
-		return "Compra Ação; " +
-			"Compra Put("+parametros[0]+"); Venda Call("+parametros[1]+") " +
-			"[Se MM("+parametros[4]+") < PreçoAção]; " +
-			"Compra Put("+parametros[2]+"); Venda Call("+parametros[3]+") " +
-			"[Se MM("+parametros[4]+") < PreçoAção]; ";
+	public String getTextoEstrategia(String separador, Integer... parametros) {
+		return "Acao("+acao.getNome()+")" + separador +
+			"CompPut("+parametros[0]+")" + separador + 
+			"VendCall("+parametros[1]+")" + separador + 
+			"CompPut("+parametros[2]+")" + separador +
+			"VendCall("+parametros[3]+")" + separador +
+			"MédiaMóvel("+parametros[4]+")" + separador +
+			anoInicial + separador + anoFinal;
 	}
 }

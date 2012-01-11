@@ -114,6 +114,12 @@ public Operacao() {}
 		this.mesesParaVencimento = mesesParaVencimento;
 	}
 	
+	public Operacao(int qtdLotes, Ativo ativo, Condicao condicao) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.condicao = condicao;
+	}
+	
 	public Operacao(Ativo ativo, Condicao condicao) {
 		this.ativo = ativo;
 		this.condicao = condicao;

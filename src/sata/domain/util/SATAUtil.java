@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.TimeZone;
 
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
@@ -201,10 +201,25 @@ public class SATAUtil implements IConstants{
 	}
 	
 	public static Calendar getDataAtual(){
-		Date dataAtual = new Date();
-		GregorianCalendar calendario = new GregorianCalendar();
-		calendario.setTime(dataAtual);
+		TimeZone tz = TimeZone.getTimeZone("America/Sao_Paulo");  
+        TimeZone.setDefault(tz);  
+        Calendar calendario = GregorianCalendar.getInstance(tz);  
 		return calendario;		
+	}
+	
+	public static String getDataAtualFormatada() {
+		return formataCalendar(getDataAtual());
+	}
+	
+	public static String formataCalendar(Calendar calendar) {
+		String string = "";
+		string += getStrDoisDigitos(calendar.get(Calendar.DAY_OF_MONTH)) + "/";
+		string += getStrDoisDigitos(calendar.get(Calendar.MONTH)+1) + "/";
+		string += calendar.get(Calendar.YEAR) + " ";
+		string += getStrDoisDigitos(calendar.get(Calendar.HOUR)) + ":";
+		string += getStrDoisDigitos(calendar.get(Calendar.MINUTE)) + ":";
+		string += getStrDoisDigitos(calendar.get(Calendar.SECOND));
+		return string;
 	}
 
 	// pega as cotacoes do site

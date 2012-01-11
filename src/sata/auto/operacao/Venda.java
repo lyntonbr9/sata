@@ -62,4 +62,8 @@ public class Venda extends Operacao {
 	public Venda(Ativo ativo, Condicao condicao) {
 		super(ativo, condicao);
 	}
+
+	public Venda(int qtdLotes, Ativo ativo, Condicao condicao) {
+		super(qtdLotes, ativo, condicao);
+	}
 }

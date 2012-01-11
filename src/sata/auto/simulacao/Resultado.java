@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import sata.auto.enums.TipoCalculoValorInvestido;
@@ -226,13 +225,6 @@ public class Resultado implements IConstants {
 		String string = "";
 		
 		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
-			tipoRelatorio == TipoRelatorio.MENSAL ||
-			tipoRelatorio == TipoRelatorio.ANUAL ||
-			tipoRelatorio == TipoRelatorio.COMPLETO) {
-			string += "\nInício da Simulação: " + new Date();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
 			tipoRelatorio == TipoRelatorio.COMPLETO) {
 			string += "\n"+imprimeOperacoes();
 		}
@@ -255,7 +247,6 @@ public class Resultado implements IConstants {
 			tipoRelatorio == TipoRelatorio.ANUAL ||
 			tipoRelatorio == TipoRelatorio.COMPLETO) {
 			string += "\n"+imprimeResultadoConsolidado();
-			string += "\nFim da Simulação: " + new Date();
 		}
 		
 		if (tipoRelatorio == TipoRelatorio.CSV) {
@@ -270,11 +261,30 @@ public class Resultado implements IConstants {
 			string += "\n"+imprimeResultadosMensaisCSV();
 		}
 		
-		if (tipoRelatorio == TipoRelatorio.REINVESTIMENTO) {
-			string += "\n"+imprimeResultadoComReinvestimento();
+		if (tipoRelatorio == TipoRelatorio.CSV_REINVESTIMENTO) {
+			string += "\n"+imprimeResultadoComReinvestimentoCSV();
 		}
 		
-		return string;
+		return string+"\n";
+	}
+	
+	public static String getExtensaoArquivoSaida(TipoRelatorio tipoRelatorio) {
+		switch (tipoRelatorio) {
+		case CSV:
+		case CSV_MENSAL:
+		case CSV_REINVESTIMENTO:
+			return "csv";
+
+		default:
+			return "txt";
+		}
+	}
+	
+	public static boolean imprimeInicioFim(TipoRelatorio tipoRelatorio) {
+		return (tipoRelatorio != TipoRelatorio.NENHUM) &&
+			(tipoRelatorio != TipoRelatorio.CSV) && 
+			(tipoRelatorio != TipoRelatorio.CSV_MENSAL) &&
+			(tipoRelatorio != TipoRelatorio.CSV_REINVESTIMENTO);
 	}
 	
 	private String imprimeOperacoes() {
@@ -332,19 +342,17 @@ public class Resultado implements IConstants {
 		return string;
 	}
 	
-	private String imprimeResultadoComReinvestimento() {
+	private String imprimeResultadoComReinvestimentoCSV() {
 		BigDecimal valorInicial = new BigDecimal(100);
 		BigDecimal valorFinal = getResultadoComReivestimento(valorInicial);
-		BigDecimal percentual = valorFinal.subtract(valorInicial).divide(valorInicial, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
 		BigDecimal caixa = valorInicial;
-		String string = "Valor Inicial: " + SATAUtil.formataNumero(valorInicial);
+		String string = "Valor Inicial; " + SATAUtil.formataNumero(valorInicial);
 		for (int ano=anoInicial; ano<=anoFinal; ano++) 
 			for (int mes=1; mes<=12; mes++) {
 				caixa = getResultadoMensalComReivestimento(caixa, ano, mes);
-				string += "\n"+new Mes(mes,ano) + ": " + SATAUtil.formataNumero(caixa);
+				string += "\n"+new Mes(mes,ano) + "; " + SATAUtil.formataNumero(caixa);
 			}
-		string += "\nValor Final: " + SATAUtil.formataNumero(valorFinal);
-		string += "\nPercentual: " + SATAUtil.formataNumero(percentual)+"%";
+		string += "\nValor Final; " + SATAUtil.formataNumero(valorFinal);
 		return string;
 	}
 	

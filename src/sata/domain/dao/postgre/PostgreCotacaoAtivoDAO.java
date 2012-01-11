@@ -113,7 +113,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		System.out.println("periodoFormatadoParaBD= " + periodoFormatadoParaBD + " resultado split: " + resultado);
+//		System.out.println("periodoFormatadoParaBD= " + periodoFormatadoParaBD + " resultado split: " + resultado);
 		return resultado; 
 		
 	}
