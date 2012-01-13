@@ -1,0 +1,91 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+	
+#pagina {
+	margin: 1em auto;
+	width: 990px;
+}
+
+#cabecalho {
+	width: 800px; 
+}
+
+#menu {
+	width: 800px; 
+}
+
+#esquerda {
+	float: left;
+	width: 180px;
+	padding: 2px;
+}
+
+.conteudo {
+	margin-left: 200px;
+	margin-right: 191px;
+	padding: 2px;
+}
+
+#adsense {
+	float: right;
+	width: 160px;
+	padding: 2px;
+}
+
+#rodape {
+	clear: both;
+	padding: 2px;
+	border-top: 1px solid #630;
+	width: 800px; 
+}
+
+a:link.table, a:visited.table, a:active.table {
+	font: bold 100%;
+	text-decoration: none;
+}
+
+a:hover.imagem, a:hover.table {
+	background: none;
+}
+
+a:hover {
+}
+
+td.center {
+	text-align: center;	
+}
+
+div.center {
+	text-align: center;
+}
+
+img {
+	border: none
+}
+
+h1 {
+}
+
+.erro {
+}
+
+.destaque {
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
+}
+
+.resultado {
+	font-family: Courier New;
+	font-size: 70%;
+}
+
+#pageOptions {
+	float: right;
+}
+
+.ui-icon-chart { background-image: url('icon/chart.png'') }  

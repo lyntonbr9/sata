@@ -1,11 +1,17 @@
 package sata.auto.operacao;
 
+import java.math.BigDecimal;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoAcao;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
+import sata.domain.util.SATAUtil;
 
 
 public class Condicao {
@@ -70,14 +76,57 @@ public class Condicao {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Condicao))
-			return false;
-		return ((Condicao)other).atributo == atributo
-			&& ((Condicao)other).operacao == operacao
-			&& ((Condicao)other).valor == valor;
+	public String toString() {
+		String strAtributo = "";
+		String strOperador = "";
+		switch (atributo) {
+		case PRECO:
+			strAtributo = "Preço";
+			break;
+		case VOLATILIDADE:
+			strAtributo = "Volat";
+			break;
+		case MEDIA_MOVEL:
+			strAtributo = "MM";
+			break;
+		}
+		switch (operacao) {
+		case IGUAL:
+			strOperador = "=";
+			break;
+		case DIFERENTE:
+			strOperador = "<>";
+			break;
+		case MAIOR:
+			strOperador = ">";
+			break;
+		case MENOR:
+			strOperador = "<";
+			break;
+		case MAIOR_IGUAL:
+			strOperador = ">=";
+			break;
+		case MENOR_IGUAL:
+			strOperador = "<=";
+			break;
+		}
+		return strAtributo + " " + strOperador + " " + SATAUtil.formataNumero(new BigDecimal(valor));
 	}
 	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(15,28).
+	       append(atributo).
+	       append(operacao).
+	       append(valor).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+
 	public Atributo getAtributo() {
 		return atributo;
 	}

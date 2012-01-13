@@ -2,6 +2,9 @@ package sata.auto.operacao;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Ativo;
 import sata.auto.operacao.ativo.Opcao;
@@ -98,7 +101,7 @@ public abstract class Operacao implements IConstants {
 		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
 	}
 	
-public Operacao() {}
+	public Operacao() {}
 	
 	public Operacao(Ativo ativo) {
 		this.ativo = ativo;
@@ -174,19 +177,41 @@ public Operacao() {}
 		this.mesesParaReversao = mesesParaReversao;
 	}
 	
-	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Operacao))
-			return false;
-		return ((Operacao)other).ativo.equals(ativo)
-			&& ((Operacao)other).getClass().equals(getClass());
+	public String getString() {
+		String strCondicao = "";
+		String strMeses = "";
+		if (mesesParaVencimento > 1) strMeses = " ("+mesesParaVencimento+" meses)";
+		if (condicao != null) strCondicao = " ["+condicao+"]";
+		return toString() + strMeses + strCondicao;
 	}
 	
 	@Override
 	public String toString() {
-		return qtdLotes + "x " + getClass().getSimpleName() + " " + ativo;
+		String strQtd = "";
+		if (qtdLotes > 1) strQtd = qtdLotes + "x";
+		return strQtd + getClass().getSimpleName() + " " + ativo;
 	}
 	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(15,27).
+	       append(qtdLotes).
+	       append(momento).
+	       append(ativo).
+	       append(mesesParaVencimento).
+	       append(condicao).
+	       append(reversa).
+	       append(mesesParaReversao).
+	       append(reversivel).
+	       append(executada).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+
 	public int getQtdLotes() {
 		return qtdLotes;
 	}

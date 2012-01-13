@@ -1,5 +1,8 @@
 package sata.auto.to;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class Periodo {
 	
 	Dia diaInicial;
@@ -13,16 +16,21 @@ public class Periodo {
 	}
 
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Periodo))
-			return false;
-		return ((Periodo)other).diaInicial.equals(diaInicial)
-			&& ((Periodo)other).diaFinal.equals(diaFinal);
+	public String toString() {
+		return diaInicial.formatoPadrao() + " - " + diaFinal.formatoPadrao();
 	}
 	
 	@Override
-	public String toString() {
-		return diaInicial.formatoPadrao() + " - " + diaFinal.formatoPadrao();
+	public int hashCode() {
+		return new HashCodeBuilder(13,27).
+	       append(diaInicial).
+	       append(diaFinal).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 	
 	public Dia getDiaInicial() {

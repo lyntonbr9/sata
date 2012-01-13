@@ -2,6 +2,9 @@ package sata.auto.operacao.ativo;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
@@ -37,10 +40,20 @@ public class Acao extends Ativo {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Acao))
-			return false;
-		return ((Acao)other).nome.equals(nome);
+	public String toString() {
+		return "Ação("+nome+")";
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,27).
+	       append(nome).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 	
 	public String getNome() {

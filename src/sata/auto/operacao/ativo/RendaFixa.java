@@ -28,14 +28,6 @@ public class RendaFixa extends Ativo {
 		return super.toString() + " " + percentual*100 + "%";
 	}
 	
-	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof RendaFixa))
-			return false;
-		return ((RendaFixa)other).acao.equals(acao)
-			&& ((RendaFixa)other).percentual.equals(percentual);
-	}
-	
 	public Acao getAcao() {
 		return acao;
 	}

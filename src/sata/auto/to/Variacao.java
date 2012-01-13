@@ -1,5 +1,8 @@
 package sata.auto.to;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class Variacao {
 	
 	Integer valorInicial;
@@ -20,6 +23,25 @@ public class Variacao {
 		this.valorInicial = valorInicial;
 		this.valorFinal = valorFinal;
 		this.incremento = incremento;
+	}
+	
+	@Override
+	public String toString() {
+		return valorInicial + "-" + valorFinal + "("+incremento+" em "+incremento+")";
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(11,29).
+	       append(valorInicial).
+	       append(valorFinal).
+	       append(incremento).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public Integer getValorInicial() {

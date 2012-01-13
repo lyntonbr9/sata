@@ -6,9 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Acao;
+import sata.auto.to.AnoCotacao;
 import sata.auto.to.Dia;
+import sata.auto.to.DiaCotacao;
 import sata.auto.to.Periodo;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
@@ -18,10 +23,10 @@ import sata.domain.util.SATAUtil;
 
 public class PrecoAcao extends Preco implements IConstants {
 	
-	private static Map<Integer,List<CotacaoAtivoTO>> cacheCotacoes = new HashMap<Integer, List<CotacaoAtivoTO>>();
-	private static Map<Dia,BigDecimal> cacheMM = new HashMap<Dia,BigDecimal>();
+	private static Map<AnoCotacao,List<CotacaoAtivoTO>> cacheCotacoes = new HashMap<AnoCotacao, List<CotacaoAtivoTO>>();
+	private static Map<DiaCotacao,BigDecimal> cacheMM = new HashMap<DiaCotacao,BigDecimal>();
 	
-	Acao acao;
+	private Acao acao;
 	
 	public PrecoAcao() {}
 	
@@ -65,20 +70,21 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	
 	private List<CotacaoAtivoTO> getListaCotacoesAcao(Integer ano) {
-		return getListaCotacoesAcao(acao, ano);
+		return getListaCotacoesAcao(new AnoCotacao(ano, acao));
 	}
 	
-	private static List<CotacaoAtivoTO> getListaCotacoesAcao(Acao acao, Integer ano) {
-		if (!cacheCotacoes.containsKey(ano)) {
+	private static List<CotacaoAtivoTO> getListaCotacoesAcao(AnoCotacao anoCotacao) {
+		if (!cacheCotacoes.containsKey(anoCotacao)) {
 			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			cacheCotacoes.put(ano, caDAO.getCotacoesDoAtivo(acao.getNome(), ano.toString()));
+			cacheCotacoes.put(anoCotacao, caDAO.getCotacoesDoAtivo(anoCotacao.getAcao().getNome(), anoCotacao.getAno().toString()));
 		}
-		return cacheCotacoes.get(ano);
+		return cacheCotacoes.get(anoCotacao);
 	}
 	
 	private static BigDecimal calculaMediaMovel(Dia dia, int periodo, Acao acao) {
 		if (periodo == 0) return BigDecimal.ZERO;
-		if (!cacheMM.containsKey(dia)) {
+		DiaCotacao diaCotacao = new DiaCotacao(dia, acao);
+		if (!cacheMM.containsKey(diaCotacao)) {
 				List<CotacaoAtivoTO> cotacoes = getListaCotacoesAteAData(dia, periodo, acao);
 				BigDecimal mm = BigDecimal.ZERO;
 				if (cotacoes.size() == periodo) {
@@ -88,9 +94,9 @@ public class PrecoAcao extends Preco implements IConstants {
 					}
 					mm = soma.divide(new BigDecimal(periodo), RoundingMode.HALF_EVEN);
 				}
-				cacheMM.put(dia, mm);
+				cacheMM.put(diaCotacao, mm);
 		}
-		return cacheMM.get(dia);
+		return cacheMM.get(diaCotacao);
 	}
 	
 	private static List<CotacaoAtivoTO> getListaCotacoesAteAData (Dia diaFinal, int qtdDias, Acao acao) {
@@ -112,8 +118,21 @@ public class PrecoAcao extends Preco implements IConstants {
 	
 	@Override
 	public String toString() {
-		return acao + " " + dia + " = " + SATAUtil.formataNumero(valor)
-		+ "; Volatilidade = " + SATAUtil.formataNumero(volatilidade.multiply(new BigDecimal(100))) + "%";
+		return "Preço" + " " + dia + " = " + SATAUtil.formataNumero(valor)
+		+ "; Volat = " + SATAUtil.formataNumero(volatilidade.multiply(new BigDecimal(100))) + "%";
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(10,27).
+		   appendSuper(8).
+	       append(acao).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public Acao getAcao() {

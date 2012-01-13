@@ -5,26 +5,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAPropertyLoader;
 
 class ConnectionPoolManager implements IConstants{
 
-	private static Properties SATAProps;
-	private String databaseUrl = SATAProps.getProperty(PROP_SATA_DB_URL);
-	private String userName = SATAProps.getProperty(PROP_SATA_DB_USERNAME);
-	private String password = SATAProps.getProperty(PROP_SATA_DB_PASSWORD);
+//	private static Properties SATAProps;
+//	private String databaseUrl = SATAProps.getProperty(PROP_SATA_DB_URL);
+//	private String userName = SATAProps.getProperty(PROP_SATA_DB_USERNAME);
+//	private String password = SATAProps.getProperty(PROP_SATA_DB_PASSWORD);
+	private String databaseUrl = SATAPropertyLoader.getProperty(PROP_SATA_DB_URL);
+	private String userName = SATAPropertyLoader.getProperty(PROP_SATA_DB_USERNAME);
+	private String password = SATAPropertyLoader.getProperty(PROP_SATA_DB_PASSWORD);
 	
 	List<Connection> connectionPool = new ArrayList<Connection>();
 
 	static {
 		try {
 			//vai carregar os properties de configuracao do SATA
-			SATAProps = SATAPropertyLoader.loadProperties(ARQ_SATA_CONF);
+//			SATAProps = SATAPropertyLoader.loadProperties(ARQ_SATA_CONF);
 			
-			Class.forName(SATAProps.getProperty(PROP_SATA_DB_JDBC_DRIVER));
+//			Class.forName(SATAProps.getProperty(PROP_SATA_DB_JDBC_DRIVER));
+			Class.forName(SATAPropertyLoader.getProperty(PROP_SATA_DB_JDBC_DRIVER));
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -64,7 +67,8 @@ class ConnectionPoolManager implements IConstants{
 
 	private synchronized boolean checkIfConnectionPoolIsFull()
 	{
-		int maxPoolSize = Integer.parseInt(SATAProps.getProperty(PROP_SATA_DB_MAXPOOLSIZE));
+//		int maxPoolSize = Integer.parseInt(SATAProps.getProperty(PROP_SATA_DB_MAXPOOLSIZE));
+		int maxPoolSize = Integer.parseInt(SATAPropertyLoader.getProperty(PROP_SATA_DB_MAXPOOLSIZE));
 		
 		//Check if the pool size
 		if(connectionPool.size() < maxPoolSize){
