@@ -1,5 +1,8 @@
 package sata.auto.operacao;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
 import sata.auto.simulacao.Resultado;
@@ -31,6 +34,20 @@ public class Stop {
 			break;
 		}
 		return Condicao.verdadeira(valor, valorComparacao, operacao);
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(1,22).
+	       append(atributo).
+	       append(operacao).
+	       append(valor).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public Atributo getAtributo() {

@@ -14,10 +14,10 @@ public class SomenteAcao extends Estrategia {
 	
 	public static void main(String[] args) {
 		SomenteAcao estrategia = new SomenteAcao();
-		estrategia.acao = new Acao("BVMF3");
-		estrategia.anoInicial = 2010;
+		estrategia.acao = new Acao("PETR4");
+		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.CSV_REINVESTIMENTO);
+		estrategia.executa(TipoRelatorio.COMPLETO);
 	}
 
 	@Override

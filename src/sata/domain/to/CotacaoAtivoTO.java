@@ -2,6 +2,8 @@ package sata.domain.to;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 
 	private String codigo;
@@ -35,9 +37,10 @@ public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 	
 	@Override
 	public int compareTo(CotacaoAtivoTO other) {
-		int comp = codigo.compareTo(other.codigo);
-		if (comp != 0) return comp;
-		return periodo.compareTo(other.periodo);
+		return new CompareToBuilder()
+	       .append(codigo, other.codigo)
+	       .append(periodo, other.periodo)
+	       .toComparison();
 	}
 	
 	@Override

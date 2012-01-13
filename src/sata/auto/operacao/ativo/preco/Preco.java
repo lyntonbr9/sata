@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.to.Dia;
 
@@ -22,6 +25,20 @@ public abstract class Preco {
 		if (!mediasMoveis.containsKey(periodo))
 			mediasMoveis.put(periodo, calculaMediaMovel(periodo));
 		return mediasMoveis.get(periodo);
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(10,27).
+	       append(valor).
+	       append(volatilidade).
+	       append(dia).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 	
 	public void setValor(BigDecimal valor) {

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="/templates/padrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Simulação</ui:define>
+	<ui:define name="conteudo">
+		<h:form>
+			<p:messages autoUpdate="true"/>
+			<h:panelGroup id="page">
+			<p:dialog header="Adicionar Operação" widgetVar="addOperacao" modal="true"> 
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Operação:" for="operacao" />
+					<p:selectOneMenu id="operacao" value="#{simulacaoMB.tipoOperacao}">
+						<f:selectItem itemValue="-" itemLabel="--" />
+						<f:selectItem itemValue="V" itemLabel="Venda" />
+						<f:selectItem itemValue="C" itemLabel="Compra" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Quantidade:" for="qtd" />
+					<p:spinner id="qtd" value="#{simulacaoMB.qtdLotes}" size="3"/>
+				
+					<h:outputLabel value="Ativo:" for="ativo" />
+					<p:selectOneMenu id="ativo" value="#{simulacaoMB.tipoAtivo}">
+						<f:selectItem itemValue="-" itemLabel="--" />
+						<f:selectItem itemValue="A" itemLabel="Ação" />
+						<f:selectItem itemValue="C" itemLabel="Call" />
+						<f:selectItem itemValue="P" itemLabel="Put" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Ação:" for="acao" />
+					<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}">
+						<f:selectItem itemValue="" itemLabel="--" />
+						<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao}" />
+					</p:selectOneMenu>
+			
+					<h:outputLabel value="Ordem:" for="ordem" />
+					<p:spinner id="ordem" value="#{simulacaoMB.ordemOpcao}" size="3" disabled="{!#simulacaoMB.opcaoSelecionada}"/>
+			
+					<h:outputLabel value="Meses Para o Vencimento:" for="meses" />
+					<p:spinner id="meses" value="#{simulacaoMB.mesesParaVencimento}" size="3" disabled="{!#simulacaoMB.opcaoSelecionada}"/>
+					
+					<h:outputLabel value="Condição:" />
+					<h:panelGrid columns="3">
+						<p:selectOneMenu id="atributo" value="#{simulacaoMB.condicao.atributo}">
+							<f:selectItem itemValue="" itemLabel="--" />
+							<f:selectItems value="#{simulacaoMB.atributos}" />
+						</p:selectOneMenu>
+						<p:selectOneMenu id="Operacao" value="#{simulacaoMB.condicao.operacao}">
+							<f:selectItem itemValue="" itemLabel="--" />
+							<f:selectItems value="#{simulacaoMB.operadores}" />
+						</p:selectOneMenu>
+						<p:inputText id="valor" value="#{simulacaoMB.condicao.valor}" size="3">
+							<f:convertNumber />
+						</p:inputText>
+					</h:panelGrid>
+				</h:panelGrid>
+				<p:separator />
+				<p:commandButton value="Adicionar" action="#{simulacaoMB.incluirOperacao}" update="page" onclick="addOperacao.hide();"/>
+			</p:dialog>
+	
+			<p:dataTable id="operacoes" value="#{simulacaoMB.operacoes}" var="operacao" 
+				rendered="#{not empty simulacaoMB.operacoes}">  
+	    		<p:column>  
+		            <f:facet name="header">Operação</f:facet>
+		            #{operacao.string}  
+        		</p:column>
+        		<p:column>  
+		            <f:facet name="header">Excluir</f:facet>
+		            <p:commandButton value="X" action="#{simulacaoMB.excluirOperacao}" update="@form">
+		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
+		            </p:commandButton>
+        		</p:column>
+			</p:dataTable>
+			<p:commandButton value="Adicionar Operação" onclick="addOperacao.show();"/>
+
+			<p:separator />			
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Ano Inicial:" />
+				<p:spinner value="#{simulacaoMB.anoInicial}" size="4"/>
+				
+				<h:outputLabel value="Ano Final:" />
+				<p:spinner value="#{simulacaoMB.anoFinal}" size="4"/>
+			</h:panelGrid>
+			<p:commandButton value="Simular" action="#{simulacaoMB.simular}" update="page"/><br/>
+			
+			<p:separator rendered="#{not empty simulacaoMB.relatorio}" />
+			
+			<h:panelGrid columns="4" rendered="#{not empty simulacaoMB.relatorio}">
+				<h:outputLabel value="Tipo de Relatório:" />
+				<p:selectOneMenu id="tipoRelatorio" value="#{simulacaoMB.tipoRelatorio}">
+					<f:selectItems value="#{simulacaoMB.tiposRelatorios}" />
+					<p:ajax event="change" listener="#{simulacaoMB.alterarRelatorio}" update="resultado" />
+				</p:selectOneMenu>
+				<p:commandButton value="Adicionar no Gráfico" action="#{simulacaoMB.addGrafico}" 
+					update="page" oncomplete="grafico.show();"/>
+				<p:commandButton icon="ui-icon-chart" onclick="grafico.show();" 
+					rendered="#{not empty simulacaoMB.graficoModel.series}"/>
+			</h:panelGrid>
+			
+			<h:outputText id="resultado" value="#{simulacaoMB.relatorio}" escape="false"
+				rendered="#{not empty simulacaoMB.relatorio}" styleClass="resultado" />
+				
+			<p:dialog header="Gráfico" widgetVar="grafico" modal="true">
+				<p:lineChart value="#{simulacaoMB.graficoModel}" legendPosition="e"
+					style="width:1000px; font-size:60%; writing-mode: tb-rl; filter: flipv fliph" /><br/>
+				<p:commandButton value="Limpar" action="#{simulacaoMB.limparGrafico}" update="page" 
+					onclick="grafico.hide();" />
+			</p:dialog>
+			
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>

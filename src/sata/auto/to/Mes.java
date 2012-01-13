@@ -1,5 +1,9 @@
 package sata.auto.to;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 
 public class Mes implements Comparable<Mes>{
 	private Integer mes;
@@ -49,23 +53,29 @@ public class Mes implements Comparable<Mes>{
 	
 	@Override
 	public int compareTo(Mes other) {
-		int compAno = ano.compareTo(other.ano);
-		if (compAno != 0) return compAno;
-		else return mes.compareTo(other.mes);
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Mes))
-			return false;
-		return ((Mes)other).ano.equals(this.ano) 
-			&& ((Mes)other).mes.equals(this.mes);
+		 return new CompareToBuilder()
+	        .append(ano, other.ano)
+	        .append(mes, other.mes)
+	        .toComparison();
 	}
 	
 	private String getMesFormatado() {
 		return String.format("%02d", mes);
 	}
 	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,27).
+	       append(ano).
+	       append(mes).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+
 	public Integer getMes() {
 		return mes;
 	}

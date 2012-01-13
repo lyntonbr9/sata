@@ -18,11 +18,11 @@ import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.to.Mes;
 import sata.auto.to.ValorOperacao;
+import sata.auto.to.ValorResultado;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public class Resultado implements IConstants {
-	
 	private List<ValorOperacao> resultados = new ArrayList<ValorOperacao>();
 	
 	private Integer anoInicial;
@@ -141,14 +141,16 @@ public class Resultado implements IConstants {
 				switch (tipoCalculoValorInvestido) {
 				case TOTAL_COMPRADO:
 				case TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES:
-					if (valorOperacao.getOperacao() instanceof Compra)
+					/*if (valorOperacao.getOperacao() instanceof Compra)
 						if (valorOperacao.getOperacao().getMomento() == ABERTURA)
 							valor = valor.add(valorOperacao.getValor().negate());
 						else { // Fechamento
 							ValorOperacao operacaoReversa = getValorOperacaoReversa(valorOperacao.getOperacao(), mes, ano);
 							BigDecimal valorReversa = operacaoReversa.getValor();
 							valor = valor.add((valorOperacao.getValor()).add(valorReversa).negate());
-						}
+						}*/
+					if (valorOperacao.getOperacao().getMomento() == ABERTURA)
+						valor = valor.add(valorOperacao.getValor().negate());
 					break;
 				case DIFERENCA_STRIKES:
 					if (valorOperacao.getOperacao().getAtivo() instanceof Opcao &&
@@ -249,6 +251,10 @@ public class Resultado implements IConstants {
 			string += "\n"+imprimeResultadoConsolidado();
 		}
 		
+		if (tipoRelatorio == TipoRelatorio.REINVESTIMENTO) {
+			string += "\n"+imprimeResultadoComReinvestimento();
+		}
+		
 		if (tipoRelatorio == TipoRelatorio.CSV) {
 			string += "\n"+imprimeCSV();
 		}
@@ -342,18 +348,37 @@ public class Resultado implements IConstants {
 		return string;
 	}
 	
-	private String imprimeResultadoComReinvestimentoCSV() {
+	public List<ValorResultado> listaResultadoComReinvestimento() {
 		BigDecimal valorInicial = new BigDecimal(100);
 		BigDecimal valorFinal = getResultadoComReivestimento(valorInicial);
 		BigDecimal caixa = valorInicial;
-		String string = "Valor Inicial; " + SATAUtil.formataNumero(valorInicial);
+		List<ValorResultado> resultados = new ArrayList<ValorResultado>();
+		resultados.add(new ValorResultado("Valor Inicial",valorInicial));
 		for (int ano=anoInicial; ano<=anoFinal; ano++) 
 			for (int mes=1; mes<=12; mes++) {
-				caixa = getResultadoMensalComReivestimento(caixa, ano, mes);
-				string += "\n"+new Mes(mes,ano) + "; " + SATAUtil.formataNumero(caixa);
+				BigDecimal valor = getResultadoMensalComReivestimento(caixa, ano, mes);
+				resultados.add(new ValorResultado(new Mes(mes,ano).toString(),valor));
+				caixa = valor;
 			}
-		string += "\nValor Final; " + SATAUtil.formataNumero(valorFinal);
+		resultados.add(new ValorResultado("Valor Final",valorFinal));
+		return resultados;
+	}
+	
+	private String imprimeResultadoComReinvestimento(String separador) {
+		List<ValorResultado> resultados = listaResultadoComReinvestimento();
+		String string = "";
+		for (ValorResultado valorResultado: resultados) {
+			string += "\n" + valorResultado.getValor() + separador + SATAUtil.formataNumero(valorResultado.getResultado());
+		}
 		return string;
+	}
+	
+	private String imprimeResultadoComReinvestimentoCSV() {
+		return imprimeResultadoComReinvestimento("; ");
+	}
+	
+	private String imprimeResultadoComReinvestimento() {
+		return imprimeResultadoComReinvestimento(": ");
 	}
 	
 	private String imprimeResultadoConsolidado() {
@@ -432,9 +457,9 @@ public class Resultado implements IConstants {
 		resultados.clear();
 	}
 	
-	private ValorOperacao getValorOperacaoReversa(Operacao operacao, Integer mes, Integer ano) {
+	/*private ValorOperacao getValorOperacaoReversa(Operacao operacao, Integer mes, Integer ano) {
 		return getValorOperacao(operacao.getReversa(), mes, ano);
-	}
+	}*/
 	
 	public void setAnoInicial(Integer anoInicial) {
 		this.anoInicial = anoInicial;

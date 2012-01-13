@@ -5,6 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class Dia implements Comparable<Dia> {
 	
 	private static final String FORMATO_DATA_PADRAO = "dd/MM/yyyy";
@@ -81,9 +85,10 @@ public class Dia implements Comparable<Dia> {
 	
 	@Override
 	public int compareTo(Dia other) {
-		int comp = mes.compareTo(other.mes);
-		if (comp != 0) return comp;
-		else return dia.compareTo(other.dia);
+		return new CompareToBuilder()
+	    	       .append(mes, other.mes)
+	    	       .append(dia, other.dia)
+	    	       .toComparison();
 	}
 	
 	public boolean lessThan(Dia dia) {
@@ -105,16 +110,21 @@ public class Dia implements Comparable<Dia> {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || !(other instanceof Dia))
-			return false;
-		return ((Dia)other).dia.equals(dia) 
-			&& ((Dia)other).mes.equals(mes);
-	}
-	
-	@Override
 	public String toString() {
 		return formatoPadrao();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,27).
+	       append(dia).
+	       append(mes).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public Integer getDia() {

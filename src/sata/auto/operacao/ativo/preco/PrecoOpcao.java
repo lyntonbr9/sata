@@ -2,6 +2,9 @@ package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.to.Dia;
@@ -65,7 +68,22 @@ public class PrecoOpcao extends Preco implements IConstants {
 		return opcao + "("+SATAUtil.formataNumero(precoExercicioOpcao)+")"
 		+ " " + dia
 		+ " = " + SATAUtil.formataNumero(valor)
-		+ "; Dias para vencimento = " + diasParaVencimento;
+		+ "; Dias = " + diasParaVencimento;
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(1,27).
+		   appendSuper(7).
+	       append(call).
+	       append(opcao).
+	       append(diasParaVencimento).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public boolean isCall() {

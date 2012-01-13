@@ -12,7 +12,7 @@ public abstract class SATAPropertyLoader
 {
     
 	private static final boolean THROW_ON_LOAD_FAILURE = true;
-    private static final boolean LOAD_AS_RESOURCE_BUNDLE = false;
+    private static final boolean LOAD_AS_RESOURCE_BUNDLE = true;
     private static final String SUFFIX = ".properties";
     
     /**
@@ -111,14 +111,21 @@ public abstract class SATAPropertyLoader
         return result;
     }
     
+    public static String getProperty(String name) {
+    	ResourceBundle rb = ResourceBundle.getBundle("conf/sata-conf");  
+    	return rb.getString(name);
+    }
+    
     /**
      * A convenience overload of {@link #loadProperties(String, ClassLoader)}
      * that uses the current thread's context classloader.
      */
     public static Properties loadProperties (final String name)
     {
-        return loadProperties (name,
-            Thread.currentThread ().getContextClassLoader ());
+    	ClassLoader cl = Thread.currentThread ().getContextClassLoader();
+    	cl.getResourceAsStream("/auth.properties");
+    	return loadProperties (name,
+            Thread.currentThread ().getContextClassLoader());
     }
     
 	public static void main(String[] args) {

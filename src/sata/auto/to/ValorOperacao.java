@@ -2,6 +2,10 @@ package sata.auto.to;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
@@ -31,11 +35,10 @@ public class ValorOperacao implements Comparable<ValorOperacao>, IConstants {
 	
 	@Override
 	public int compareTo(ValorOperacao other) {
-		int comp = mes.compareTo(other.mes);
-		if (comp != 0) return comp;
-		if (operacao.getMomento() == other.operacao.getMomento()) return 0;
-		if (operacao.getMomento() == ABERTURA) return -1;
-		return 1;
+		return new CompareToBuilder()
+	       .append(mes, other.mes)
+	       .append(operacao.getMomento(), other.operacao.getMomento())
+	       .toComparison();
 	}
 	
 	@Override
@@ -43,6 +46,20 @@ public class ValorOperacao implements Comparable<ValorOperacao>, IConstants {
 		return mes + " - " + operacao + " = " + SATAUtil.formataNumero(getValor()) + " [" + preco + "] " ;
 	}
 	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,27).
+	       append(operacao).
+	       append(mes).
+	       append(preco).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+
 	public Operacao getOperacao() {
 		return operacao;
 	}
