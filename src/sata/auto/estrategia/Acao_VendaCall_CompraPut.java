@@ -26,10 +26,10 @@ public class Acao_VendaCall_CompraPut extends Estrategia {
 	
 	public static void main(String[] args) {
 		Acao_VendaCall_CompraPut estrategia = new Acao_VendaCall_CompraPut();
-		estrategia.acao = new Acao("BVMF3");
-		estrategia.anoInicial = 2010;
+		estrategia.acao = new Acao("PETR4");
+		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.CSV_REINVESTIMENTO, 1, 4, 2, -1);
+		estrategia.executa(TipoRelatorio.COMPLETO, 1, 4, 1, 2);
 	}
 
 	@Override

@@ -4,10 +4,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FacesUtil {
 
 	public static void addException(Exception e) {
-		addError(e.getLocalizedMessage());
+		addError(getMessage(e));
 		e.printStackTrace();
 	}
 
@@ -45,5 +47,13 @@ public class FacesUtil {
 
 	private static void addMsg(Severity severity, String msg, String detalhe) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, msg, detalhe));
+	}
+	
+	private static String getMessage(Exception e) {
+		String msg = e.getLocalizedMessage();
+		if (StringUtils.isEmpty(msg)) {
+			msg = e.getClass().getSimpleName();
+		}
+		return msg;
 	}
 }

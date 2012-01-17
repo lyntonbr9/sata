@@ -9,11 +9,6 @@ public class Variacao {
 	Integer valorFinal;
 	Integer incremento = 1;
 	
-	public Variacao(Integer valor) {
-		this.valorInicial = -valor;
-		this.valorFinal = valor;
-	}
-	
 	public Variacao(Integer valorInicial, Integer valorFinal) {
 		this.valorInicial = valorInicial;
 		this.valorFinal = valorFinal;

@@ -8,16 +8,16 @@
 
 	<ui:define name="titulo">Simulação</ui:define>
 	<ui:define name="conteudo">
-		<h:form>
+		<h:form enctype="multipart/form-data">
 			<p:messages autoUpdate="true"/>
 			<h:panelGroup id="page">
-			<p:dialog header="Adicionar Operação" widgetVar="addOperacao" modal="true"> 
+			<p:dialog header="#{simulacaoMB.textoOperacao} Operação" widgetVar="formOperacao" modal="true"> 
 				<h:panelGrid columns="2">
 					<h:outputLabel value="Operação:" for="operacao" />
 					<p:selectOneMenu id="operacao" value="#{simulacaoMB.tipoOperacao}">
 						<f:selectItem itemValue="-" itemLabel="--" />
-						<f:selectItem itemValue="V" itemLabel="Venda" />
 						<f:selectItem itemValue="C" itemLabel="Compra" />
+						<f:selectItem itemValue="V" itemLabel="Venda" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Quantidade:" for="qtd" />
@@ -59,7 +59,8 @@
 					</h:panelGrid>
 				</h:panelGrid>
 				<p:separator />
-				<p:commandButton value="Adicionar" action="#{simulacaoMB.incluirOperacao}" update="page" onclick="addOperacao.hide();"/>
+				<p:commandButton icon="ui-icon-check" title="#{simulacaoMB.textoOperacao}" action="#{simulacaoMB.incluirOperacao}" update="page" onclick="formOperacao.hide();"/>
+				<p:commandButton icon="ui-icon-close" title="Cancelar" onclick="formOperacao.hide();"/>
 			</p:dialog>
 	
 			<p:dataTable id="operacoes" value="#{simulacaoMB.operacoes}" var="operacao" 
@@ -68,15 +69,38 @@
 		            <f:facet name="header">Operação</f:facet>
 		            #{operacao.string}  
         		</p:column>
-        		<p:column>  
+				<p:column styleClass="center">  
+		            <f:facet name="header">Editar</f:facet>
+		            <p:commandButton icon="ui-icon-pencil" action="#{simulacaoMB.editarOperacao}" 
+		            	update="@form" oncomplete="formOperacao.show();">
+		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
+		            </p:commandButton>
+        		</p:column>
+        		<p:column styleClass="center">  
 		            <f:facet name="header">Excluir</f:facet>
-		            <p:commandButton value="X" action="#{simulacaoMB.excluirOperacao}" update="@form">
+		            <p:commandButton icon="ui-icon-close" action="#{simulacaoMB.excluirOperacao}" update="@form">
 		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
 		            </p:commandButton>
         		</p:column>
 			</p:dataTable>
-			<p:commandButton value="Adicionar Operação" onclick="addOperacao.show();"/>
-
+			<p:commandButton icon="ui-icon-plus" value="Adicionar Operação" action="#{simulacaoMB.limpaCampos}" update="@form" oncomplete="formOperacao.show();"/>
+			<p:commandButton icon="ui-icon-folder-open" title="Abrir Estratégia" onclick="abrirEstrategia.show();" />
+			<p:commandButton icon="ui-icon-disk" title="Salvar Estratégia" ajax="false" rendered="#{not empty simulacaoMB.operacoes}">
+				<p:fileDownload value="#{simulacaoMB.arquivo}" /> 
+			</p:commandButton>
+			
+			<p:dialog header="Abrir Estratégia" widgetVar="abrirEstrategia" modal="true">
+				<p:fileUpload fileUploadListener="#{simulacaoMB.abrirArquivo}"  
+            		mode="advanced"   
+            		update="page"  
+            		sizeLimit="100000"   
+            		allowTypes="/(\.|\/)(txt)$/"
+            		label="Procurar"
+	            	cancelLabel="Cancelar"
+	            	onstart="abrirEstrategia.hide();"
+            		/>  
+			</p:dialog>
+			
 			<p:separator />			
 			<h:panelGrid columns="2">
 				<h:outputLabel value="Ano Inicial:" />
@@ -95,23 +119,39 @@
 					<f:selectItems value="#{simulacaoMB.tiposRelatorios}" />
 					<p:ajax event="change" listener="#{simulacaoMB.alterarRelatorio}" update="resultado" />
 				</p:selectOneMenu>
-				<p:commandButton value="Adicionar no Gráfico" action="#{simulacaoMB.addGrafico}" 
-					update="page" oncomplete="grafico.show();"/>
-				<p:commandButton icon="ui-icon-chart" onclick="grafico.show();" 
-					rendered="#{not empty simulacaoMB.graficoModel.series}"/>
 			</h:panelGrid>
 			
 			<h:outputText id="resultado" value="#{simulacaoMB.relatorio}" escape="false"
 				rendered="#{not empty simulacaoMB.relatorio}" styleClass="resultado" />
+			
+			<br/>
+			<p:commandButton icon="ui-icon-extlink" value="Adicionar no Gráfico" onclick="addGrafico.show();" 
+				rendered="#{not empty simulacaoMB.relatorio}" />
+			<p:commandButton icon="ui-icon-image" value="Abrir Gráfico" onclick="grafico.show();" 
+					rendered="#{not empty simulacaoMB.graficoModel.series}"/>
+				
+			<p:dialog header="Adicionar no Gráfico" widgetVar="addGrafico" modal="true">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Nome da Simulação:" />
+					<p:inputText value="#{simulacaoMB.nome}" />
+					
+					<h:outputLabel value="Escala do Gráfico:" />
+					<p:spinner value="#{simulacaoMB.escalaGrafico}" size="3" />
+				</h:panelGrid>
+				<p:commandButton icon="ui-icon-check" title="Adicionar no Gráfico" action="#{simulacaoMB.addGrafico}" 
+					update="page" onclick="addGrafico.hide();" oncomplete="grafico.show();"/>
+				<p:commandButton icon="ui-icon-close" onclick="addGrafico.hide();" />
+			</p:dialog>
 				
 			<p:dialog header="Gráfico" widgetVar="grafico" modal="true">
-				<p:lineChart value="#{simulacaoMB.graficoModel}" legendPosition="e"
-					style="width:1000px; font-size:60%; writing-mode: tb-rl; filter: flipv fliph" /><br/>
+				<p:lineChart value="#{simulacaoMB.graficoModel}" legendPosition="be"
+					style="width:1400px; font-size:60%;" /><br/>
 				<p:commandButton value="Limpar" action="#{simulacaoMB.limparGrafico}" update="page" 
 					onclick="grafico.hide();" />
 			</p:dialog>
 			
 			</h:panelGroup>
 		</h:form>
+		
 	</ui:define>
 </ui:composition>

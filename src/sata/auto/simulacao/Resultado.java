@@ -202,6 +202,8 @@ public class Resultado implements IConstants {
 	public BigDecimal getResultadoPercentualAnual(Integer ano) {
 		BigDecimal valorInicial = getValorInvestido(1, ano);
 		BigDecimal resultadoNominal = getResultadoAnual(ano);
+		if (valorInicial.equals(BigDecimal.ZERO)) 
+			return BigDecimal.ZERO;
 		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
 	}
 	
@@ -217,6 +219,8 @@ public class Resultado implements IConstants {
 	
 	public BigDecimal getResultadoMensalComReivestimento(BigDecimal caixa, Integer ano, Integer mes) {
 		BigDecimal valor1Lote = getValorInvestido(mes, ano);
+		if (valor1Lote.equals(BigDecimal.ZERO))
+			return caixa;
 		BigDecimal numLotes = new BigDecimal(Math.round(caixa.divide(valor1Lote,RoundingMode.HALF_EVEN).doubleValue()));
 		BigDecimal valorGanho = getResultadoMensal(mes, ano).multiply(numLotes);
 		caixa = caixa.add(valorGanho);
