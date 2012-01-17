@@ -38,10 +38,10 @@ public class Acao_VendaCall_CompraPut_Volat extends Estrategia {
 	
 	public static void main(String[] args) {
 		Acao_VendaCall_CompraPut_Volat estrategia = new Acao_VendaCall_CompraPut_Volat();
-		estrategia.acao = new Acao("VALE5");
+		estrategia.acao = new Acao("OGXP3");
 		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.COMPLETO, 1, 4, 2, -1, 2, 4, -1, 30);
+		estrategia.executa(TipoRelatorio.COMPLETO, 1, 4, 2, 0, 2, 4, -1, 30);
 	}
 	
 	@Override
