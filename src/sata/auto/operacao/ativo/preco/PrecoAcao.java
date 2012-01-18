@@ -62,7 +62,7 @@ public class PrecoAcao extends Preco implements IConstants {
 	
 	private CotacaoAtivoTO getCotacaoAtivo(Dia dia) {
 		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(dia.getAno())) {
-			if(dia.formatoPadrao().equals(cotacao.getPeriodo())){
+			if(dia.formatoBrasileiro().equals(cotacao.getPeriodo())){
 				return cotacao;
 			}
 		}
@@ -118,8 +118,10 @@ public class PrecoAcao extends Preco implements IConstants {
 	
 	@Override
 	public String toString() {
-		return "Preço" + " " + dia + " = " + SATAUtil.formataNumero(valor)
-		+ "; Volat = " + SATAUtil.formataNumero(volatilidade.multiply(new BigDecimal(100))) + "%";
+		return SATAUtil.getMessage(MSG_PATTERN_PRECO_ACAO, 
+				dia.toString(), 
+				SATAUtil.formataNumero(valor), 
+				SATAUtil.formataNumero(volatilidade.multiply(CEM)));
 	}
 	
 	@Override

@@ -12,6 +12,7 @@ import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.simulacao.Simulacao;
 import sata.auto.to.Dia;
 import sata.domain.util.IConstants;
+import sata.domain.util.SATAUtil;
 
 public abstract class Operacao implements IConstants {
 	
@@ -25,7 +26,8 @@ public abstract class Operacao implements IConstants {
 	boolean reversivel = true;
 	boolean executada = false;
 	
-	protected abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
+	abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
+	public abstract String getBundleMessage();
 	
 	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
 		return ativo.getPreco(dia, this);
@@ -180,16 +182,17 @@ public abstract class Operacao implements IConstants {
 	public String getString() {
 		String strCondicao = "";
 		String strMeses = "";
-		if (mesesParaVencimento > 1) strMeses = " ("+mesesParaVencimento+" meses)";
+		if (mesesParaVencimento > 1) 
+			strMeses = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_MESES, String.valueOf(mesesParaVencimento));
 		if (condicao != null) strCondicao = " ["+condicao+"]";
-		return toString() + strMeses + strCondicao;
+		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, toString(), strMeses, strCondicao);
 	}
 	
 	@Override
 	public String toString() {
 		String strQtd = "";
 		if (qtdLotes > 1) strQtd = qtdLotes + "x";
-		return strQtd + getClass().getSimpleName() + " " + ativo;
+		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, strQtd, this.getBundleMessage(), ativo.getBundleMessage());
 	}
 	
 	@Override

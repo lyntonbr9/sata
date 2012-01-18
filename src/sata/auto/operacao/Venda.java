@@ -8,6 +8,11 @@ public class Venda extends Operacao {
 	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso) {
 		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
 	}
+	
+	@Override
+	public String getBundleMessage() {
+		return MSG_LABEL_VENDA;
+	}
 
 	public Venda() {
 		super();

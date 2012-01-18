@@ -9,6 +9,11 @@ public class Compra extends Operacao {
 		return new Venda(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
 	}
 	
+	@Override
+	public String getBundleMessage() {
+		return MSG_LABEL_COMPRA;
+	}
+
 	public Compra() {
 		super();
 	}

@@ -6,45 +6,55 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="titulo">Simulação</ui:define>
+	<ui:define name="titulo">#{msgs['simulacao.page.title']}</ui:define>
 	<ui:define name="conteudo">
-		<h:form enctype="multipart/form-data">
 			<p:messages autoUpdate="true"/>
 			<h:panelGroup id="page">
-			<p:dialog header="#{simulacaoMB.textoOperacao} Operação" widgetVar="formOperacao" modal="true"> 
-				<h:panelGrid columns="2">
-					<h:outputLabel value="Operação:" for="operacao" />
+			<p:dialog header="#{msgs[simulacaoMB.textoOperacao]} #{msgs['simulacao.formOperacao.operacao.label']}" 
+				widgetVar="formOperacao" modal="true"> 
+				<h:panelGrid columns="3">
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.operacao.label']}:" for="operacao" />
 					<p:selectOneMenu id="operacao" value="#{simulacaoMB.tipoOperacao}">
 						<f:selectItem itemValue="-" itemLabel="--" />
-						<f:selectItem itemValue="C" itemLabel="Compra" />
-						<f:selectItem itemValue="V" itemLabel="Venda" />
+						<f:selectItem itemValue="C" itemLabel="#{msgs['list.operacao.compra']}" />
+						<f:selectItem itemValue="V" itemLabel="#{msgs['list.operacao.venda']}" />
 					</p:selectOneMenu>
+					<p:tooltip for="operacao">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.operacao.tooltip']}" />
+    				</p:tooltip>
 					
-					<h:outputLabel value="Quantidade:" for="qtd" />
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.qtd.label']}:" for="qtd" />
 					<p:spinner id="qtd" value="#{simulacaoMB.qtdLotes}" size="3"/>
+					<p:tooltip for="qtd">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.qtd.tooltip']}" />
+    				</p:tooltip>
 				
-					<h:outputLabel value="Ativo:" for="ativo" />
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.ativo.label']}:" for="ativo" />
 					<p:selectOneMenu id="ativo" value="#{simulacaoMB.tipoAtivo}">
 						<f:selectItem itemValue="-" itemLabel="--" />
-						<f:selectItem itemValue="A" itemLabel="Ação" />
-						<f:selectItem itemValue="C" itemLabel="Call" />
-						<f:selectItem itemValue="P" itemLabel="Put" />
+						<f:selectItem itemValue="A" itemLabel="#{msgs['list.ativo.acao']}" />
+						<f:selectItem itemValue="C" itemLabel="#{msgs['list.ativo.call']}" />
+						<f:selectItem itemValue="P" itemLabel="#{msgs['list.ativo.put']}" />
+						<f:selectItem itemValue="R" itemLabel="#{msgs['list.ativo.rendaFixa']}" />
 					</p:selectOneMenu>
+					<p:tooltip for="ativo">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.ativo.tooltip']}" />
+    				</p:tooltip>
 					
-					<h:outputLabel value="Ação:" for="acao" />
-					<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}">
-						<f:selectItem itemValue="" itemLabel="--" />
-						<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao}" />
-					</p:selectOneMenu>
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.ordem.label']}:" for="ordem" />
+					<p:spinner id="ordem" value="#{simulacaoMB.ordemOpcao}" size="3" disabled="{!#simulacaoMB.opcaoSelecionada}" />
+    				<p:tooltip for="ordem">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.ordem.tooltip']}" />
+    				</p:tooltip>
 			
-					<h:outputLabel value="Ordem:" for="ordem" />
-					<p:spinner id="ordem" value="#{simulacaoMB.ordemOpcao}" size="3" disabled="{!#simulacaoMB.opcaoSelecionada}"/>
-			
-					<h:outputLabel value="Meses Para o Vencimento:" for="meses" />
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.meses.label']}:" for="meses" />
 					<p:spinner id="meses" value="#{simulacaoMB.mesesParaVencimento}" size="3" disabled="{!#simulacaoMB.opcaoSelecionada}"/>
+					<p:tooltip for="meses">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.meses.tooltip']}" />
+    				</p:tooltip>
 					
-					<h:outputLabel value="Condição:" />
-					<h:panelGrid columns="3">
+					<h:outputLabel value="#{msgs['simulacao.formOperacao.condicao.label']}:" />
+					<h:panelGrid columns="3" id="condicao">
 						<p:selectOneMenu id="atributo" value="#{simulacaoMB.condicao.atributo}">
 							<f:selectItem itemValue="" itemLabel="--" />
 							<f:selectItems value="#{simulacaoMB.atributos}" />
@@ -57,64 +67,80 @@
 							<f:convertNumber />
 						</p:inputText>
 					</h:panelGrid>
+					<p:tooltip for="condicao">
+    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.condicao.tooltip']}" />
+    				</p:tooltip>
 				</h:panelGrid>
 				<p:separator />
-				<p:commandButton icon="ui-icon-check" title="#{simulacaoMB.textoOperacao}" action="#{simulacaoMB.incluirOperacao}" update="page" onclick="formOperacao.hide();"/>
-				<p:commandButton icon="ui-icon-close" title="Cancelar" onclick="formOperacao.hide();"/>
+				<p:commandButton icon="ui-icon-check" title="#{msgs[simulacaoMB.textoOperacao]}" 
+					action="#{simulacaoMB.incluirOperacao}" update="page" onclick="formOperacao.hide();"/>
+				<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formOperacao.hide();"/>
 			</p:dialog>
 	
 			<p:dataTable id="operacoes" value="#{simulacaoMB.operacoes}" var="operacao" 
 				rendered="#{not empty simulacaoMB.operacoes}">  
 	    		<p:column>  
-		            <f:facet name="header">Operação</f:facet>
+		            <f:facet name="header">#{msgs['simulacao.formOperacao.operacao.label']}</f:facet>
 		            #{operacao.string}  
         		</p:column>
 				<p:column styleClass="center">  
-		            <f:facet name="header">Editar</f:facet>
+		            <f:facet name="header">#{msgs['general.label.update']}</f:facet>
 		            <p:commandButton icon="ui-icon-pencil" action="#{simulacaoMB.editarOperacao}" 
-		            	update="@form" oncomplete="formOperacao.show();">
+		            	update="@form" oncomplete="formOperacao.show();" title="#{msgs['general.label.update']}">
 		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
 		            </p:commandButton>
         		</p:column>
         		<p:column styleClass="center">  
-		            <f:facet name="header">Excluir</f:facet>
-		            <p:commandButton icon="ui-icon-close" action="#{simulacaoMB.excluirOperacao}" update="@form">
+		            <f:facet name="header">#{msgs['general.label.delete']}</f:facet>
+		            <p:commandButton icon="ui-icon-close" action="#{simulacaoMB.excluirOperacao}" update="@form"
+		            	title="#{msgs['general.label.delete']}">
 		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
 		            </p:commandButton>
         		</p:column>
 			</p:dataTable>
-			<p:commandButton icon="ui-icon-plus" value="Adicionar Operação" action="#{simulacaoMB.limpaCampos}" update="@form" oncomplete="formOperacao.show();"/>
-			<p:commandButton icon="ui-icon-folder-open" title="Abrir Estratégia" onclick="abrirEstrategia.show();" />
-			<p:commandButton icon="ui-icon-disk" title="Salvar Estratégia" ajax="false" rendered="#{not empty simulacaoMB.operacoes}">
+			<p:commandButton icon="ui-icon-plus" value="#{msgs['simulacao.button.addOperacao']}" action="#{simulacaoMB.limpaCampos}" update="@form" oncomplete="formOperacao.show();"/>
+			<p:commandButton icon="ui-icon-folder-open" title="#{msgs['simulacao.button.abrirEstrategia']}" onclick="abrirEstrategia.show();" />
+			<p:commandButton icon="ui-icon-disk" title="#{msgs['simulacao.button.salvarEstrategia']}" ajax="false" rendered="#{not empty simulacaoMB.operacoes}">
 				<p:fileDownload value="#{simulacaoMB.arquivo}" /> 
 			</p:commandButton>
 			
-			<p:dialog header="Abrir Estratégia" widgetVar="abrirEstrategia" modal="true">
+			<p:dialog header="#{msgs['simulacao.abrirEstrategia.title']}" widgetVar="abrirEstrategia" modal="true">
 				<p:fileUpload fileUploadListener="#{simulacaoMB.abrirArquivo}"  
             		mode="advanced"   
             		update="page"  
             		sizeLimit="100000"   
             		allowTypes="/(\.|\/)(txt)$/"
-            		label="Procurar"
-	            	cancelLabel="Cancelar"
+            		label="#{msgs['general.label.search']}"
+	            	cancelLabel="#{msgs['general.label.cancel']}"
 	            	onstart="abrirEstrategia.hide();"
             		/>  
 			</p:dialog>
 			
 			<p:separator />			
-			<h:panelGrid columns="2">
-				<h:outputLabel value="Ano Inicial:" />
-				<p:spinner value="#{simulacaoMB.anoInicial}" size="4"/>
+			<h:panelGrid id="formSimulacao" columns="2">
+				<h:outputLabel value="#{msgs['simulacao.formSimulacao.acao.label']}:" for="acao" />
+				<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}">
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao}" />
+				</p:selectOneMenu>
 				
-				<h:outputLabel value="Ano Final:" />
-				<p:spinner value="#{simulacaoMB.anoFinal}" size="4"/>
+				<h:outputLabel value="#{msgs['simulacao.formSimulacao.valorInvestido.label']}:" for="valorInvestido" />
+				<p:selectOneMenu id="valorInvestido" value="#{simulacaoMB.tipoCalculoValorInvestido}">
+					<f:selectItems value="#{simulacaoMB.tiposCalculoValorInvestido}" />
+				</p:selectOneMenu>
+					
+				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoInicial.label']}:" for="anoInicial"/>
+				<p:spinner value="#{simulacaoMB.anoInicial}" size="4" id="anoInicial"/>
+				
+				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoFinal.label']}:" for="anoFinal"/>
+				<p:spinner value="#{simulacaoMB.anoFinal}" size="4" id="anoFinal"/>
 			</h:panelGrid>
-			<p:commandButton value="Simular" action="#{simulacaoMB.simular}" update="page"/><br/>
+			<p:commandButton value="#{msgs['simulacao.formSimulacao.button.simular']}" action="#{simulacaoMB.simular}" update="page"/><br/>
 			
 			<p:separator rendered="#{not empty simulacaoMB.relatorio}" />
 			
 			<h:panelGrid columns="4" rendered="#{not empty simulacaoMB.relatorio}">
-				<h:outputLabel value="Tipo de Relatório:" />
+				<h:outputLabel value="#{msgs['simulacao.resultado.tipoRelatorio.label']}:" />
 				<p:selectOneMenu id="tipoRelatorio" value="#{simulacaoMB.tipoRelatorio}">
 					<f:selectItems value="#{simulacaoMB.tiposRelatorios}" />
 					<p:ajax event="change" listener="#{simulacaoMB.alterarRelatorio}" update="resultado" />
@@ -125,33 +151,31 @@
 				rendered="#{not empty simulacaoMB.relatorio}" styleClass="resultado" />
 			
 			<br/>
-			<p:commandButton icon="ui-icon-extlink" value="Adicionar no Gráfico" onclick="addGrafico.show();" 
+			<p:commandButton icon="ui-icon-extlink" value="#{msgs['simulacao.resultado.button.addGrafico']}" onclick="addGrafico.show();" 
 				rendered="#{not empty simulacaoMB.relatorio}" />
-			<p:commandButton icon="ui-icon-image" value="Abrir Gráfico" onclick="grafico.show();" 
+			<p:commandButton icon="ui-icon-image" value="#{msgs['simulacao.resultado.button.abrirGrafico']}" onclick="grafico.show();" 
 					rendered="#{not empty simulacaoMB.graficoModel.series}"/>
 				
-			<p:dialog header="Adicionar no Gráfico" widgetVar="addGrafico" modal="true">
+			<p:dialog header="#{msgs['simulacao.addGrafico.title']}" widgetVar="addGrafico" modal="true">
 				<h:panelGrid columns="2">
-					<h:outputLabel value="Nome da Simulação:" />
-					<p:inputText value="#{simulacaoMB.nome}" />
+					<h:outputLabel value="#{msgs['simulacao.addGrafico.nomeSimulacao.label']}:" for="nomeSimulacao" />
+					<p:inputText value="#{simulacaoMB.nome}" id="nomeSimulacao" />
 					
-					<h:outputLabel value="Escala do Gráfico:" />
-					<p:spinner value="#{simulacaoMB.escalaGrafico}" size="3" />
+					<h:outputLabel value="#{msgs['simulacao.addGrafico.escalaGrafico.label']}:" for="escalaGrafico" />
+					<p:spinner value="#{simulacaoMB.escalaGrafico}" size="3" id="escalaGrafico" />
 				</h:panelGrid>
-				<p:commandButton icon="ui-icon-check" title="Adicionar no Gráfico" action="#{simulacaoMB.addGrafico}" 
+				<p:commandButton icon="ui-icon-check" title="#{msgs['simulacao.resultado.button.addGrafico']}" action="#{simulacaoMB.addGrafico}" 
 					update="page" onclick="addGrafico.hide();" oncomplete="grafico.show();"/>
-				<p:commandButton icon="ui-icon-close" onclick="addGrafico.hide();" />
+				<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="addGrafico.hide();" />
 			</p:dialog>
 				
-			<p:dialog header="Gráfico" widgetVar="grafico" modal="true">
+			<p:dialog header="#{msgs['simulacao.grafico.title']}" widgetVar="grafico" modal="true">
 				<p:lineChart value="#{simulacaoMB.graficoModel}" legendPosition="be"
 					style="width:1400px; font-size:60%;" /><br/>
-				<p:commandButton value="Limpar" action="#{simulacaoMB.limparGrafico}" update="page" 
+				<p:commandButton value="#{msgs['general.label.clear']}" action="#{simulacaoMB.limparGrafico}" update="page" 
 					onclick="grafico.hide();" />
 			</p:dialog>
 			
 			</h:panelGroup>
-		</h:form>
-		
 	</ui:define>
 </ui:composition>

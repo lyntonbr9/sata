@@ -17,7 +17,7 @@ public abstract class Estrategia {
 	Acao acao;
 	Integer anoInicial;
 	Integer anoFinal;
-	TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.TOTAL_COMPRADO;
+	TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM;
 	Resultado resultado;
 	
 	List<Simulacao> simulacoes = new ArrayList<Simulacao>();

@@ -12,6 +12,7 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 	
 	RendaFixa rendaFixa;
 	BigDecimal precoAcao;
+	BigDecimal percentual;
 	
 	public PrecoRendaFixa() {}
 	
@@ -22,7 +23,8 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 
 	@Override
 	public void calculaPreco() throws CotacaoInexistenteEX {
-		valor = calculaPrecoAcao().multiply(new BigDecimal(rendaFixa.getPercentual()));
+		percentual = new BigDecimal(SATAUtil.getTaxaDeJuros(dia.getAno())/12);
+		valor = calculaPrecoAcao().multiply(percentual);
 	}
 	
 	@Override
@@ -39,9 +41,11 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 	
 	@Override
 	public String toString() {
-		return SATAUtil.formataNumero(precoAcao) 
-		+ " x " + rendaFixa.getPercentual()*100 + "%" 
-		+ " = " + SATAUtil.formataNumero(valor);
+		return SATAUtil.getMessage(MSG_PATTERN_PRECO_RENDA_FIXA, 
+				SATAUtil.formataNumero(precoAcao), 
+				SATAUtil.formataNumero(percentual.multiply(CEM)), 
+				SATAUtil.formataNumero(valor),
+				SATAUtil.formataNumero(volatilidade));
 	}
 
 	public BigDecimal getPrecoAcao() {

@@ -21,4 +21,9 @@ public class Call extends Opcao {
 	boolean isCall() {
 		return true;
 	}
+	
+	@Override
+	public String getBundleMessage() {
+		return "list.ativo.call";
+	}
 }

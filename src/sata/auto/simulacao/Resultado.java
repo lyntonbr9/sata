@@ -14,6 +14,7 @@ import sata.auto.operacao.Operacao;
 import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Opcao;
+import sata.auto.operacao.ativo.RendaFixa;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.to.Mes;
@@ -40,6 +41,37 @@ public class Resultado implements IConstants {
 	
 	public void addValorOperacao(ValorOperacao valorOperacao) {
 		resultados.add(valorOperacao);
+	}
+	
+	public void remove(Mes mes) {
+		List<ValorOperacao> remover = new ArrayList<ValorOperacao>();
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes)) {
+				remover.add(valorOperacao);
+			}
+		}
+		resultados.removeAll(remover);
+	}
+	
+	public boolean possui(Mes mes) {
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean possui(Operacao operacao, Mes mes) {
+		for (ValorOperacao valorOperacao : resultados) {
+			if (valorOperacao.getMes().equals(mes) &&
+					valorOperacao.getOperacao().equals(operacao))
+				return true;
+		}
+		return false;
+	}
+	
+	public void limpa() {
+		resultados.clear();
 	}
 	
 	public void setResultadoMensal(Operacao operacao, Mes mes, Preco preco) {
@@ -100,7 +132,7 @@ public class Resultado implements IConstants {
 	}
 	
 	public BigDecimal getResultadoMensal(Integer mes, Integer ano) {
-		if (tipoCalculoValorInvestido == TipoCalculoValorInvestido.TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES
+		if (tipoCalculoValorInvestido == TipoCalculoValorInvestido.CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES
 				&& mes.equals(1) && ano.equals(anoInicial)) {
 			return BigDecimal.ZERO;
 		}
@@ -138,19 +170,16 @@ public class Resultado implements IConstants {
 			if (valorOperacao.getMes().getMes().equals(mes) &&
 					valorOperacao.getMes().getAno().equals(ano)) {
 				
+				try {
 				switch (tipoCalculoValorInvestido) {
-				case TOTAL_COMPRADO:
-				case TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES:
-					/*if (valorOperacao.getOperacao() instanceof Compra)
-						if (valorOperacao.getOperacao().getMomento() == ABERTURA)
-							valor = valor.add(valorOperacao.getValor().negate());
-						else { // Fechamento
-							ValorOperacao operacaoReversa = getValorOperacaoReversa(valorOperacao.getOperacao(), mes, ano);
-							BigDecimal valorReversa = operacaoReversa.getValor();
-							valor = valor.add((valorOperacao.getValor()).add(valorReversa).negate());
-						}*/
+				case PRECO_ACAO:
+						return valorOperacao.getPrecoAcao();
+				case CUSTO_MONTAGEM:
+				case CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES:
 					if (valorOperacao.getOperacao().getMomento() == ABERTURA)
-						valor = valor.add(valorOperacao.getValor().negate());
+						if (valorOperacao.getOperacao().getAtivo() instanceof RendaFixa)
+							valor = valor.add(valorOperacao.getPrecoAcao());
+						else valor = valor.add(valorOperacao.getValor().negate());
 					break;
 				case DIFERENCA_STRIKES:
 					if (valorOperacao.getOperacao().getAtivo() instanceof Opcao &&
@@ -162,6 +191,7 @@ public class Resultado implements IConstants {
 					}
 					break;
 				}
+				} catch (CotacaoInexistenteEX e) {}
 			}
 		}
 		return valor;
@@ -176,7 +206,7 @@ public class Resultado implements IConstants {
 		BigDecimal resultadoNominal = getResultadoMensal(mes,ano);
 		if (valorInicial.equals(BigDecimal.ZERO))
 			return BigDecimal.ZERO;
-		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(CEM);
 	}
 	
 	public BigDecimal getResultadoPercentualMensalAcao(Mes mes) {
@@ -188,7 +218,7 @@ public class Resultado implements IConstants {
 		BigDecimal resultadoNominal = getResultadoMensalAcao(mes, ano);
 		if (valorInicial.equals(BigDecimal.ZERO))
 			return BigDecimal.ZERO;
-		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(CEM);
 	}
 	
 	public BigDecimal getResultadoAnual(Integer ano) {
@@ -204,7 +234,7 @@ public class Resultado implements IConstants {
 		BigDecimal resultadoNominal = getResultadoAnual(ano);
 		if (valorInicial.equals(BigDecimal.ZERO)) 
 			return BigDecimal.ZERO;
-		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(CEM);
 	}
 	
 	public BigDecimal getResultadoComReivestimento(BigDecimal valorInicial) {
@@ -227,133 +257,48 @@ public class Resultado implements IConstants {
 		return caixa;
 	}
 	
-	public String imprime(TipoRelatorio tipoRelatorio) throws CotacaoInexistenteEX {
-		String string = "";
-		
-		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
-			tipoRelatorio == TipoRelatorio.COMPLETO) {
-			string += "\n"+imprimeOperacoes();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.MENSAL ||
-			tipoRelatorio == TipoRelatorio.OPERACOES ||
-			tipoRelatorio == TipoRelatorio.COMPLETO) {
-			string += "\n"+imprimeResultadosMensais();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.ANUAL ||
-			tipoRelatorio == TipoRelatorio.MENSAL ||
-			tipoRelatorio == TipoRelatorio.OPERACOES ||
-			tipoRelatorio == TipoRelatorio.COMPLETO) {
-			string += "\n"+imprimeResultadosAnuais();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
-			tipoRelatorio == TipoRelatorio.MENSAL ||
-			tipoRelatorio == TipoRelatorio.ANUAL ||
-			tipoRelatorio == TipoRelatorio.COMPLETO) {
-			string += "\n"+imprimeResultadoConsolidado();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.REINVESTIMENTO) {
-			string += "\n"+imprimeResultadoComReinvestimento();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.CSV) {
-			string += "\n"+imprimeCSV();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.CSV_MENSAL) {
-			string += "\n"+imprimeResultadosMensaisCSV();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.CSV_MENSAL) {
-			string += "\n"+imprimeResultadosMensaisCSV();
-		}
-		
-		if (tipoRelatorio == TipoRelatorio.CSV_REINVESTIMENTO) {
-			string += "\n"+imprimeResultadoComReinvestimentoCSV();
-		}
-		
-		return string+"\n";
-	}
-	
-	public static String getExtensaoArquivoSaida(TipoRelatorio tipoRelatorio) {
-		switch (tipoRelatorio) {
-		case CSV:
-		case CSV_MENSAL:
-		case CSV_REINVESTIMENTO:
-			return "csv";
-
-		default:
-			return "txt";
-		}
-	}
-	
-	public static boolean imprimeInicioFim(TipoRelatorio tipoRelatorio) {
-		return (tipoRelatorio != TipoRelatorio.NENHUM) &&
-			(tipoRelatorio != TipoRelatorio.CSV) && 
-			(tipoRelatorio != TipoRelatorio.CSV_MENSAL) &&
-			(tipoRelatorio != TipoRelatorio.CSV_REINVESTIMENTO);
-	}
-	
-	private String imprimeOperacoes() {
-		String string = "";
-		Collections.sort(resultados);
-		Mes mesAnterior = null;
-		for (ValorOperacao valorOperacao : resultados) {
-			if (!valorOperacao.getMes().equals(mesAnterior))
-				string += "\n";
-			string += valorOperacao + "\n";
-			mesAnterior = valorOperacao.getMes();
-		}
-		return string;
-	}
-	
-	private String imprimeResultadosMensais() {
-		String string = "";
+	public BigDecimal getMediaAnual() {
+		BigDecimal soma = BigDecimal.ZERO;
+		BigDecimal qtdAnos = BigDecimal.ZERO;
 		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
-			string += "\n";
+			soma = soma.add(getResultadoPercentualAnual(ano));
+			qtdAnos = qtdAnos.add(BigDecimal.ONE);
+		}
+		BigDecimal mediaAnual = soma.divide(qtdAnos, RoundingMode.HALF_EVEN);
+		return mediaAnual;
+	}
+	
+	public BigDecimal getMediaMensal() {
+		return getMediaAnual().divide(new BigDecimal(12), RoundingMode.HALF_EVEN);
+	}
+	
+	public List<ValorResultado> listaResultadosAnuais() {
+		List<ValorResultado> resultados = new ArrayList<ValorResultado>();
+		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
+			resultados.add(new ValorResultado(String.valueOf(ano), getResultadoPercentualAnual(ano), 
+					getResultadoAnual(ano), getValorInvestido(1,ano)));
+		}
+		return resultados;
+	}
+	
+	public List<ValorResultado> listaResultadosMensais() {
+		List<ValorResultado> resultados = new ArrayList<ValorResultado>();
+		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
+			if (ano != anoInicial.intValue())
+				resultados.add(new ValorResultado());
 			for (int iMes=1; iMes <= 12; iMes++) {
 				Mes mes = new Mes(iMes,ano);
 				if (possui(mes)) {
-					string += mes + " = " + SATAUtil.formataNumero(getResultadoPercentualMensal(mes)) 
-							+ "% (" + SATAUtil.formataNumero(getResultadoMensal(mes)) + "/" 
-							+ SATAUtil.formataNumero(getValorInvestido(mes)) + ")\n";
+					resultados.add(new ValorResultado(mes.toString(), getResultadoPercentualMensal(mes),
+							getResultadoMensal(mes), getValorInvestido(mes)));
 				}
 			}
 		}
-		return string;
-	}
-	
-	private String imprimeResultadosMensaisCSV() {
-		String string = "Mês;Valor;Valor Investido;Percentual";
-		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
-			string += "\n";
-			for (int iMes=1; iMes <= 12; iMes++) {
-				Mes mes = new Mes(iMes,ano);
-				if (possui(mes)) {
-					string += mes + ";" + SATAUtil.formataNumero(getResultadoMensal(mes)) + ";" 
-							+ SATAUtil.formataNumero(getValorInvestido(mes)) + ";"
-							+ SATAUtil.formataNumero(getResultadoPercentualMensal(mes)) + "\n";
-				}
-			}
-		}
-		return string;
-	}
-	
-	private String imprimeResultadosAnuais() {
-		String string = "";
-		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
-			string += ano + " = " + SATAUtil.formataNumero(getResultadoPercentualAnual(ano)) 
-					+ "% (" + SATAUtil.formataNumero(getResultadoAnual(ano)) + "/" +
-					SATAUtil.formataNumero(getValorInvestido(1,ano)) + ")\n";
-		}
-		return string;
+		return resultados;
 	}
 	
 	public List<ValorResultado> listaResultadoComReinvestimento() {
-		BigDecimal valorInicial = new BigDecimal(100);
+		BigDecimal valorInicial = CEM;
 		BigDecimal valorFinal = getResultadoComReivestimento(valorInicial);
 		BigDecimal caixa = valorInicial;
 		List<ValorResultado> resultados = new ArrayList<ValorResultado>();
@@ -368,17 +313,133 @@ public class Resultado implements IConstants {
 		return resultados;
 	}
 	
-	private String imprimeResultadoComReinvestimento(String separador) {
-		List<ValorResultado> resultados = listaResultadoComReinvestimento();
+	public String imprime(TipoRelatorio tipoRelatorio) throws CotacaoInexistenteEX {
 		String string = "";
-		for (ValorResultado valorResultado: resultados) {
-			string += "\n" + valorResultado.getValor() + separador + SATAUtil.formataNumero(valorResultado.getResultado());
+		
+		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
+			tipoRelatorio == TipoRelatorio.COMPLETO) {
+			string += imprimeOperacoes()+"\n";
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.MENSAL ||
+			tipoRelatorio == TipoRelatorio.OPERACOES ||
+			tipoRelatorio == TipoRelatorio.COMPLETO) {
+			string += imprimeResultadosMensais()+"\n";
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.ANUAL ||
+			tipoRelatorio == TipoRelatorio.MENSAL ||
+			tipoRelatorio == TipoRelatorio.OPERACOES ||
+			tipoRelatorio == TipoRelatorio.COMPLETO) {
+			string += imprimeResultadosAnuais()+"\n";
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.OPERACOES ||
+			tipoRelatorio == TipoRelatorio.MENSAL ||
+			tipoRelatorio == TipoRelatorio.ANUAL ||
+			tipoRelatorio == TipoRelatorio.COMPLETO) {
+			string += imprimeResultadoConsolidado();
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.REINVESTIMENTO) {
+			string += imprimeResultadoComReinvestimento();
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.CSV) {
+			string += imprimeCSV();
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.CSV_MENSAL) {
+			string += imprimeResultadosMensaisCSV();
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.CSV_MENSAL) {
+			string += imprimeResultadosMensaisCSV();
+		}
+		
+		if (tipoRelatorio == TipoRelatorio.CSV_REINVESTIMENTO) {
+			string += imprimeResultadoComReinvestimentoCSV();
+		}
+		
+		return string+"\n";
+	}
+	
+	public static boolean imprimeInicioFim(TipoRelatorio tipoRelatorio) {
+		return (tipoRelatorio != TipoRelatorio.NENHUM) &&
+			(tipoRelatorio != TipoRelatorio.CSV) && 
+			(tipoRelatorio != TipoRelatorio.CSV_MENSAL) &&
+			(tipoRelatorio != TipoRelatorio.CSV_REINVESTIMENTO);
+	}
+	
+	public static String getExtensaoArquivoSaida(TipoRelatorio tipoRelatorio) {
+		switch (tipoRelatorio) {
+		case CSV:
+		case CSV_MENSAL:
+		case CSV_REINVESTIMENTO:
+			return "csv";
+		default:
+			return "txt";
+		}
+	}
+	
+	private String imprimeValoresResultado(List<ValorResultado> valoresResultados, String... separador) {
+		String string = "";
+		for (ValorResultado valorResultado : valoresResultados) {
+			if (valorResultado.isEmpty())
+				string += "\n";
+			else {
+				int i=0;
+				string += "\n" + valorResultado.getLabel() + separador[i++];
+				for (BigDecimal valor: valorResultado.getValores()) {
+					string += SATAUtil.formataNumero(valor);
+					if (i < separador.length)
+						string += separador[i++];
+				}
+			}
 		}
 		return string;
 	}
 	
+	private String imprimeOperacoes() {
+		String string = "";
+		Collections.sort(resultados);
+		Mes mesAnterior = null;
+		for (ValorOperacao valorOperacao : resultados) {
+			if (!resultados.get(0).equals(valorOperacao) &&
+					!valorOperacao.getMes().equals(mesAnterior))
+				string += "\n";
+			string += "\n" + valorOperacao;
+			mesAnterior = valorOperacao.getMes();
+		}
+		return string;
+	}
+	
+	private String imprimeResultadosAnuais(String... separador) {
+		return imprimeValoresResultado(listaResultadosAnuais(), separador);
+	}
+	
+	private String imprimeResultadosAnuais() {
+		return imprimeResultadosAnuais(" = ", "% (", "/", ")");
+	}
+	
+	private String imprimeResultadosMensais(String... separador) {
+		return imprimeValoresResultado(listaResultadosMensais(), separador);
+	}
+	
+	private String imprimeResultadosMensaisCSV() {
+		return imprimeResultadosMensais(";", ";", ";", ";");
+	}
+	
+	private String imprimeResultadosMensais() {
+		return imprimeResultadosMensais(" = ", "% (", "/", ")");
+	}
+	
+	private String imprimeResultadoComReinvestimento(String... separador) {
+		return imprimeValoresResultado(listaResultadoComReinvestimento(), separador);
+	}
+	
 	private String imprimeResultadoComReinvestimentoCSV() {
-		return imprimeResultadoComReinvestimento("; ");
+		return imprimeResultadoComReinvestimento(";");
 	}
 	
 	private String imprimeResultadoComReinvestimento() {
@@ -386,17 +447,8 @@ public class Resultado implements IConstants {
 	}
 	
 	private String imprimeResultadoConsolidado() {
-		BigDecimal soma = BigDecimal.ZERO;
-		BigDecimal qtdAnos = BigDecimal.ZERO;
-		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
-			soma = soma.add(getResultadoPercentualAnual(ano));
-			qtdAnos = qtdAnos.add(BigDecimal.ONE);
-		}
-		BigDecimal mediaAnual = soma.divide(qtdAnos, RoundingMode.HALF_EVEN);
-		BigDecimal mediaMensal = mediaAnual.divide(new BigDecimal(12), RoundingMode.HALF_EVEN);
-		
-		String string = "Média Anual: " + SATAUtil.formataNumero(mediaAnual) + "%";
-		string += "\nMédia Mensal: " + SATAUtil.formataNumero(mediaMensal) + "%";
+		String string = "\n" + SATAUtil.getMessage(MSG_LABEL_MEDIA_ANUAL) + ": " + SATAUtil.formataNumero(getMediaAnual()) + "%";
+		string += "\n" + SATAUtil.getMessage(MSG_LABEL_MEDIA_MENSAL) + ": " + SATAUtil.formataNumero(getMediaMensal()) + "%";
 		return string;
 	}
 	
@@ -409,61 +461,20 @@ public class Resultado implements IConstants {
 		return string;
 	}
 	
-	public String imprimeCSV(Operacao operacao, Mes mes) {
+	private String imprimeCSV(Operacao operacao, Mes mes) {
 		String string = "";
 		ValorOperacao valorOperacao = getValorOperacao(operacao, mes);
 		string += valorOperacao.getOperacao()+";";
 		string += valorOperacao.getPreco().getDia()+";";
-		string += SATAUtil.formataNumero(valorOperacao.getValor(),4)+";";
+		string += SATAUtil.formataNumero(valorOperacao.getValor())+";";
 		if (valorOperacao.getPreco() instanceof PrecoOpcao) {
-			string += SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoExercicioOpcao(),4)+";";
-			string += SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoAcao(),4)+";";
+			string += SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoExercicioOpcao())+";";
+			string += SATAUtil.formataNumero(((PrecoOpcao)valorOperacao.getPreco()).getPrecoAcao())+";";
 		}
 		else string += ";;";
-		string += SATAUtil.formataNumero(valorOperacao.getPreco().getVolatilidade(),4);
+		string += SATAUtil.formataNumero(valorOperacao.getPreco().getVolatilidade());
 		return string;
 	}
-	
-	public BigDecimal calculaResultadoPercentualMensal(Mes mes, BigDecimal valor) {
-		BigDecimal valorInicial = getValorInvestido(mes);
-		BigDecimal resultadoNominal = getResultadoMensal(mes).add(valor);
-		return resultadoNominal.divide(valorInicial,RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
-	}
-	
-	public void remove(Mes mes) {
-		List<ValorOperacao> remover = new ArrayList<ValorOperacao>();
-		for (ValorOperacao valorOperacao : resultados) {
-			if (valorOperacao.getMes().equals(mes)) {
-				remover.add(valorOperacao);
-			}
-		}
-		resultados.removeAll(remover);
-	}
-	
-	public boolean possui(Mes mes) {
-		for (ValorOperacao valorOperacao : resultados) {
-			if (valorOperacao.getMes().equals(mes))
-				return true;
-		}
-		return false;
-	}
-	
-	public boolean possui(Operacao operacao, Mes mes) {
-		for (ValorOperacao valorOperacao : resultados) {
-			if (valorOperacao.getMes().equals(mes) &&
-					valorOperacao.getOperacao().equals(operacao))
-				return true;
-		}
-		return false;
-	}
-	
-	public void limpa() {
-		resultados.clear();
-	}
-	
-	/*private ValorOperacao getValorOperacaoReversa(Operacao operacao, Integer mes, Integer ano) {
-		return getValorOperacao(operacao.getReversa(), mes, ano);
-	}*/
 	
 	public void setAnoInicial(Integer anoInicial) {
 		this.anoInicial = anoInicial;

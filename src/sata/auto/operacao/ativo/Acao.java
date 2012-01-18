@@ -27,6 +27,11 @@ public class Acao extends Ativo {
 		return new PrecoAcao(this, dia);
 	}
 	
+	@Override
+	public String getBundleMessage() {
+		return "list.ativo.acao";
+	}
+
 	public BigDecimal getPreco(Dia dia) throws CotacaoInexistenteEX {
 		return calculaPreco(dia, null).getValor();
 	}
@@ -37,11 +42,6 @@ public class Acao extends Ativo {
 	
 	public BigDecimal getMediaMovel(Dia dia, Integer periodo) throws CotacaoInexistenteEX {
 		return calculaPreco(dia, null).getMediaMovel(periodo);
-	}
-	
-	@Override
-	public String toString() {
-		return "Ação("+nome+")";
 	}
 	
 	@Override

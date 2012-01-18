@@ -2,7 +2,7 @@ package sata.domain.util;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -10,12 +10,23 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
+	
+	public static String getCurrentLanguage() {
+		Locale locale = FacesUtil.getCurrentLocale();
+		if (locale != null) return locale.getLanguage();
+		return "pt_BR";
+	}
+	
+	public static double getTaxaDeJuros(int ano) {
+		return TAXA_DE_JUROS;
+	}
 	
 	//Ex: se passado 5 retorna 05
 	public static String getStrDoisDigitos(int valor){		 		
@@ -42,24 +53,20 @@ public class SATAUtil implements IConstants{
 	 * @param numero o número a ser formatado
 	 * @return o número formatado
 	 */
-	public static String formataNumero(BigDecimal numero, int casasDecimais) {
-		if (numero == null || casasDecimais < 0)
-			return "";
-		
-		String zeros = "0";
-		for (int i=1; i<casasDecimais; i++)
-			zeros += "0";
-		DecimalFormat df = new DecimalFormat("0."+zeros);
-        return df.format(numero);
+	public static String formataNumero(BigDecimal numero, Locale locale) {
+		NumberFormat nf;
+		if (locale == null)
+			nf = NumberFormat.getInstance();
+		else nf = NumberFormat.getInstance(locale);
+        return nf.format(numero);
 	}
 	
-	/**
-	 * Formata um número com duas casas decimais
-	 * @param numero o número a ser formatado
-	 * @return o número formatado
-	 */
 	public static String formataNumero(BigDecimal numero) {
-        return formataNumero(numero,2);
+		return SATAUtil.formataNumero(numero, FacesUtil.getCurrentLocale());
+	}
+	
+	public static String getMessage(String key, String... arguments) {
+		return FacesUtil.getMessage(key, arguments);
 	}
 	
 	/**

@@ -45,7 +45,7 @@ public class PrecoOpcao extends Preco implements IConstants {
 		double precoAcao = calculaPrecoAcao().doubleValue();
 		double precoExercicioOpcao = this.precoExercicioOpcao.doubleValue();
 		double tempoParaVencimentoOpcaoEmAnos = BlackScholes.getQtdDiasEmAnos(diasParaVencimento);
-		double taxaDeJuros = TAXA_DE_JUROS;
+		double taxaDeJuros = SATAUtil.getTaxaDeJuros(dia.getAno());
 		double volatilidade = getVolatilidadeAcao().doubleValue();
 		double valor = BlackScholes.blackScholes(call, precoAcao, precoExercicioOpcao, tempoParaVencimentoOpcaoEmAnos, taxaDeJuros, volatilidade);
 		return new BigDecimal(valor);
@@ -65,10 +65,12 @@ public class PrecoOpcao extends Preco implements IConstants {
 	public String toString() {
 		String opcao = "Call";
 		if (!call) opcao = "Put";
-		return opcao + "("+SATAUtil.formataNumero(precoExercicioOpcao)+")"
-		+ " " + dia
-		+ " = " + SATAUtil.formataNumero(valor)
-		+ "; Dias = " + diasParaVencimento;
+		return SATAUtil.getMessage(MSG_PATTERN_PRECO_OPCAO, 
+				opcao, 
+				SATAUtil.formataNumero(precoExercicioOpcao), 
+				dia.toString(),
+				SATAUtil.formataNumero(valor),
+				String.valueOf(diasParaVencimento));
 	}
 	
 	@Override

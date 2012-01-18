@@ -7,12 +7,14 @@ import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.to.Dia;
+import sata.domain.util.SATAUtil;
 
 public abstract class Ativo {
 	
 	Map<Dia,Preco> precos = new HashMap<Dia, Preco>();
 	
 	abstract Preco criaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX;
+	public abstract String getBundleMessage();
 	
 	public Preco calculaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
 		Preco preco;
@@ -29,8 +31,12 @@ public abstract class Ativo {
 		return calculaPreco(dia, operacao);
 	}
 	
+	public void limpaPrecos() {
+		precos.clear();
+	}
+	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName();
+		return SATAUtil.getMessage(getBundleMessage());
 	}
 }

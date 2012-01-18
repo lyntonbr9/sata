@@ -1,5 +1,7 @@
 package sata.domain.util;
 
+import java.math.BigDecimal;
+
 public interface IConstants {
 
 	public int CANDLE_VERDE = 4;
@@ -35,10 +37,31 @@ public interface IConstants {
 	public int QTD_DIAS_UTEIS_ANO = 252;
 	public int QTD_DIAS_UTEIS_MES=21;
 	
-	public double SPREAD = 2.5;
-	static final char COMPRADO = 'C';
-	static final char VENDIDO = 'V';
-	public static final int ABERTURA = 0;
-	public static final int FECHAMENTO = 1;
+	double SPREAD = 2.5;
+	char COMPRADO = 'C';
+	char VENDIDO = 'V';
+	int ABERTURA = 0;
+	int FECHAMENTO = 1;
+	
+	BigDecimal CEM = new BigDecimal(100);
+	
+	String MSG_LABEL_ACAO = "simulacao.formSimulacao.acao.label";
+	String MSG_LABEL_OPERACAO = "simulacao.formOperacao.operacao.label";
+	String MSG_LABEL_QTD = "simulacao.formOperacao.qtd.label";
+	String MSG_LABEL_ATIVO = "simulacao.formOperacao.ativo.label";
+	String MSG_LABEL_MESES = "simulacao.formOperacao.meses.label";
+	String MSG_LABEL_MEDIA_ANUAL = "simulacao.resultado.mediaAnual";
+	String MSG_LABEL_MEDIA_MENSAL = "simulacao.resultado.mediaMensal";
+	String MSG_LABEL_COMPRA = "list.operacao.compra";
+	String MSG_LABEL_VENDA = "list.operacao.venda";
+	
+	String MSG_PATTERN_OPERACAO = "toString.operacao.pattern";
+	String MSG_PATTERN_OPERACAO_MESES = "toString.operacao.pattern.meses";
+	String MSG_PATTERN_PRECO_ACAO = "toString.precoAcao.pattern";
+	String MSG_PATTERN_PRECO_OPCAO = "toString.precoOpcao.pattern";
+	String MSG_PATTERN_PRECO_RENDA_FIXA = "toString.precoRendaFixa.pattern";
+	
+	String MSG_ERRO_CAMPO_OBRIGATORIO = "general.msg.error.campoObrigatorio";
+	String MSG_ERRO_VALOR_MAIOR_QUE_ZERO = "general.msg.error.maiorQueZero";
 }
 

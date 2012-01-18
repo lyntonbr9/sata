@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
-<f:view>
+<f:view locale="#{localeMB.currentLocale}">
 	<h:head>
 		<title>
 			Opções - 
@@ -14,27 +14,37 @@
 		<script language="JavaScript" src="js/scripts.js"></script>
 	</h:head>
 	<h:body>
-		<div id="pagina">
-			<div id="adsense">
-				<ui:include src="/include/adsense.xhtml" />
+		<h:form enctype="multipart/form-data">
+			<div id="pagina">
+				<div id="adsense">
+					<h:commandButton value="English" action="#{localeMB.changeLocal}" rendered="#{localeMB.selectedLanguage != 'en'}">
+	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="en" />
+	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="" />
+					</h:commandButton>
+					<h:commandButton value="Português" action="#{localeMB.changeLocal}" rendered="#{localeMB.selectedLanguage != 'pt'}">
+	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="pt" />
+	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="BR" />
+					</h:commandButton>
+					<ui:include src="/include/adsense.xhtml" />
+				</div>
+				<div id="cabecalho">
+					<ui:include src="/include/cabecalho.xhtml" />
+					<ui:include src="/include/aguarde.xhtml" />
+				</div>
+				<div id="menu">
+					<ui:include src="/include/menu.xhtml" />
+				</div>
+				<div id="esquerda">
+					<ui:include src="/include/esquerda.xhtml" />
+				</div>
+				<div id="conteudo" class="conteudo">
+					<ui:insert name="conteudo" />
+				</div>
+				<div id="rodape">
+					<ui:include src="/include/rodape.xhtml" />
+				</div>
 			</div>
-			<div id="cabecalho">
-				<ui:include src="/include/cabecalho.xhtml" />
-				<ui:include src="/include/aguarde.xhtml" />
-			</div>
-			<div id="menu">
-				<ui:include src="/include/menu.xhtml" />
-			</div>
-			<div id="esquerda">
-				<ui:include src="/include/esquerda.xhtml" />
-			</div>
-			<div id="conteudo" class="conteudo">
-				<ui:insert name="conteudo" />
-			</div>
-			<div id="rodape">
-				<ui:include src="/include/rodape.xhtml" />
-			</div>
-		</div>
+		</h:form>
 	</h:body>
 </f:view>
 </html>
