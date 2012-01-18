@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -33,16 +32,20 @@ import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Ativo;
 import sata.auto.operacao.ativo.Call;
+import sata.auto.operacao.ativo.Derivado;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.Put;
+import sata.auto.operacao.ativo.RendaFixa;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.simulacao.Resultado;
 import sata.auto.simulacao.Simulacao;
 import sata.auto.to.ValorResultado;
 import sata.domain.util.FacesUtil;
+import sata.domain.util.IConstants;
 
 @ManagedBean
 @SessionScoped
-public class SimulacaoMB {
+public class SimulacaoMB implements IConstants {
 	
 	private static final char NENHUM = '-';
 	private static final char COMPRA = 'C';
@@ -50,8 +53,7 @@ public class SimulacaoMB {
 	private static final char ACAO = 'A';
 	private static final char CALL = 'C';
 	private static final char PUT = 'P';
-	
-	private List<String> acoes = Arrays.asList("PETR4", "VALE5", "OGXP3", "BVMF3");
+	private static final char RENDA_FIXA = 'R';
 	private boolean alterar = false;
 	
 	List<Operacao> operacoes = new ArrayList<Operacao>();
@@ -63,6 +65,7 @@ public class SimulacaoMB {
 	int mesesParaVencimento = 1;
 	int anoInicial = 2000;
 	int anoFinal = 2011;
+	TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM;
 	Resultado resultado;
 	String relatorio;
 	Operacao operacao;
@@ -117,9 +120,10 @@ public class SimulacaoMB {
 	}
 	
 	public void limpaCampos() {
-		tipoOperacao = ' ';
-		tipoAtivo = ' ';
+		tipoOperacao = NENHUM;
+		tipoAtivo = NENHUM;
 		qtdLotes = 1;
+		ordemOpcao = 1;
 		mesesParaVencimento = 1;
 		condicao = new Condicao();
 		alterar = false;
@@ -128,13 +132,20 @@ public class SimulacaoMB {
 	
 	public void simular() {
 		try {
-			Simulacao simulacao = new Simulacao();
-			simulacao.setOperacoes(operacoes);
-			simulacao.setAnoInicial(anoInicial);
-			simulacao.setAnoFinal(anoFinal);
-			simulacao.setTipoCalculoValorInvestido(TipoCalculoValorInvestido.TOTAL_COMPRADO);
-			resultado = simulacao.getResultado();
-			relatorio = formataTexto(resultado.imprime(tipoRelatorio));
+			if (acao == "") {
+				FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_ACAO);
+			}
+			else {
+				nome = "";
+				Simulacao simulacao = new Simulacao();
+				setAcao(operacoes, acao);
+				simulacao.setOperacoes(operacoes);
+				simulacao.setAnoInicial(anoInicial);
+				simulacao.setAnoFinal(anoFinal);
+				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
+				resultado = simulacao.getResultado();
+				relatorio = formataTexto(resultado.imprime(tipoRelatorio));
+			}
 		}
 		catch (Exception e) {
 			FacesUtil.addException(e);
@@ -153,11 +164,12 @@ public class SimulacaoMB {
 	public void addGrafico() {
 		try {
 			ChartSeries novaSerie = new ChartSeries();
-			List<ValorResultado> resultados = resultado.listaResultadoComReinvestimento();
+			List<ValorResultado> resultados = getResultados();
 			novaSerie.setLabel(nome);
 			for (int i=0; i<resultados.size(); i+=escalaGrafico) {
 				ValorResultado valorResultado = resultados.get(i);
-				novaSerie.set(valorResultado.getValor(), valorResultado.getResultado());
+				if (!valorResultado.isEmpty())
+					novaSerie.set(valorResultado.getLabel(), valorResultado.getValores().get(0));
 			}
 			graficoModel.addSeries(novaSerie);
 		}
@@ -179,6 +191,7 @@ public class SimulacaoMB {
 		try {
 			InputStream in = event.getFile().getInputstream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			operacoes.clear();
 			String linha;
 			while ((linha = br.readLine()) != null) {
 				int i=0;
@@ -186,7 +199,6 @@ public class SimulacaoMB {
 				tipoOperacao = colunas[i++].charAt(0);
 				qtdLotes = Integer.valueOf(colunas[i++]);
 				tipoAtivo = colunas[i++].charAt(0);
-				acao = colunas[i++];
 				if (tipoAtivo == CALL || tipoAtivo == PUT)
 					ordemOpcao = Integer.valueOf(colunas[i++]);
 				else i++;
@@ -207,19 +219,19 @@ public class SimulacaoMB {
 	private boolean formularioValido() {
 		boolean valido = true;
 		if (tipoOperacao == NENHUM) {
-			FacesUtil.addError("Selecione uma operação");
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_OPERACAO);
 			valido = false;
 		}
 		if (qtdLotes <= 0) {
-			FacesUtil.addError("A quantidade deve ser maior que zero");
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_QTD);
 			valido = false;
 		}
 		if (tipoAtivo == NENHUM) {
-			FacesUtil.addError("Selecione um ativo");
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_ATIVO);
 			valido = false;
 		}
 		if (mesesParaVencimento <= 0) {
-			FacesUtil.addError("O número de meses para vencimento deve ser maior que zero");
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_MESES);
 			valido = false;
 		}
 		return valido;
@@ -235,6 +247,20 @@ public class SimulacaoMB {
 	private String formataTexto(String texto) {
 		texto = texto.replace("\n", "<br/>");
 		return texto;
+	}
+	
+	private void setAcao(List<Operacao> operacoes, String nomeAcao) {
+		for (Operacao operacao : operacoes) {
+			operacao.getAtivo().limpaPrecos();
+			if (operacao.getAtivo() instanceof Acao)
+				operacao.setAtivo(AcaoConteiner.get(nomeAcao));
+			else if (operacao.getAtivo() instanceof Derivado) {
+				((Derivado)operacao.getAtivo()).setAcao(AcaoConteiner.get(nomeAcao));
+				((Derivado)operacao.getAtivo()).setAcao(AcaoConteiner.get(nomeAcao));
+				if (operacao.getAtivo() instanceof RendaFixa)
+					operacao.setReversivel(false);
+			}
+		}
 	}
 	
 	private Operacao converteOperacao(char tipoOperacao) {
@@ -260,14 +286,17 @@ public class SimulacaoMB {
 			return CALL;
 		else if (ativo instanceof Put)
 			return PUT;
+		else if (ativo instanceof RendaFixa)
+			return RENDA_FIXA;
 		else return NENHUM;
 	}
 	
 	private Ativo converteAtivo(char tipoAtivo) {
 		switch (tipoAtivo) {
-		case ACAO: return new Acao(acao);
-		case CALL: return new Call(new Acao(acao), ordemOpcao);
-		case PUT: return new Put(new Acao(acao), ordemOpcao);
+		case ACAO: return new Acao();
+		case CALL: return new Call(new Acao(), ordemOpcao);
+		case PUT: return new Put(new Acao(), ordemOpcao);
+		case RENDA_FIXA: return new RendaFixa(new Acao());
 		}
 		return null;
 	}
@@ -283,17 +312,13 @@ public class SimulacaoMB {
 				buff.write(converteOperacao(operacao)+";");
 				buff.write(operacao.getQtdLotes()+";");
 				buff.write(converteAtivo(operacao.getAtivo())+";");
-				if (operacao.getAtivo() instanceof Acao) {
-					buff.write(((Acao)operacao.getAtivo()).getNome()+";");
-					buff.write(";");
-				}
-				else {
-					buff.write(((Opcao)operacao.getAtivo()).getAcao().getNome()+";");
+				if (operacao.getAtivo() instanceof Opcao) {
 					buff.write(((Opcao)operacao.getAtivo()).getOrdem()+";");
 				}
+				else buff.write(" ;");
 				buff.write(operacao.getMesesParaVencimento()+";");
 				if (operacao.getCondicao() != null) {
-					buff.write(operacao.getCondicao().getAtributo()+";");
+					buff.write(operacao.getCondicao().getAtributo().getLabel()+";");
 					buff.write(operacao.getCondicao().getOperacao()+";");
 					buff.write(operacao.getCondicao().getValor()+";");
 				}
@@ -313,37 +338,40 @@ public class SimulacaoMB {
 		}
 	}
 	
+	private List<ValorResultado> getResultados() {
+		switch (tipoRelatorio) {
+		case ANUAL: return resultado.listaResultadosAnuais();
+		case COMPLETO:
+		case MENSAL: return resultado.listaResultadosMensais();
+		case REINVESTIMENTO: return resultado.listaResultadoComReinvestimento();
+		}
+		return null;
+	}
+	
 	public List<SelectItem> getTiposRelatorios() {
-		List<SelectItem> items = new ArrayList<SelectItem>();
-		items.add(new SelectItem(TipoRelatorio.ANUAL,"Anual"));
-		items.add(new SelectItem(TipoRelatorio.MENSAL,"Mensal"));
-		items.add(new SelectItem(TipoRelatorio.COMPLETO,"Completo"));
-		items.add(new SelectItem(TipoRelatorio.REINVESTIMENTO,"Reinvestimento"));
-		return items;
+		return TipoRelatorio.getSelectItems();
 	}
 	
 	public List<SelectItem> getAtributos() {
-		List<SelectItem> items = new ArrayList<SelectItem>();
-		items.add(new SelectItem(Atributo.PRECO,"Preço"));
-		items.add(new SelectItem(Atributo.VOLATILIDADE,"Volatilidade"));
-		items.add(new SelectItem(Atributo.MEDIA_MOVEL,"Média Móvel"));
-		return items;
+		return Atributo.getSelectItems();
 	}
 	
 	public List<SelectItem> getOperadores() {
-		List<SelectItem> items = new ArrayList<SelectItem>();
-		items.add(new SelectItem(Operador.IGUAL,"="));
-		items.add(new SelectItem(Operador.DIFERENTE,"<>"));
-		items.add(new SelectItem(Operador.MAIOR,">"));
-		items.add(new SelectItem(Operador.MENOR,"<"));
-		items.add(new SelectItem(Operador.MAIOR_IGUAL,">="));
-		items.add(new SelectItem(Operador.MENOR_IGUAL,"<="));
-		return items;
+		return Operador.getSelectItems();
 	}
 	
+	public List<SelectItem> getTiposCalculoValorInvestido() {
+		return TipoCalculoValorInvestido.getSelectItems();
+	}
+	
+	public List<String> getAcoes() {
+		return AcaoConteiner.getAcoes();
+	}
+
+	
 	public String getTextoOperacao() {
-		if (alterar) return "Alterar";
-		else return "Adicionar";
+		if (alterar) return "general.label.update";
+		else return "general.label.add";
 	}
 	
 	public boolean isOpcaoSelecionada() {
@@ -410,14 +438,6 @@ public class SimulacaoMB {
 
 	public void setMesesParaVencimento(int mesesParaVencimento) {
 		this.mesesParaVencimento = mesesParaVencimento;
-	}
-
-	public List<String> getAcoes() {
-		return acoes;
-	}
-
-	public void setAcoes(List<String> acoes) {
-		this.acoes = acoes;
 	}
 
 	public Resultado getResultado() {
@@ -510,5 +530,14 @@ public class SimulacaoMB {
 
 	public void setUploadedFile(UploadedFile uploadedFile) {
 		this.uploadedFile = uploadedFile;
+	}
+
+	public TipoCalculoValorInvestido getTipoCalculoValorInvestido() {
+		return tipoCalculoValorInvestido;
+	}
+
+	public void setTipoCalculoValorInvestido(
+			TipoCalculoValorInvestido tipoCalculoValorInvestido) {
+		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
 	}
 }

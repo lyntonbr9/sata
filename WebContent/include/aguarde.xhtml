@@ -8,9 +8,9 @@
     
     <p:ajaxStatus onstart="aguardeDialog.show();" onsuccess="aguardeDialog.hide();"/>  
               
-	<p:dialog modal="true" widgetVar="aguardeDialog" header="Aguarde"   
+	<p:dialog modal="true" widgetVar="aguardeDialog" header="#{msgs['aguarde.title']}"   
 	        draggable="false" closable="false">  
-	    Aguarde... 
+	    #{msgs['aguarde.title']}... 
 	</p:dialog>  
 
 </ui:composition>

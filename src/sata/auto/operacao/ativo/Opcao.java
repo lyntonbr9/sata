@@ -11,9 +11,8 @@ import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.to.Dia;
 
-public abstract class Opcao extends Ativo {
+public abstract class Opcao extends Derivado {
 	
-	Acao acao;
 	Integer ordem;
 	boolean volatil;
 	
@@ -53,12 +52,6 @@ public abstract class Opcao extends Ativo {
 	
 	public Integer getOrdem() {
 		return ordem;
-	}
-	public Acao getAcao() {
-		return acao;
-	}
-	public void setAcao(Acao acao) {
-		this.acao = acao;
 	}
 	public void setOrdem(Integer ordem) {
 		this.ordem = ordem;

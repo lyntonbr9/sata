@@ -1,7 +1,60 @@
 package sata.auto.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
+import sata.domain.util.SATAUtil;
+
 public enum TipoCalculoValorInvestido {
-	TOTAL_COMPRADO,
-	DIFERENCA_STRIKES,
-	TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES
+	CUSTO_MONTAGEM("custoMontagem",true),
+	DIFERENCA_STRIKES("diferencaStrikes", true),
+	CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES("custoMontagemIgnorandoPrimeiroMes",false),
+	PRECO_ACAO("precoAcao",true);
+	
+	private String name;
+	private boolean choosable;
+	
+	private TipoCalculoValorInvestido(String name, boolean choosable) {
+		this.name = name;
+		this.choosable = choosable;
+	}
+	
+	public String getLabel() {
+		String key = "enum.tipoCalculoValorInvestido." + name;
+		return SATAUtil.getMessage(key);
+	}
+	
+	public static TipoCalculoValorInvestido get(String name) {
+		for (TipoCalculoValorInvestido value : values())
+			if (value.name.equalsIgnoreCase(name))
+				return value;
+		return null;
+	}
+
+	public static List<SelectItem> getSelectItems() {
+		List<SelectItem> items = new ArrayList<SelectItem>();
+		for (TipoCalculoValorInvestido value : values())
+			if (value.isChoosable()) {
+				items.add(new SelectItem(value, value.getLabel()));
+			}
+		return items;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isChoosable() {
+		return choosable;
+	}
+
+	public void setChoosable(boolean choosable) {
+		this.choosable = choosable;
+	}
 }

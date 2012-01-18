@@ -17,7 +17,7 @@ public class RendaFixa_VendaCall_CompraCall extends Estrategia {
 		Integer ordemCallCompra = parametros[param++];
 		
 		simulacoes.add(new Simulacao(
-				new Venda (new RendaFixa(acao, 0.01), false),
+				new Venda (new RendaFixa(acao), false),
 				new Venda (new Call(acao, ordemCallVenda)),
 				new Compra(new Call(acao, ordemCallCompra))));
 	}
@@ -27,7 +27,7 @@ public class RendaFixa_VendaCall_CompraCall extends Estrategia {
 		estrategia.acao = new Acao("PETR4");
 		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.COMPLETO, 4, -2);
+		estrategia.executa(TipoRelatorio.COMPLETO, 4, -1);
 	}
 
 	@Override

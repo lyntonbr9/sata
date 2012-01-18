@@ -14,7 +14,7 @@ public class AcaoMaisTravaAltax3 extends Estrategia {
 	public void prepara(Integer... parametros) {
 		anoInicial = 2000;
 		anoFinal = 2011;
-		tipoCalculoValorInvestido = TipoCalculoValorInvestido.TOTAL_COMPRADO_IGNORAR_PRIMEIRO_MES;
+		tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES;
 		Acao acao = new Acao("PETR4");
 		
 		simulacoes.add(new Simulacao(new Compra(1, acao, 2, 2)));

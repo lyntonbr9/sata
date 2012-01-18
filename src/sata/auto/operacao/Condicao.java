@@ -77,40 +77,7 @@ public class Condicao {
 	
 	@Override
 	public String toString() {
-		String strAtributo = "";
-		String strOperador = "";
-		switch (atributo) {
-		case PRECO:
-			strAtributo = "Preço";
-			break;
-		case VOLATILIDADE:
-			strAtributo = "Volat";
-			break;
-		case MEDIA_MOVEL:
-			strAtributo = "MM";
-			break;
-		}
-		switch (operacao) {
-		case IGUAL:
-			strOperador = "=";
-			break;
-		case DIFERENTE:
-			strOperador = "<>";
-			break;
-		case MAIOR:
-			strOperador = ">";
-			break;
-		case MENOR:
-			strOperador = "<";
-			break;
-		case MAIOR_IGUAL:
-			strOperador = ">=";
-			break;
-		case MENOR_IGUAL:
-			strOperador = "<=";
-			break;
-		}
-		return strAtributo + " " + strOperador + " " + SATAUtil.formataNumero(new BigDecimal(valor));
+		return atributo.getLabel() + " " + operacao.getSimbol() + " " + SATAUtil.formataNumero(new BigDecimal(valor));
 	}
 	
 	@Override

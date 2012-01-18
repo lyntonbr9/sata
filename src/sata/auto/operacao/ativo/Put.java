@@ -20,4 +20,9 @@ public class Put extends Opcao {
 	boolean isCall() {
 		return false;
 	}
+	
+	@Override
+	public String getBundleMessage() {
+		return "list.ativo.put";
+	}
 }

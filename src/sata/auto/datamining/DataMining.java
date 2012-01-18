@@ -10,10 +10,11 @@ import sata.auto.estrategia.Estrategia;
 import sata.auto.estrategia.SomenteAcao;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.to.Variacao;
+import sata.domain.util.IConstants;
 import sata.domain.util.LoggerUtil;
 import sata.domain.util.SATAUtil;
 
-public class DataMining {
+public class DataMining implements IConstants {
 	
 	public static void main(String[] args) throws Exception {
 		Variacao qtdLotesCallVolBaixa = new Variacao(1,1);
@@ -33,7 +34,7 @@ public class DataMining {
 		try {
 			LoggerUtil.setup(clazz.getSimpleName()+"_"+acao+"_"+anoInicial+"_"+anoFinal);
 			LoggerUtil.log("Início: " + SATAUtil.getDataAtualFormatada());
-			BigDecimal valorInicial = new BigDecimal(100);
+			BigDecimal valorInicial = CEM;
 			BigDecimal melhorResultado = BigDecimal.ZERO;
 			String melhorSimulacao = "";
 

@@ -1,19 +1,61 @@
 package sata.auto.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
+import sata.domain.util.SATAUtil;
+
 public enum Atributo {
-	PRECO,
-	VOLATILIDADE,
-	PERCENTUAL_OPERACAO,
-	PERCENTUAL_ACAO,
-	MEDIA_MOVEL;
+	PRECO("preco",true),
+	VOLATILIDADE("volatilidade",true),
+	PERCENTUAL_OPERACAO("percentualOperacao",false),
+	PERCENTUAL_ACAO("percentualAcao",false),
+	MEDIA_MOVEL("mediaMovel",false);
 	
-	public static Atributo get(String atributo) {
-		final String upper = atributo.toUpperCase();
-		if (upper.equals("PRECO")) return PRECO;
-		if (upper.equals("VOLATILIDADE")) return VOLATILIDADE;
-		if (upper.equals("PERCENTUAL_OPERACAO")) return PERCENTUAL_OPERACAO;
-		if (upper.equals("PERCENTUAL_ACAO")) return PERCENTUAL_ACAO;
-		if (upper.equals("MEDIA_MOVEL")) return MEDIA_MOVEL;
+	private String name;
+	private boolean choosable;
+	
+	private Atributo(String name, boolean choosable) {
+		this.name = name;
+		this.choosable = choosable;
+	}
+	
+	public String getLabel() {
+		String key = "enum.atributo." + name;
+		return SATAUtil.getMessage(key);
+	}
+	
+	public static Atributo get(String name) {
+		for (Atributo value : values())
+			if (value.name.equalsIgnoreCase(name))
+				return value;
 		return null;
+	}
+
+	public static List<SelectItem> getSelectItems() {
+		List<SelectItem> items = new ArrayList<SelectItem>();
+		for (Atributo value : values())
+			if (value.isChoosable()) {
+				items.add(new SelectItem(value, value.getLabel()));
+			}
+		return items;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isChoosable() {
+		return choosable;
+	}
+
+	public void setChoosable(boolean choosable) {
+		this.choosable = choosable;
 	}
 }

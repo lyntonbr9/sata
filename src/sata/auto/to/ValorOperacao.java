@@ -6,8 +6,11 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
+import sata.auto.operacao.ativo.Acao;
+import sata.auto.operacao.ativo.Derivado;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
@@ -31,6 +34,14 @@ public class ValorOperacao implements Comparable<ValorOperacao>, IConstants {
 		if (operacao instanceof Compra)
 			valor = valor.negate();
 		return valor;
+	}
+	
+	public BigDecimal getPrecoAcao() throws CotacaoInexistenteEX {
+		if (operacao.getAtivo() instanceof Acao)
+			return preco.getValor();
+		else if (operacao.getAtivo() instanceof Derivado)
+			return ((Derivado)operacao.getAtivo()).getAcao().getPreco(preco.getDia());
+		return BigDecimal.ZERO;
 	}
 	
 	@Override

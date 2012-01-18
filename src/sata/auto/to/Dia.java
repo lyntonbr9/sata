@@ -4,14 +4,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import sata.domain.util.SATAUtil;
+
 public class Dia implements Comparable<Dia> {
 	
-	private static final String FORMATO_DATA_PADRAO = "dd/MM/yyyy";
+	private static final Map<String,String> FORMATOS_DATA_PADRAO = new TreeMap<String, String>();
+	static {
+		FORMATOS_DATA_PADRAO.put("pt", "dd/MM/yyyy");
+		FORMATOS_DATA_PADRAO.put("en", "MM/dd/yyyy");
+    }
 	private static final String FORMATO_DATA_BANCO = "yyyyMMdd";
 	
 	Integer dia;
@@ -30,7 +38,7 @@ public class Dia implements Comparable<Dia> {
 	}
 	
 	public static Dia converte(String data) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat(FORMATO_DATA_PADRAO); 
+		SimpleDateFormat sdf = new SimpleDateFormat(getFormatoDataPadrao()); 
 		Calendar calendar = Calendar.getInstance(); 
 		calendar.setTime(sdf.parse(data)); 
 		return converte(calendar);
@@ -72,7 +80,11 @@ public class Dia implements Comparable<Dia> {
 	}
 	
 	public String formatoPadrao() {
-		return format(FORMATO_DATA_PADRAO);
+		return format(getFormatoDataPadrao());
+	}
+	
+	public String formatoBrasileiro() {
+		return format(FORMATOS_DATA_PADRAO.get("pt"));
 	}
 	
 	public Calendar getCalendar() {
@@ -109,6 +121,10 @@ public class Dia implements Comparable<Dia> {
 			|| this.equals(dia);
 	}
 	
+	private static String getFormatoDataPadrao() {
+		return FORMATOS_DATA_PADRAO.get(SATAUtil.getCurrentLanguage());
+	}
+	
 	@Override
 	public String toString() {
 		return formatoPadrao();
@@ -124,7 +140,13 @@ public class Dia implements Comparable<Dia> {
 
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+		if (obj == null || obj.getClass() != getClass()) { return false; }
+		if (obj == this) { return true; }
+		Dia dia = (Dia)obj;
+		return new EqualsBuilder()
+		.append(this.dia, dia.dia)
+		.append(this.mes, dia.mes)
+		.isEquals();
 	}
 
 	public Integer getDia() {
