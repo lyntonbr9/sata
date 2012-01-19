@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public enum TipoRelatorio {
@@ -27,7 +28,7 @@ public enum TipoRelatorio {
 	}
 
 	public String getLabel() {
-		String key = "enum.tipoRelatorio." + name;
+		String key = IConstants.MSG_ENUM_PREFIX_TIPO_RELATORIO + name;
 		return SATAUtil.getMessage(key);
 	}
 	

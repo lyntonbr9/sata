@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public enum TipoCalculoValorInvestido {
@@ -22,7 +23,7 @@ public enum TipoCalculoValorInvestido {
 	}
 	
 	public String getLabel() {
-		String key = "enum.tipoCalculoValorInvestido." + name;
+		String key = IConstants.MSG_ENUM_PREFIX_TIPO_CALCULO_VALOR_INVESTIDO + name;
 		return SATAUtil.getMessage(key);
 	}
 	

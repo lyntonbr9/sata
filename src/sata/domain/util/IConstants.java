@@ -1,6 +1,7 @@
 package sata.domain.util;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public interface IConstants {
 
@@ -43,15 +44,24 @@ public interface IConstants {
 	int ABERTURA = 0;
 	int FECHAMENTO = 1;
 	
+	Locale LOCALE_BRASIL = new Locale("pt", "BR");
+	Locale LOCALE_EUA = new Locale("en");
+	Locale LOCALE_DEFAULT = LOCALE_BRASIL;
+	
 	BigDecimal CEM = new BigDecimal(100);
+	
+	String MSG_BUNDLE = "msg/messages";
 	
 	String MSG_LABEL_ACAO = "simulacao.formSimulacao.acao.label";
 	String MSG_LABEL_OPERACAO = "simulacao.formOperacao.operacao.label";
 	String MSG_LABEL_QTD = "simulacao.formOperacao.qtd.label";
+	String MSG_LABEL_ORDEM = "simulacao.formOperacao.ordem.label";
 	String MSG_LABEL_ATIVO = "simulacao.formOperacao.ativo.label";
 	String MSG_LABEL_MESES = "simulacao.formOperacao.meses.label";
 	String MSG_LABEL_MEDIA_ANUAL = "simulacao.resultado.mediaAnual";
 	String MSG_LABEL_MEDIA_MENSAL = "simulacao.resultado.mediaMensal";
+	String MSG_LABEL_VALOR_INICIAL = "simulacao.resultado.valorInicial";
+	String MSG_LABEL_VALOR_FINAL = "simulacao.resultado.valorFinal";
 	String MSG_LABEL_COMPRA = "list.operacao.compra";
 	String MSG_LABEL_VENDA = "list.operacao.venda";
 	
@@ -60,6 +70,10 @@ public interface IConstants {
 	String MSG_PATTERN_PRECO_ACAO = "toString.precoAcao.pattern";
 	String MSG_PATTERN_PRECO_OPCAO = "toString.precoOpcao.pattern";
 	String MSG_PATTERN_PRECO_RENDA_FIXA = "toString.precoRendaFixa.pattern";
+	
+	String MSG_ENUM_PREFIX_ATRIBUTO = "enum.atributo.";
+	String MSG_ENUM_PREFIX_TIPO_RELATORIO = "enum.tipoRelatorio.";
+	String MSG_ENUM_PREFIX_TIPO_CALCULO_VALOR_INVESTIDO = "enum.tipoCalculoValorInvestido.";
 	
 	String MSG_ERRO_CAMPO_OBRIGATORIO = "general.msg.error.campoObrigatorio";
 	String MSG_ERRO_VALOR_MAIOR_QUE_ZERO = "general.msg.error.maiorQueZero";

@@ -192,7 +192,7 @@ public abstract class Operacao implements IConstants {
 	public String toString() {
 		String strQtd = "";
 		if (qtdLotes > 1) strQtd = qtdLotes + "x";
-		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, strQtd, this.getBundleMessage(), ativo.getBundleMessage());
+		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, strQtd, this.getBundleMessage(), ativo.toString());
 	}
 	
 	@Override

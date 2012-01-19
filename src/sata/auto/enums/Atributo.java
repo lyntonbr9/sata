@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public enum Atributo {
@@ -23,7 +24,7 @@ public enum Atributo {
 	}
 	
 	public String getLabel() {
-		String key = "enum.atributo." + name;
+		String key = IConstants.MSG_ENUM_PREFIX_ATRIBUTO + name;
 		return SATAUtil.getMessage(key);
 	}
 	

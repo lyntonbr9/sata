@@ -6,8 +6,8 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:a4j="http://richfaces.org/a4j">
 
-	<ui:define name="titulo">#{msgs['index.page.title']}</ui:define>
 	<ui:define name="conteudo">
-		 	<a href="simulacao.jsf">#{msgs['simulacao.page.title']}</a>
+		<h1><ui:insert name="titulo" /></h1>
+		<ui:insert name="pagina" />
 	</ui:define>
 </ui:composition>
