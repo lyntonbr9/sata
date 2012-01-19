@@ -4,21 +4,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
-public class Dia implements Comparable<Dia> {
+public class Dia implements Comparable<Dia>, IConstants {
 	
-	private static final Map<String,String> FORMATOS_DATA_PADRAO = new TreeMap<String, String>();
+	private static final Map<Locale,String> FORMATOS_DATA_PADRAO = new HashMap<Locale, String>();
 	static {
-		FORMATOS_DATA_PADRAO.put("pt", "dd/MM/yyyy");
-		FORMATOS_DATA_PADRAO.put("en", "MM/dd/yyyy");
+		FORMATOS_DATA_PADRAO.put(LOCALE_BRASIL, "dd/MM/yyyy");
+		FORMATOS_DATA_PADRAO.put(LOCALE_EUA, "MM/dd/yyyy");
     }
 	private static final String FORMATO_DATA_BANCO = "yyyyMMdd";
 	
@@ -84,7 +86,7 @@ public class Dia implements Comparable<Dia> {
 	}
 	
 	public String formatoBrasileiro() {
-		return format(FORMATOS_DATA_PADRAO.get("pt"));
+		return format(FORMATOS_DATA_PADRAO.get(LOCALE_BRASIL));
 	}
 	
 	public Calendar getCalendar() {
@@ -122,7 +124,7 @@ public class Dia implements Comparable<Dia> {
 	}
 	
 	private static String getFormatoDataPadrao() {
-		return FORMATOS_DATA_PADRAO.get(SATAUtil.getCurrentLanguage());
+		return FORMATOS_DATA_PADRAO.get(SATAUtil.getCurrentLocale());
 	}
 	
 	@Override

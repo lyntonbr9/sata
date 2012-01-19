@@ -3,18 +3,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt-br"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 <f:view locale="#{localeMB.currentLocale}">
 	<h:head>
 		<title>
-			Opções - 
+			#{msgs['site.title']} - 
 			<ui:insert name="titulo" />
 		</title>
 		<link href="resources/css/estilo.css" rel="stylesheet" type="text/css" />
 		<script language="JavaScript" src="js/scripts.js"></script>
 	</h:head>
 	<h:body>
-		<h:form enctype="multipart/form-data">
+		<h:form id="form" enctype="multipart/form-data">
 			<div id="pagina">
 				<div id="adsense">
 					<h:commandButton value="English" action="#{localeMB.changeLocal}" rendered="#{localeMB.selectedLanguage != 'en'}">

@@ -2,6 +2,7 @@ package sata.domain.util;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,21 +12,35 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
 	
-	public static String getCurrentLanguage() {
+	public static Locale getCurrentLocale() {
 		Locale locale = FacesUtil.getCurrentLocale();
-		if (locale != null) return locale.getLanguage();
-		return "pt_BR";
+		if (locale != null) return locale;
+		return LOCALE_DEFAULT;
 	}
 	
-	public static double getTaxaDeJuros(int ano) {
-		return TAXA_DE_JUROS;
+	private static double taxaDeJuros = TAXA_DE_JUROS;
+	
+	public static double getTaxaDeJuros(Integer ano) {
+		return getTaxaDeJuros();
+	}
+	
+	public static double getTaxaDeJuros() {
+		return taxaDeJuros;
+	}
+	
+	public static void setTaxaDeJuros(double taxaJuros) {
+		taxaDeJuros = taxaJuros;
 	}
 	
 	//Ex: se passado 5 retorna 05
@@ -33,6 +48,9 @@ public class SATAUtil implements IConstants{
 		return (valor < 10) ? "0" + valor : String.valueOf(valor);
 	}
 	
+	/**
+	 * Copia uma lista para um array
+	 */
 	public static <T> T[] copyToArray(List<T> list, T[] array) {
 		int i=0;
 		for (T item : list) {
@@ -41,6 +59,9 @@ public class SATAUtil implements IConstants{
 		return array;
 	}
 	
+	/**
+	 * Reverte os itens do array
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] reverte(T[] array) {
 		List<T> lista = Arrays.asList(array);
@@ -65,8 +86,42 @@ public class SATAUtil implements IConstants{
 		return SATAUtil.formataNumero(numero, FacesUtil.getCurrentLocale());
 	}
 	
-	public static String getMessage(String key, String... arguments) {
-		return FacesUtil.getMessage(key, arguments);
+	public static String getMessage(String key, String... arguments) throws MissingResourceException {
+		String pattern = getBundle().getString(key);
+		if(arguments == null)
+			return pattern;
+		return getMessageFormat(pattern).format(bundleArguments(arguments));
+	}
+	
+	private static ResourceBundle getBundle() {
+		ResourceBundle rb = FacesUtil.getContextBundle();
+		if (rb != null)	return rb;
+		else return ResourceBundle.getBundle(MSG_BUNDLE);
+	}
+	
+	private static Map<String, MessageFormat> patterns = new TreeMap<String, MessageFormat>();
+	
+	private static MessageFormat getMessageFormat(String pattern){
+    	MessageFormat formatter = (MessageFormat) patterns.get(pattern);
+    	if(formatter == null){
+            synchronized(patterns){
+                formatter = patterns.get(pattern);
+                if(formatter == null){
+                    formatter = new MessageFormat(pattern);
+                    patterns.put(pattern, formatter);
+                }
+            }
+        }
+    	return formatter;
+    }
+	
+	private static String[] bundleArguments(String[] arguments) {
+		for (int i=0; i<arguments.length; i++) {
+			try {
+				arguments[i] = getMessage(arguments[i]);
+			} catch (MissingResourceException e) {}
+		}
+		return arguments;
 	}
 	
 	/**

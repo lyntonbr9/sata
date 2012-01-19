@@ -42,6 +42,7 @@ import sata.auto.simulacao.Simulacao;
 import sata.auto.to.ValorResultado;
 import sata.domain.util.FacesUtil;
 import sata.domain.util.IConstants;
+import sata.domain.util.SATAUtil;
 
 @ManagedBean
 @SessionScoped
@@ -76,6 +77,7 @@ public class SimulacaoMB implements IConstants {
 	CartesianChartModel graficoModel = new CartesianChartModel();
 	StreamedContent arquivo;
 	UploadedFile uploadedFile;
+	double taxaDeJuros = SATAUtil.getTaxaDeJuros()*100;
 	
 	public void incluirOperacao() {
 		try {
@@ -100,6 +102,8 @@ public class SimulacaoMB implements IConstants {
 			tipoOperacao = converteOperacao(operacao);
 			tipoAtivo = converteAtivo(operacao.getAtivo());
 			qtdLotes = operacao.getQtdLotes();
+			if (isOpcaoSelecionada())
+				ordemOpcao = ((Opcao)operacao.getAtivo()).getOrdem();
 			mesesParaVencimento = operacao.getMesesParaVencimento();
 			alterar = true;
 			if (operacao.getCondicao() != null)
@@ -143,6 +147,7 @@ public class SimulacaoMB implements IConstants {
 				simulacao.setAnoInicial(anoInicial);
 				simulacao.setAnoFinal(anoFinal);
 				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
+				SATAUtil.setTaxaDeJuros(taxaDeJuros/100);
 				resultado = simulacao.getResultado();
 				relatorio = formataTexto(resultado.imprime(tipoRelatorio));
 			}
@@ -218,7 +223,11 @@ public class SimulacaoMB implements IConstants {
 	
 	private boolean formularioValido() {
 		boolean valido = true;
-		if (tipoOperacao == NENHUM) {
+		if (tipoAtivo == NENHUM) {
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_ATIVO);
+			valido = false;
+		}
+		if (tipoOperacao == NENHUM && !isRendaFixaSelecionada()) {
 			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_OPERACAO);
 			valido = false;
 		}
@@ -226,8 +235,8 @@ public class SimulacaoMB implements IConstants {
 			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_QTD);
 			valido = false;
 		}
-		if (tipoAtivo == NENHUM) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_LABEL_ATIVO);
+		if (ordemOpcao <= 0 && isOpcaoSelecionada()) {
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_ORDEM);
 			valido = false;
 		}
 		if (mesesParaVencimento <= 0) {
@@ -264,6 +273,9 @@ public class SimulacaoMB implements IConstants {
 	}
 	
 	private Operacao converteOperacao(char tipoOperacao) {
+		if (isRendaFixaSelecionada())
+			return new Venda();
+		
 		switch (tipoOperacao) {
 		case VENDA:	return new Venda();
 		case COMPRA: return new Compra();
@@ -318,8 +330,8 @@ public class SimulacaoMB implements IConstants {
 				else buff.write(" ;");
 				buff.write(operacao.getMesesParaVencimento()+";");
 				if (operacao.getCondicao() != null) {
-					buff.write(operacao.getCondicao().getAtributo().getLabel()+";");
-					buff.write(operacao.getCondicao().getOperacao()+";");
+					buff.write(operacao.getCondicao().getAtributo().getName()+";");
+					buff.write(operacao.getCondicao().getOperacao().getSimbol()+";");
 					buff.write(operacao.getCondicao().getValor()+";");
 				}
 				else buff.write(" ; ; ;");
@@ -375,7 +387,11 @@ public class SimulacaoMB implements IConstants {
 	}
 	
 	public boolean isOpcaoSelecionada() {
-		return tipoAtivo == 'C' || tipoAtivo == 'P';
+		return tipoAtivo == CALL || tipoAtivo == PUT;
+	}
+	
+	public boolean isRendaFixaSelecionada() {
+		return tipoAtivo == RENDA_FIXA;
 	}
 	
 	public StreamedContent getArquivo() {
@@ -539,5 +555,13 @@ public class SimulacaoMB implements IConstants {
 	public void setTipoCalculoValorInvestido(
 			TipoCalculoValorInvestido tipoCalculoValorInvestido) {
 		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
+	}
+
+	public double getTaxaDeJuros() {
+		return taxaDeJuros;
+	}
+
+	public void setTaxaDeJuros(double taxaDeJuros) {
+		this.taxaDeJuros = taxaDeJuros;
 	}
 }
