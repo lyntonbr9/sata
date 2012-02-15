@@ -10,138 +10,34 @@
 	<ui:define name="pagina">
 			<p:messages autoUpdate="true"/>
 			<h:panelGroup id="page">
-			<p:dialog id="formOperacao" header="#{msgs[simulacaoMB.textoOperacao]} #{msgs['simulacao.formOperacao.operacao.label']}" 
-				widgetVar="formOperacao" modal="true"> 
-				<h:panelGrid columns="3">
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.ativo.label']}:" for="ativo" />
-					<p:selectOneMenu id="ativo" value="#{simulacaoMB.tipoAtivo}">
-						<f:selectItem itemValue="-" itemLabel="--" />
-						<f:selectItem itemValue="A" itemLabel="#{msgs['list.ativo.acao']}" />
-						<f:selectItem itemValue="C" itemLabel="#{msgs['list.ativo.call']}" />
-						<f:selectItem itemValue="P" itemLabel="#{msgs['list.ativo.put']}" />
-						<f:selectItem itemValue="R" itemLabel="#{msgs['list.ativo.rendaFixa']}" />
-						<p:ajax update="formOperacao" oncomplete="formOperacao.show()" />
-					</p:selectOneMenu>
-					<p:tooltip for="ativo">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.ativo.tooltip']}" />
-    				</p:tooltip>
-				
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.operacao.label']}:" for="operacao" rendered="#{!simulacaoMB.rendaFixaSelecionada}" />
-					<p:selectOneMenu id="operacao" value="#{simulacaoMB.tipoOperacao}" rendered="#{!simulacaoMB.rendaFixaSelecionada}">
-						<f:selectItem itemValue="-" itemLabel="--" />
-						<f:selectItem itemValue="C" itemLabel="#{msgs['list.operacao.compra']}" />
-						<f:selectItem itemValue="V" itemLabel="#{msgs['list.operacao.venda']}" />
-					</p:selectOneMenu>
-					<p:tooltip for="operacao" rendered="#{!simulacaoMB.rendaFixaSelecionada}">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.operacao.tooltip']}" />
-    				</p:tooltip>
-					
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.qtd.label']}:" for="qtd" />
-					<p:spinner id="qtd" value="#{simulacaoMB.qtdLotes}" size="3"/>
-					<p:tooltip for="qtd">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.qtd.tooltip']}" />
-    				</p:tooltip>
-				
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.ordem.label']}:" for="ordem" rendered="#{simulacaoMB.opcaoSelecionada}" />
-					<p:spinner id="ordem" value="#{simulacaoMB.ordemOpcao}" size="3" rendered="#{simulacaoMB.opcaoSelecionada}" />
-    				<p:tooltip for="ordem" rendered="#{simulacaoMB.opcaoSelecionada}">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.ordem.tooltip']}" />
-    				</p:tooltip>
-			
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.meses.label']}:" for="meses" rendered="#{simulacaoMB.opcaoSelecionada}" />
-					<p:spinner id="meses" value="#{simulacaoMB.mesesParaVencimento}" size="3" rendered="#{simulacaoMB.opcaoSelecionada}" />
-					<p:tooltip for="meses" rendered="#{simulacaoMB.opcaoSelecionada}">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.meses.tooltip']}" />
-    				</p:tooltip>
-    				
-					<h:outputLabel value="#{msgs['simulacao.formOperacao.condicao.label']}:" />
-					<h:panelGrid columns="3" id="condicao">
-						<p:selectOneMenu id="atributo" value="#{simulacaoMB.condicao.atributo}">
-							<f:selectItem itemValue="" itemLabel="--" />
-							<f:selectItems value="#{simulacaoMB.atributos}" />
-						</p:selectOneMenu>
-						<p:selectOneMenu id="Operacao" value="#{simulacaoMB.condicao.operacao}">
-							<f:selectItem itemValue="" itemLabel="--" />
-							<f:selectItems value="#{simulacaoMB.operadores}" />
-						</p:selectOneMenu>
-						<p:inputText id="valor" value="#{simulacaoMB.condicao.valor}" size="3">
-							<f:convertNumber />
-						</p:inputText>
-					</h:panelGrid>
-					<p:tooltip for="condicao">
-    					<h:outputText escape="false" value="#{msgs['simulacao.formOperacao.condicao.tooltip']}" />
-    				</p:tooltip>
-    			</h:panelGrid>
-				<p:separator />
-				<p:commandButton icon="ui-icon-check" title="#{msgs[simulacaoMB.textoOperacao]}" 
-					action="#{simulacaoMB.incluirOperacao}" update="page" onclick="formOperacao.hide();"/>
-				<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formOperacao.hide();"/>
-			</p:dialog>
-	
-			<h:panelGroup id="tableOperacoes">
-			<p:dataTable id="operacoes" value="#{simulacaoMB.operacoes}" var="operacao" 
-				rendered="#{not empty simulacaoMB.operacoes}">  
-	    		<p:column>  
-		            <f:facet name="header">#{msgs['simulacao.formOperacao.operacao.label']}</f:facet>
-		            #{operacao.string}  
-        		</p:column>
-				<p:column styleClass="center">  
-		            <f:facet name="header">#{msgs['general.label.update']}</f:facet>
-		            <p:commandButton icon="ui-icon-pencil" action="#{simulacaoMB.editarOperacao}" 
-		            	update=":form:formOperacao" oncomplete="formOperacao.show();" title="#{msgs['general.label.update']}">
-		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
-		            </p:commandButton>
-        		</p:column>
-        		<p:column styleClass="center">  
-		            <f:facet name="header">#{msgs['general.label.delete']}</f:facet>
-		            <p:commandButton icon="ui-icon-close" action="#{simulacaoMB.excluirOperacao}" update=":form:tableOperacoes"
-		            	title="#{msgs['general.label.delete']}">
-		            	<f:setPropertyActionListener target="#{simulacaoMB.operacao}" value="#{operacao}" />
-		            </p:commandButton>
-        		</p:column>
-			</p:dataTable>
-			</h:panelGroup>
-			<p:commandButton icon="ui-icon-plus" value="#{msgs['simulacao.button.addOperacao']}" action="#{simulacaoMB.limpaCampos}" update=":form:formOperacao" oncomplete="formOperacao.show();"/>
-			<p:commandButton icon="ui-icon-folder-open" title="#{msgs['simulacao.button.abrirEstrategia']}" onclick="abrirEstrategia.show();" />
-			<p:commandButton icon="ui-icon-disk" title="#{msgs['simulacao.button.salvarEstrategia']}" ajax="false" rendered="#{not empty simulacaoMB.operacoes}">
-				<p:fileDownload value="#{simulacaoMB.arquivo}" /> 
-			</p:commandButton>
-			
-			<p:dialog header="#{msgs['simulacao.abrirEstrategia.title']}" widgetVar="abrirEstrategia" modal="true">
-				<p:fileUpload fileUploadListener="#{simulacaoMB.abrirArquivo}"  
-            		mode="advanced"   
-            		update="page"  
-            		sizeLimit="100000"   
-            		allowTypes="/(\.|\/)(txt)$/"
-            		label="#{msgs['general.label.search']}"
-	            	cancelLabel="#{msgs['general.label.cancel']}"
-	            	onstart="abrirEstrategia.hide();"
-            		/>  
-			</p:dialog>
-			
+			<ui:include src="include/operacoes.xhtml" />
 			<p:separator />			
-			<h:panelGrid id="formSimulacao" columns="2">
+			<h:panelGrid id="formSimulacao" columns="3">
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.acao.label']}:" for="acao" />
 				<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}">
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao}" />
 				</p:selectOneMenu>
+				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.valorInvestido.label']}:" for="valorInvestido" />
 				<p:selectOneMenu id="valorInvestido" value="#{simulacaoMB.tipoCalculoValorInvestido}">
 					<f:selectItems value="#{simulacaoMB.tiposCalculoValorInvestido}" />
 				</p:selectOneMenu>
+				<h:outputText value="" />
 					
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoInicial.label']}:" for="anoInicial"/>
 				<p:spinner value="#{simulacaoMB.anoInicial}" size="4" id="anoInicial"/>
+				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoFinal.label']}:" for="anoFinal"/>
 				<p:spinner value="#{simulacaoMB.anoFinal}" size="4" id="anoFinal"/>
+				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.taxaDeJuros.label']}:" for="taxaDeJuros"/>
 				<p:inputText value="#{simulacaoMB.taxaDeJuros}" size="4" id="taxaDeJuros" >
-					<f:convertNumber />
-				</p:inputText>
+					<f:convertNumber minFractionDigits="2" />
+				</p:inputText>%
 			</h:panelGrid>
 			<p:commandButton value="#{msgs['simulacao.formSimulacao.button.simular']}" action="#{simulacaoMB.simular}" update="page"/><br/>
 			

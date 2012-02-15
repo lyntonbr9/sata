@@ -40,6 +40,15 @@ public class PrecoOpcao extends Preco implements IConstants {
 	public BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
 		return opcao.getAcao().getMediaMovel(dia, periodo);
 	}
+	
+	public static BigDecimal blackScholes(boolean call, BigDecimal precoAcao, BigDecimal precoExercicioOpcao, 
+			int diasParaVencimento, BigDecimal volatilidade, BigDecimal taxaJuros) {
+		double tempoParaVencimentoOpcaoEmAnos = 0.000000000000000000000000001;
+		if (diasParaVencimento > 0)
+			tempoParaVencimentoOpcaoEmAnos = BlackScholes.getQtdDiasEmAnos(diasParaVencimento);
+		double valor = BlackScholes.blackScholes(call, precoAcao.doubleValue(), precoExercicioOpcao.doubleValue(), tempoParaVencimentoOpcaoEmAnos, taxaJuros.doubleValue(), volatilidade.doubleValue());
+		return new BigDecimal(valor); 
+	}
 
 	private BigDecimal blackScholes() throws CotacaoInexistenteEX {
 		double precoAcao = calculaPrecoAcao().doubleValue();

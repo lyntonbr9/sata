@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="/templates/pagina.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">#{msgs['grafico.page.title']}</ui:define>
+	<ui:define name="pagina">
+			<p:messages autoUpdate="true"/>
+			<h:panelGroup id="page">
+				<ui:include src="include/operacoes.xhtml" />
+				<p:separator />
+				<h:panelGrid columns="4">
+					<h:outputLabel value="#{msgs['grafico.form.precoInicialAcao.label']}:" for="precoInicialAcao" />
+					<p:inputText id="precoInicialAcao" value="#{graficoMB.precoInicialAcao}" size="5">
+						<f:convertNumber minFractionDigits="2" />
+					</p:inputText>
+					<h:outputText value="" />
+					<p:tooltip for="precoInicialAcao">
+    					<h:outputText escape="false" value="#{msgs['grafico.form.precoInicialAcao.tooltip']}" />
+    				</p:tooltip>
+				
+					<h:outputLabel value="#{msgs['grafico.form.taxaJuros.label']}:" for="taxaJuros" />
+					<p:inputText id="taxaJuros" value="#{graficoMB.taxaJuros}" size="5">
+						<f:convertNumber minFractionDigits="2" />
+					</p:inputText>%
+					<p:tooltip for="taxaJuros">
+    					<h:outputText escape="false" value="#{msgs['grafico.form.taxaJuros.tooltip']}" />
+    				</p:tooltip>
+    				
+    				<h:outputLabel value="#{msgs['grafico.form.volatilidade.label']}:" for="volatilidade" />
+					<p:inputText id="volatilidade" value="#{graficoMB.volatilidade}" size="5">
+						<f:convertNumber minFractionDigits="2" />
+					</p:inputText>%
+					<p:tooltip for="volatilidade">
+    					<h:outputText escape="false" value="#{msgs['grafico.form.volatilidade.tooltip']}" />
+    				</p:tooltip>
+    				
+    				<h:outputLabel value="#{msgs['grafico.form.variacaoPrecoAcao.label']}:" for="variacaoPrecoAcao" />
+					<p:spinner id="variacaoPrecoAcao" value="#{graficoMB.variacaoPrecoAcao}" size="3" />%
+					<p:tooltip for="variacaoPrecoAcao">
+    					<h:outputText escape="false" value="#{msgs['grafico.form.variacaoPrecoAcao.tooltip']}" />
+    				</p:tooltip>
+    				
+    				<h:outputLabel value="#{msgs['grafico.form.incrementoDiario.label']}:" for="incrementoDiario" />
+					<p:spinner id="incrementoDiario" value="#{graficoMB.incrementoDiario}" size="3" />
+					<h:outputText value="" />
+					<p:tooltip for="incrementoDiario">
+    					<h:outputText escape="false" value="#{msgs['grafico.form.incrementoDiario.tooltip']}" />
+    				</p:tooltip>
+    			</h:panelGrid>
+    			
+    			<p:commandButton icon="ui-icon-check" title="#{msgs['grafico.form.button.gerarGrafico']}" action="#{graficoMB.gerarGrafico}" 
+					update="page" oncomplete="grafico.show();"/>
+					
+    			<p:dialog header="#{msgs['grafico.grafico.title']}" widgetVar="grafico" modal="true">
+					<p:lineChart value="#{graficoMB.graficoModel}" legendPosition="be"
+						style="width:1200px; height:400px ;font-size:60%;" /><br/>
+				</p:dialog>
+			</h:panelGroup>
+	</ui:define>
+</ui:composition>

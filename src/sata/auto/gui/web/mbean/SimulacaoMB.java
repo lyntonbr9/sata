@@ -88,6 +88,7 @@ public class SimulacaoMB implements IConstants {
 				operacao.setCondicao(trataCondicao());
 				operacao.setQtdLotes(qtdLotes);
 				operacao.setMesesParaVencimento(mesesParaVencimento);
+				setReversivel(operacao);
 				operacoes.add(operacao);
 				limpaCampos();
 			}
@@ -235,10 +236,6 @@ public class SimulacaoMB implements IConstants {
 			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_QTD);
 			valido = false;
 		}
-		if (ordemOpcao <= 0 && isOpcaoSelecionada()) {
-			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_ORDEM);
-			valido = false;
-		}
 		if (mesesParaVencimento <= 0) {
 			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_LABEL_MESES);
 			valido = false;
@@ -258,6 +255,11 @@ public class SimulacaoMB implements IConstants {
 		return texto;
 	}
 	
+	private void setReversivel(Operacao operacao) {
+		if (operacao.getAtivo() instanceof RendaFixa)
+			operacao.setReversivel(false);
+	}
+	
 	private void setAcao(List<Operacao> operacoes, String nomeAcao) {
 		for (Operacao operacao : operacoes) {
 			operacao.getAtivo().limpaPrecos();
@@ -266,8 +268,6 @@ public class SimulacaoMB implements IConstants {
 			else if (operacao.getAtivo() instanceof Derivado) {
 				((Derivado)operacao.getAtivo()).setAcao(AcaoConteiner.get(nomeAcao));
 				((Derivado)operacao.getAtivo()).setAcao(AcaoConteiner.get(nomeAcao));
-				if (operacao.getAtivo() instanceof RendaFixa)
-					operacao.setReversivel(false);
 			}
 		}
 	}
