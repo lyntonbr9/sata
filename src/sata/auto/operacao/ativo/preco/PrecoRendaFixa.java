@@ -1,6 +1,7 @@
 package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.operacao.ativo.RendaFixa;
@@ -23,8 +24,18 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 
 	@Override
 	public void calculaPreco() throws CotacaoInexistenteEX {
-		percentual = new BigDecimal(SATAUtil.getTaxaDeJuros(dia.getAno())/12);
-		valor = calculaPrecoAcao().multiply(percentual);
+		BigDecimal taxaJuros = new BigDecimal(SATAUtil.getTaxaDeJuros(dia.getAno()));
+		percentual = calculaPercentual(taxaJuros);
+		valor = calculaRendimento(calculaPrecoAcao(), taxaJuros);
+	}
+	
+	private static BigDecimal calculaPercentual(BigDecimal taxaJuros) {
+		return taxaJuros.divide(new BigDecimal(12), RoundingMode.HALF_EVEN);
+	}
+	
+	public static BigDecimal calculaRendimento(BigDecimal precoAcao, BigDecimal taxaJuros) {
+		BigDecimal percentual = calculaPercentual(taxaJuros);
+		return precoAcao.multiply(percentual);
 	}
 	
 	@Override

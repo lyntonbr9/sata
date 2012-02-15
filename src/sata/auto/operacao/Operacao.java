@@ -54,12 +54,16 @@ public abstract class Operacao implements IConstants {
 	}
 	
 	private BigDecimal calculaPrecoExercicioOpcao(Dia dia, Opcao opcao) throws CotacaoInexistenteEX {
-		BigDecimal spread = new BigDecimal(SPREAD/100);
 		BigDecimal precoAcaoNoDiaDaOpcao = opcao.getAcao().getPreco(dia);
 		BigDecimal volatilidade = opcao.getAcao().getVolatilidade(dia);
-		BigDecimal multiplicador = new BigDecimal(opcao.getOrdem(volatilidade)).multiply(spread);
-		precoExercicioOpcao = precoAcaoNoDiaDaOpcao.add(precoAcaoNoDiaDaOpcao.multiply(multiplicador));
+		precoExercicioOpcao = calculaPrecoExercicioOpcao(opcao, precoAcaoNoDiaDaOpcao, volatilidade);
 		return precoExercicioOpcao;
+	}
+	
+	public static BigDecimal calculaPrecoExercicioOpcao(Opcao opcao, BigDecimal precoAcao, BigDecimal volatilidade) {
+		BigDecimal spread = new BigDecimal(SPREAD/100);
+		BigDecimal multiplicador = new BigDecimal(opcao.getOrdem(volatilidade)).multiply(spread);
+		return precoAcao.add(precoAcao.multiply(multiplicador));
 	}
 	
 	public Operacao getReversa() {
