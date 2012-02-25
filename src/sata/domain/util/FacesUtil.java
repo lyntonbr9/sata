@@ -74,8 +74,8 @@ public class FacesUtil {
 	public static <MB> MB getMB(Class<MB> clazz) {
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    if (context != null) {
-	    	String className = clazz.getSimpleName().substring(0, 1).toLowerCase() + clazz.getSimpleName().substring(1);
-	    	return (MB) context.getApplication().evaluateExpressionGet(context, "#{" + className + "}", Object.class);
+	    	String mbName = clazz.getSimpleName().substring(0, 1).toLowerCase() + clazz.getSimpleName().substring(1);
+	    	return (MB) context.getExternalContext().getSessionMap().get(mbName);
 	    }
 	    else return null;
 	}

@@ -8,7 +8,7 @@ public class SATAFactoryFacade {
 	}
 
 	public static ICotacaoAtivoDAO getCotacaoAtivoDAO(){
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
 		return daoFactory.getCotacaoAtivoDAO();
 	}
 }

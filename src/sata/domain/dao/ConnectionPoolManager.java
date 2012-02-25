@@ -1,4 +1,4 @@
-package sata.domain.dao.postgre;
+package sata.domain.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ import java.util.List;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAPropertyLoader;
 
-class ConnectionPoolManager implements IConstants{
+public class ConnectionPoolManager implements IConstants{
 
 //	private static Properties SATAProps;
 //	private String databaseUrl = SATAProps.getProperty(PROP_SATA_DB_URL);

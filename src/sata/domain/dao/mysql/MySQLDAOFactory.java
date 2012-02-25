@@ -1,4 +1,4 @@
-package sata.domain.dao.postgre;
+package sata.domain.dao.mysql;
 
 import java.sql.Connection;
 
@@ -7,20 +7,21 @@ import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 
-public class PostgreDAOFactory extends DAOFactory{
+public class MySQLDAOFactory extends DAOFactory{
 	
 	private static ConnectionPoolManager conPoolManager = new ConnectionPoolManager();
 	
-	public IAtivoDAO getAtivoDAO(){
-		return new PostgreAtivoDAO(conPoolManager.getConnectionFromPool());
-	}
-	
 	public ICotacaoAtivoDAO getCotacaoAtivoDAO(){
-		return new PostgreCotacaoAtivoDAO(conPoolManager.getConnectionFromPool());
+		return new MySQLCotacaoAtivoDAO(conPoolManager.getConnectionFromPool());
 	}
 	
 	public static void returnConnection(Connection con){
 		conPoolManager.returnConnectionToPool(con);
+	}
+
+	@Override
+	public IAtivoDAO getAtivoDAO() {
+		return null;
 	}
 	
 }

@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="/Libs/log4j-1.2.16.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/web-sata"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
