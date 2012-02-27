@@ -5,7 +5,7 @@ import java.util.List;
 
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.enums.TipoRelatorio;
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.simulacao.Resultado;
 import sata.auto.simulacao.Simulacao;
@@ -33,21 +33,22 @@ public abstract class Estrategia {
 		else resultado.limpa();
 		prepara(parametros);
 		
-		for (Simulacao simulacao: simulacoes) {
-			if (simulacao.getAnoInicial() == null && anoInicial != null)
-				simulacao.setAnoInicial(anoInicial);
-			if (simulacao.getAnoFinal() == null && anoFinal != null)
-				simulacao.setAnoFinal(anoFinal);
-			if (simulacao.getTipoCalculoValorInvestido() == null && tipoCalculoValorInvestido != null)
-				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
-			resultado.addResultado(simulacao.getResultado());
-		}
-		
 		try {
+			for (Simulacao simulacao: simulacoes) {
+				if (simulacao.getAnoInicial() == null && anoInicial != null)
+					simulacao.setAnoInicial(anoInicial);
+				if (simulacao.getAnoFinal() == null && anoFinal != null)
+					simulacao.setAnoFinal(anoFinal);
+				if (simulacao.getTipoCalculoValorInvestido() == null && tipoCalculoValorInvestido != null)
+					simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
+				resultado.addResultado(simulacao.getResultado());
+			}
+
 			LoggerUtil.log(resultado.imprime(tipoRelatorio));
 			if (Resultado.imprimeInicioFim(tipoRelatorio)) 
 				LoggerUtil.log("Fim: " + SATAUtil.getDataAtualFormatada());
-		} catch (CotacaoInexistenteEX e) {
+			
+		} catch (SATAEX e) {
 			LoggerUtil.log(e.getMessage());
 		}
 	}

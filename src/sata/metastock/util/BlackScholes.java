@@ -1,6 +1,7 @@
 package sata.metastock.util;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -57,7 +58,7 @@ public class BlackScholes implements IConstants{
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
     	
 		double precoAcao = 21.66;   // preço da ação
         double precoExercicioOpcao = 21.66; 	// strike

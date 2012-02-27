@@ -3,7 +3,7 @@ package sata.auto.operacao.ativo.preco;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.RendaFixa;
 import sata.auto.to.Dia;
 import sata.domain.util.IConstants;
@@ -23,7 +23,7 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 	}
 
 	@Override
-	public void calculaPreco() throws CotacaoInexistenteEX {
+	public void calculaPreco() throws SATAEX {
 		BigDecimal taxaJuros = new BigDecimal(SATAUtil.getTaxaDeJuros(dia.getAno()));
 		percentual = calculaPercentual(taxaJuros);
 		valor = calculaRendimento(calculaPrecoAcao(), taxaJuros);
@@ -39,11 +39,11 @@ public class PrecoRendaFixa extends Preco implements IConstants {
 	}
 	
 	@Override
-	public BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
+	public BigDecimal calculaMediaMovel(Integer periodo) throws SATAEX {
 		return rendaFixa.getAcao().getMediaMovel(dia, periodo);
 	}
 	
-	private BigDecimal calculaPrecoAcao() throws CotacaoInexistenteEX {
+	private BigDecimal calculaPrecoAcao() throws SATAEX {
 		precoAcao = rendaFixa.getAcao().getPreco(dia);
 		volatilidade = rendaFixa.getAcao().getVolatilidade(dia);
 		return precoAcao;

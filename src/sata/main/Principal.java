@@ -1,5 +1,6 @@
 package sata.main;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import sata.domain.alert.OperacaoDeAltaVarPoucoTempo;
@@ -15,7 +16,7 @@ import sata.metastock.simulacao.SimulaGanhoOpcoes;
 public class Principal {
 
 	
-	public static void simulaAcao(String codigoAcao, String ano){
+	public static void simulaAcao(String codigoAcao, String ano) throws SQLException{
 		System.out.println("testando Simulacao " + codigoAcao + " ano de " + ano);
 		ICotacaoAtivoDAO cotacaoAtivoDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);

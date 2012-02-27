@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.to.Dia;
 
 public abstract class Preco {
@@ -17,11 +17,11 @@ public abstract class Preco {
 	Dia dia;
 	Map<Integer, BigDecimal> mediasMoveis = new HashMap<Integer, BigDecimal>();
 
-	public abstract void calculaPreco() throws CotacaoInexistenteEX;
+	public abstract void calculaPreco() throws SATAEX;
 	
-	public abstract BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX;
+	public abstract BigDecimal calculaMediaMovel(Integer periodo) throws SATAEX;
 
-	public BigDecimal getMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
+	public BigDecimal getMediaMovel(Integer periodo) throws SATAEX {
 		if (!mediasMoveis.containsKey(periodo))
 			mediasMoveis.put(periodo, calculaMediaMovel(periodo));
 		return mediasMoveis.get(periodo);

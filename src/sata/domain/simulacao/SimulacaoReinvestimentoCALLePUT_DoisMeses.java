@@ -1,5 +1,6 @@
 package sata.domain.simulacao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -208,7 +209,7 @@ public class SimulacaoReinvestimentoCALLePUT_DoisMeses implements ISimulacao, IC
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		
 		PropertyConfigurator.configure("log4j.properties");
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();

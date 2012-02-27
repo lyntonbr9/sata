@@ -1,6 +1,6 @@
 package sata.auto.exception;
 
-public class CotacaoInexistenteEX extends Exception {
+public class CotacaoInexistenteEX extends SATAEX {
 
 	private static final long serialVersionUID = -2960190940395814091L;
 	

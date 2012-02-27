@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.enums.Atributo;
 import sata.auto.enums.Operador;
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoAcao;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
@@ -28,7 +28,7 @@ public class Condicao {
 		this.valor = valor;
 	}
 	
-	public boolean verdadeira(Preco preco) throws CotacaoInexistenteEX {
+	public boolean verdadeira(Preco preco) throws SATAEX {
 		double valorComparacao = 0;
 		
 		switch (atributo) {
