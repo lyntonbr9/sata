@@ -9,6 +9,7 @@ import java.util.List;
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.enums.TipoRelatorio;
 import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.Venda;
@@ -191,7 +192,7 @@ public class Resultado implements IConstants {
 					}
 					break;
 				}
-				} catch (CotacaoInexistenteEX e) {}
+				} catch (SATAEX e) {}
 			}
 		}
 		return valor;

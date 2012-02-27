@@ -3,7 +3,7 @@ package sata.auto.operacao.ativo;
 import java.util.HashMap;
 import java.util.Map;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.to.Dia;
@@ -13,10 +13,10 @@ public abstract class Ativo {
 	
 	Map<Dia,Preco> precos = new HashMap<Dia, Preco>();
 	
-	abstract Preco criaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX;
+	abstract Preco criaPreco(Dia dia, Operacao operacao) throws SATAEX;
 	public abstract String getBundleMessage();
 	
-	public Preco calculaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
+	public Preco calculaPreco(Dia dia, Operacao operacao) throws SATAEX {
 		Preco preco;
 		if (!precos.containsKey(dia)) {
 			preco = criaPreco(dia, operacao);
@@ -27,7 +27,7 @@ public abstract class Ativo {
 		return preco;
 	}
 	
-	public Preco getPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
+	public Preco getPreco(Dia dia, Operacao operacao) throws SATAEX {
 		return calculaPreco(dia, operacao);
 	}
 	

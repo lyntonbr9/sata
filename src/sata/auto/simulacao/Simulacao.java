@@ -7,6 +7,7 @@ import java.util.List;
 
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.Stop;
 import sata.auto.operacao.ativo.preco.Preco;
@@ -27,7 +28,7 @@ public class Simulacao implements IConstants {
 		this.operacoes = Arrays.asList(operacoes);
 	}
 	
-	public Resultado getResultado() {
+	public Resultado getResultado() throws SATAEX {
 		Resultado resultado = new Resultado();
 		resultado.setAnoInicial(anoInicial);
 		resultado.setAnoFinal(anoFinal);
@@ -56,13 +57,13 @@ public class Simulacao implements IConstants {
 		return resultado;
 	}
 	
-	private void executaOperacoes(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
+	private void executaOperacoes(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws SATAEX {
 		for (Operacao operacao : operacoes) {
 			executaOperacao(resultado, operacao, mes, dia, false);
 		}
 	}
 	
-	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws CotacaoInexistenteEX {
+	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws SATAEX {
 		for (Operacao operacao : operacoes) {
 			if (operacao.isReversivel() && operacao.isExecutada()) {
 				if (resultado.possui(operacao, mes)) {
@@ -81,7 +82,7 @@ public class Simulacao implements IConstants {
 		}
 	}
 	
-	private void executaOperacao(Resultado resultado, Operacao operacao, Mes mes, Dia dia, boolean reversa) throws CotacaoInexistenteEX {
+	private void executaOperacao(Resultado resultado, Operacao operacao, Mes mes, Dia dia, boolean reversa) throws SATAEX {
 		Preco preco = operacao.getPreco(dia);
 		boolean condicaoVerdadeira = operacao.condicaoVerdadeira(preco);
 		if (reversa) condicaoVerdadeira = true;

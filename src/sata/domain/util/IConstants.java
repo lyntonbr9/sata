@@ -16,10 +16,13 @@ public interface IConstants {
 	
 	public String ARQ_SATA_CONF = "sata-conf";
 	
-	public String PROP_SATA_DB_JDBC_DRIVER = "sata.db.jdbc.driver";
-	public String PROP_SATA_DB_URL="sata.db.url";
-	public String PROP_SATA_DB_USERNAME="sata.db.username";
-	public String PROP_SATA_DB_PASSWORD="sata.db.password";
+	public String PROP_SATA_AMBIENTE="sata.ambiente";
+	
+	public String PROP_SATA_BD="sata.bd.";
+	public String PROP_SATA_DB_JDBC_DRIVER = "sata.db.jdbc.driver.";
+	public String PROP_SATA_DB_URL="sata.db.url.";
+	public String PROP_SATA_DB_USERNAME="sata.db.username.";
+	public String PROP_SATA_DB_PASSWORD="sata.db.password.";
 	public String PROP_SATA_DB_MAXPOOLSIZE="sata.db.maxpoolsize";
 	
 	public String PROP_PCTGEM_VARIACAOALTAPOUCOTEMPO = "pctgem.variacaoAltaPoucoTempo";
@@ -29,6 +32,9 @@ public interface IConstants {
 	public String PROP_QTD_DIAS_FALTAM_VENCIMENTO_PUT = "opcao.put.qtdDiasFaltamParaVencimento";
 	public String PROP_VALORMAX_OPCAO_CALL = "opcao.call.valormaximo";
 	public String PROP_QTD_DIAS_FALTAM_VENCIMENTO_CALL = "opcao.call.qtdDiasFaltamParaVencimento";
+	
+	public String BD_POSTGRE = "postgre";
+	public String BD_MYSQL = "mysql";
 	
 	public int QTD_DIAS_ANO = 365;
 	public int QTD_DIAS_FALTA_1_MES_VENC = 29; //quando for saber 1 mes

@@ -3,6 +3,7 @@ package sata.domain.dao.mysql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -51,12 +52,11 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) {
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) throws SQLException {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM CotacaoAtivo WHERE "
 			+ " codigoAtivo = ? AND ano = ? " 
 			+ " ORDER BY periodo ASC";
-		try {
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1, codigoAtivo);
 			ps.setString(2, ano);
@@ -79,10 +79,6 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			}
 			MySQLDAOFactory.returnConnection(con);
 			
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
 		return listaCotacoesDoAtivo;
 	}
 	

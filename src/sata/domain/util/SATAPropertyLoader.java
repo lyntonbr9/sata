@@ -5,10 +5,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-public abstract class SATAPropertyLoader
+public abstract class SATAPropertyLoader implements IConstants
 {
     
 	private static final boolean THROW_ON_LOAD_FAILURE = true;
@@ -112,8 +113,14 @@ public abstract class SATAPropertyLoader
     }
     
     public static String getProperty(String name) {
-    	ResourceBundle rb = ResourceBundle.getBundle("conf/sata-conf");  
-    	return rb.getString(name);
+    	ResourceBundle rb = ResourceBundle.getBundle("conf/sata-conf");
+
+    	try {
+    		return rb.getString(name);
+
+    	} catch (MissingResourceException e) {
+        	return rb.getString(name + rb.getString(PROP_SATA_AMBIENTE));
+    	}
     }
     
     /**

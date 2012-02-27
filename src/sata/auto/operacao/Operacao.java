@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.Ativo;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.preco.Preco;
@@ -29,18 +29,18 @@ public abstract class Operacao implements IConstants {
 	abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
 	public abstract String getBundleMessage();
 	
-	public Preco getPreco(Dia dia) throws CotacaoInexistenteEX {
+	public Preco getPreco(Dia dia) throws SATAEX {
 		return ativo.getPreco(dia, this);
 	}
 	
-	public boolean condicaoVerdadeira(Preco preco) throws CotacaoInexistenteEX {
+	public boolean condicaoVerdadeira(Preco preco) throws SATAEX {
 		if (condicao == null) return true;
 		return condicao.verdadeira(preco);
 	}
 	
 	private BigDecimal precoExercicioOpcao;
 	
-	public BigDecimal getPrecoExercicioOpcao(Dia dia, Opcao opcao) throws CotacaoInexistenteEX {
+	public BigDecimal getPrecoExercicioOpcao(Dia dia, Opcao opcao) throws SATAEX {
 		if (ativo instanceof Opcao) {
 			if (momento == ABERTURA)
 				return calculaPrecoExercicioOpcao(dia, opcao);
@@ -53,7 +53,7 @@ public abstract class Operacao implements IConstants {
 		return null;
 	}
 	
-	private BigDecimal calculaPrecoExercicioOpcao(Dia dia, Opcao opcao) throws CotacaoInexistenteEX {
+	private BigDecimal calculaPrecoExercicioOpcao(Dia dia, Opcao opcao) throws SATAEX {
 		BigDecimal precoAcaoNoDiaDaOpcao = opcao.getAcao().getPreco(dia);
 		BigDecimal volatilidade = opcao.getAcao().getVolatilidade(dia);
 		precoExercicioOpcao = calculaPrecoExercicioOpcao(opcao, precoAcaoNoDiaDaOpcao, volatilidade);

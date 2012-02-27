@@ -2,6 +2,7 @@ package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,9 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import sata.auto.exception.BancoDadosEX;
 import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.to.AnoCotacao;
 import sata.auto.to.Dia;
@@ -36,7 +39,7 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	
 	@Override
-	public void calculaPreco() throws CotacaoInexistenteEX {
+	public void calculaPreco() throws SATAEX {
 		CotacaoAtivoTO cotacaoAtivo = getCotacaoAcao(dia);
 		valor = cotacaoAtivo.getValorFechamento();
 		volatilidade = cotacaoAtivo.getValorVolatilidadeAnual();
@@ -47,7 +50,7 @@ public class PrecoAcao extends Preco implements IConstants {
 		return calculaMediaMovel(dia, periodo, acao);
 	}
 	
-	private CotacaoAtivoTO getCotacaoAcao(Dia dia) throws CotacaoInexistenteEX {
+	private CotacaoAtivoTO getCotacaoAcao(Dia dia) throws SATAEX {
 		CotacaoAtivoTO cotacao;
 		int tentativas = 0;
 		do {
@@ -60,7 +63,7 @@ public class PrecoAcao extends Preco implements IConstants {
 		return cotacao;
 	}
 	
-	private CotacaoAtivoTO getCotacaoAtivo(Dia dia) {
+	private CotacaoAtivoTO getCotacaoAtivo(Dia dia) throws SATAEX {
 		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(dia.getAno())) {
 			if(dia.formatoBrasileiro().equals(cotacao.getPeriodo())){
 				return cotacao;
@@ -69,14 +72,19 @@ public class PrecoAcao extends Preco implements IConstants {
 		return null;
 	}
 	
-	private List<CotacaoAtivoTO> getListaCotacoesAcao(Integer ano) {
+	private List<CotacaoAtivoTO> getListaCotacoesAcao(Integer ano) throws SATAEX {
 		return getListaCotacoesAcao(new AnoCotacao(ano, acao));
 	}
 	
-	private static List<CotacaoAtivoTO> getListaCotacoesAcao(AnoCotacao anoCotacao) {
+	private static List<CotacaoAtivoTO> getListaCotacoesAcao(AnoCotacao anoCotacao) throws SATAEX {
 		if (!cacheCotacoes.containsKey(anoCotacao)) {
-			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			cacheCotacoes.put(anoCotacao, caDAO.getCotacoesDoAtivo(anoCotacao.getAcao().getNome(), anoCotacao.getAno().toString()));
+			try {
+				ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+				cacheCotacoes.put(anoCotacao, caDAO.getCotacoesDoAtivo(anoCotacao.getAcao().getNome(), anoCotacao.getAno().toString()));
+				
+			} catch (SQLException e) {
+				throw new BancoDadosEX(e.getMessage());
+			}
 		}
 		return cacheCotacoes.get(anoCotacao);
 	}

@@ -7,6 +7,7 @@
 package sata.metastock.util;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,8 +224,9 @@ public class CalculoUtil implements IConstants {
 	 * @param codigoAtivo Codigo do Ativo.
 	 * @param ano Ano do Ativo.
 	 * @return Retorna a lista com a volatilidade atualizada.
+	 * @throws SQLException 
 	 */
-	public static List<CotacaoAtivoTO> calculaVolatilidade(String codigoAtivo, String ano)
+	public static List<CotacaoAtivoTO> calculaVolatilidade(String codigoAtivo, String ano) throws SQLException
 	{
 		PropertyConfigurator.configure("log4j.properties");
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
@@ -403,7 +405,7 @@ public class CalculoUtil implements IConstants {
     	return 0.27; //27%
     }
     
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		
 		List<CotacaoAtivoTO> listaDasCotacoesComVolatilidade = calculaVolatilidade("PETR4", "2010");
 		System.out.println(listaDasCotacoesComVolatilidade.size());

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.to.Dia;
 import sata.domain.util.IConstants;
@@ -32,12 +32,12 @@ public class PrecoOpcao extends Preco implements IConstants {
 	}
 
 	@Override
-	public void calculaPreco() throws CotacaoInexistenteEX {
+	public void calculaPreco() throws SATAEX {
 		valor = blackScholes();
 	}
 	
 	@Override
-	public BigDecimal calculaMediaMovel(Integer periodo) throws CotacaoInexistenteEX {
+	public BigDecimal calculaMediaMovel(Integer periodo) throws SATAEX {
 		return opcao.getAcao().getMediaMovel(dia, periodo);
 	}
 	
@@ -50,7 +50,7 @@ public class PrecoOpcao extends Preco implements IConstants {
 		return new BigDecimal(valor); 
 	}
 
-	private BigDecimal blackScholes() throws CotacaoInexistenteEX {
+	private BigDecimal blackScholes() throws SATAEX {
 		double precoAcao = calculaPrecoAcao().doubleValue();
 		double precoExercicioOpcao = this.precoExercicioOpcao.doubleValue();
 		double tempoParaVencimentoOpcaoEmAnos = BlackScholes.getQtdDiasEmAnos(diasParaVencimento);
@@ -60,13 +60,13 @@ public class PrecoOpcao extends Preco implements IConstants {
 		return new BigDecimal(valor);
 	}
 	
-	private BigDecimal calculaPrecoAcao() throws CotacaoInexistenteEX {
+	private BigDecimal calculaPrecoAcao() throws SATAEX {
 		precoAcao = opcao.getAcao().getPreco(dia);
 		volatilidade = opcao.getAcao().getVolatilidade(dia);
 		return precoAcao;
 	}
 	
-	private BigDecimal getVolatilidadeAcao() throws CotacaoInexistenteEX {
+	private BigDecimal getVolatilidadeAcao() throws SATAEX {
 		return opcao.getAcao().getVolatilidade(dia);
 	}
 	

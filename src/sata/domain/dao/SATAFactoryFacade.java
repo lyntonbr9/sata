@@ -1,14 +1,26 @@
 package sata.domain.dao;
 
-public class SATAFactoryFacade {
+import sata.domain.util.IConstants;
+import sata.domain.util.SATAPropertyLoader;
+
+public class SATAFactoryFacade implements IConstants {
 	
 	public static IAtivoDAO getAtivoDAO(){
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
-		return daoFactory.getAtivoDAO();
+		return getDAOFactory().getAtivoDAO();
 	}
 
 	public static ICotacaoAtivoDAO getCotacaoAtivoDAO(){
-		DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
-		return daoFactory.getCotacaoAtivoDAO();
+		return getDAOFactory().getCotacaoAtivoDAO();
+	}
+	
+	private static DAOFactory getDAOFactory() {
+		String driver = SATAPropertyLoader.getProperty(PROP_SATA_BD);
+		if (driver.equals(BD_MYSQL))
+			return DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+		
+		else if (driver.equals(BD_POSTGRE))
+			return DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		
+		else return null;
 	}
 }

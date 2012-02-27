@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import sata.auto.exception.CotacaoInexistenteEX;
+import sata.auto.exception.SATAEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
@@ -19,7 +19,7 @@ public abstract class Opcao extends Derivado {
 	abstract boolean isCall();
 	
 	@Override
-	public Preco criaPreco(Dia dia, Operacao operacao) throws CotacaoInexistenteEX {
+	public Preco criaPreco(Dia dia, Operacao operacao) throws SATAEX {
 		return new PrecoOpcao(isCall(), this, operacao.getDiasParaVencimento(dia), dia, operacao.getPrecoExercicioOpcao(dia, this));
 	}
 	

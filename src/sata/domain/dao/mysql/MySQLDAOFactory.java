@@ -11,14 +11,15 @@ public class MySQLDAOFactory extends DAOFactory{
 	
 	private static ConnectionPoolManager conPoolManager = new ConnectionPoolManager();
 	
+	public static void returnConnection(Connection con){
+		conPoolManager.returnConnectionToPool(con);
+	}
+	
+	@Override
 	public ICotacaoAtivoDAO getCotacaoAtivoDAO(){
 		return new MySQLCotacaoAtivoDAO(conPoolManager.getConnectionFromPool());
 	}
 	
-	public static void returnConnection(Connection con){
-		conPoolManager.returnConnectionToPool(con);
-	}
-
 	@Override
 	public IAtivoDAO getAtivoDAO() {
 		return null;
