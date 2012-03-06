@@ -56,7 +56,7 @@
 					update="page" oncomplete="grafico.show();"/>
 					
     			<p:dialog header="#{msgs['grafico.grafico.title']}" widgetVar="grafico" modal="true">
-					<p:lineChart value="#{graficoMB.graficoModel}" legendPosition="be"
+					<p:lineChart value="#{graficoMB.graficoModel}" legendPosition="be" minY="#{graficoMB.minY}" maxY="#{graficoMB.maxY}"
 						style="width:1200px; height:400px ;font-size:60%;" /><br/>
 				</p:dialog>
 			</h:panelGroup>

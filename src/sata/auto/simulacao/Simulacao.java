@@ -75,6 +75,11 @@ public class Simulacao implements IConstants {
 						diaReversao = getDiaFechamento(mesReversao);
 						operacao.setMesesParaVencimento(mesesParaVencimento-1);
 					}
+					
+					if (operacao.getDiasParaFechamento() > 1) {
+						diaReversao = diaReversao.getDiaAnterior(operacao.getDiasParaFechamento());
+					}
+					
 					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao, true);
 					operacao.setMesesParaVencimento(mesesParaVencimento);
 				}

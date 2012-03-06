@@ -31,6 +31,8 @@ public class GraficoMB implements IConstants {
 	BigDecimal volatilidade = new BigDecimal(27);
 	Integer incrementoDiario = 5;
 	Integer variacaoPrecoAcao = 20;
+	double minY;
+	double maxY;
 	CartesianChartModel graficoModel = new CartesianChartModel();
 	
 	final int SCALE = 50;
@@ -43,6 +45,8 @@ public class GraficoMB implements IConstants {
 		if (!simulacaoMB.getOperacoes().isEmpty()) {
 			try {
 				graficoModel.clear();
+				minY = 0;
+				maxY = 0;
 				for (int dias=31; dias>=1; dias -= incrementoDiario) {
 					ChartSeries serie = new ChartSeries();
 					serie.setLabel(dias + " dias");
@@ -58,11 +62,15 @@ public class GraficoMB implements IConstants {
 									valorTotal = valorTotal.add(calculaValorOperacao(operacao.getReversa(), dias, variacaoAcao));
 							}
 						}
-						serie.set(SATAUtil.formataNumero(calculaPrecoAcao(FECHAMENTO, variacaoAcao)), 
-								valorTotal.divide(valorInvestido, SCALE, RoundingMode.HALF_EVEN).multiply(CEM));
+						BigDecimal x = valorTotal.divide(valorInvestido, RoundingMode.HALF_EVEN).multiply(CEM);
+						serie.set(SATAUtil.formataNumero(calculaPrecoAcao(FECHAMENTO, variacaoAcao)), x);
+						if (x.doubleValue() < minY) minY = x.doubleValue();
+						if (x.doubleValue() > maxY) maxY = x.doubleValue();
 					}
 					graficoModel.addSeries(serie);
 				}
+				minY -= 1;
+				maxY += 1;
 			}
 			catch (Exception e) {
 				FacesUtil.addException(e);
@@ -170,5 +178,21 @@ public class GraficoMB implements IConstants {
 
 	public void setVariacaoPrecoAcao(Integer variacaoPrecoAcao) {
 		this.variacaoPrecoAcao = variacaoPrecoAcao;
+	}
+
+	public double getMinY() {
+		return minY;
+	}
+
+	public void setMinY(double minY) {
+		this.minY = minY;
+	}
+
+	public double getMaxY() {
+		return maxY;
+	}
+
+	public void setMaxY(double maxY) {
+		this.maxY = maxY;
 	}
 }

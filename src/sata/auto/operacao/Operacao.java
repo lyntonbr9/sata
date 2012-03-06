@@ -23,6 +23,7 @@ public abstract class Operacao implements IConstants {
 	Condicao condicao;
 	Operacao reversa;
 	int mesesParaReversao = 1;
+	int diasParaFechamento = 1;
 	boolean reversivel = true;
 	boolean executada = false;
 	
@@ -186,17 +187,20 @@ public abstract class Operacao implements IConstants {
 	public String getString() {
 		String strCondicao = "";
 		String strMeses = "";
+		String strDias = "";
 		if (mesesParaVencimento > 1) 
 			strMeses = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_MESES, String.valueOf(mesesParaVencimento));
 		if (condicao != null) strCondicao = " ["+condicao+"]";
-		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, toString(), strMeses, strCondicao);
+		if (diasParaFechamento > 1) 
+			strDias = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_DIAS, String.valueOf(diasParaFechamento));
+		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, toString(), strMeses, strDias, strCondicao);
 	}
 	
 	@Override
 	public String toString() {
 		String strQtd = "";
 		if (qtdLotes > 1) strQtd = qtdLotes + "x";
-		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, strQtd, this.getBundleMessage(), ativo.toString());
+		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, strQtd, this.getBundleMessage(), ativo.toString(), "");
 	}
 	
 	@Override
@@ -269,5 +273,11 @@ public abstract class Operacao implements IConstants {
 	}
 	public void setExecutada(boolean executada) {
 		this.executada = executada;
+	}
+	public int getDiasParaFechamento() {
+		return diasParaFechamento;
+	}
+	public void setDiasParaFechamento(int diasParaFechamento) {
+		this.diasParaFechamento = diasParaFechamento;
 	}
 }

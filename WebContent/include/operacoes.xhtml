@@ -49,6 +49,12 @@
    					<h:outputText escape="false" value="#{msgs['operacoes.meses.tooltip']}" />
    				</p:tooltip>
    				
+   				<h:outputLabel value="#{msgs['operacoes.dias.label']}:" for="dias" rendered="#{simulacaoMB.opcaoSelecionada}" />
+				<p:spinner id="dias" value="#{simulacaoMB.diasParaFechamento}" size="3" rendered="#{simulacaoMB.opcaoSelecionada}" />
+				<p:tooltip for="dias" rendered="#{simulacaoMB.opcaoSelecionada}">
+   					<h:outputText escape="false" value="#{msgs['operacoes.dias.tooltip']}" />
+   				</p:tooltip>
+   				
 				<h:outputLabel value="#{msgs['operacoes.condicao.label']}:" />
 				<h:panelGrid columns="3" id="condicao">
 					<p:selectOneMenu id="atributo" value="#{simulacaoMB.condicao.atributo}">
