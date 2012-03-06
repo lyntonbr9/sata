@@ -8,19 +8,6 @@
 		<p:dialog id="formOperacao" header="#{msgs[simulacaoMB.textoOperacao]} #{msgs['operacoes.operacao.label']}" 
 			widgetVar="formOperacao" modal="true"> 
 			<h:panelGrid columns="3">
-				<h:outputLabel value="#{msgs['operacoes.ativo.label']}:" for="ativo" />
-				<p:selectOneMenu id="ativo" value="#{simulacaoMB.tipoAtivo}">
-					<f:selectItem itemValue="-" itemLabel="--" />
-					<f:selectItem itemValue="A" itemLabel="#{msgs['list.ativo.acao']}" />
-					<f:selectItem itemValue="C" itemLabel="#{msgs['list.ativo.call']}" />
-					<f:selectItem itemValue="P" itemLabel="#{msgs['list.ativo.put']}" />
-					<f:selectItem itemValue="R" itemLabel="#{msgs['list.ativo.rendaFixa']}" />
-					<p:ajax update="formOperacao" oncomplete="formOperacao.show()" />
-				</p:selectOneMenu>
-				<p:tooltip for="ativo">
-   					<h:outputText escape="false" value="#{msgs['operacoes.ativo.tooltip']}" />
-   				</p:tooltip>
-			
 				<h:outputLabel value="#{msgs['operacoes.operacao.label']}:" for="operacao" rendered="#{!simulacaoMB.rendaFixaSelecionada}" />
 				<p:selectOneMenu id="operacao" value="#{simulacaoMB.tipoOperacao}" rendered="#{!simulacaoMB.rendaFixaSelecionada}">
 					<f:selectItem itemValue="-" itemLabel="--" />
@@ -30,7 +17,20 @@
 				<p:tooltip for="operacao" rendered="#{!simulacaoMB.rendaFixaSelecionada}">
    					<h:outputText escape="false" value="#{msgs['operacoes.operacao.tooltip']}" />
    				</p:tooltip>
-				
+			
+				<h:outputLabel value="#{msgs['operacoes.ativo.label']}:" for="ativo" />
+				<p:selectOneMenu id="ativo" value="#{simulacaoMB.tipoAtivo}">
+					<f:selectItem itemValue="-" itemLabel="--" />
+					<f:selectItem itemValue="A" itemLabel="#{msgs['list.ativo.acao']}" />
+					<f:selectItem itemValue="C" itemLabel="#{msgs['list.ativo.call']}" />
+					<f:selectItem itemValue="P" itemLabel="#{msgs['list.ativo.put']}" />
+					<f:selectItem itemValue="R" itemLabel="#{msgs['list.ativo.rendaFixa']}" />
+					<p:ajax update="formOperacao" oncomplete="formOperacao.show()" process="formOperacao" />
+				</p:selectOneMenu>
+				<p:tooltip for="ativo">
+   					<h:outputText escape="false" value="#{msgs['operacoes.ativo.tooltip']}" />
+   				</p:tooltip>
+			
 				<h:outputLabel value="#{msgs['operacoes.qtd.label']}:" for="qtd" />
 				<p:spinner id="qtd" value="#{simulacaoMB.qtdLotes}" size="3"/>
 				<p:tooltip for="qtd">

@@ -22,6 +22,7 @@ public class Simulacao implements IConstants {
 	private Integer anoInicial;
 	private Integer anoFinal;
 	private TipoCalculoValorInvestido tipoCalculoValorInvestido;
+	private int percValorInvestido = 100;
 	private Stop stop;
 	
 	public Simulacao(Operacao... operacoes) {
@@ -33,6 +34,7 @@ public class Simulacao implements IConstants {
 		resultado.setAnoInicial(anoInicial);
 		resultado.setAnoFinal(anoFinal);
 		resultado.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
+		resultado.setPercValorInvestido(percValorInvestido);
 		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
 			for (int iMes=1; iMes <= 12; iMes++) {
 				Mes mes = new Mes(iMes,ano);
@@ -141,5 +143,11 @@ public class Simulacao implements IConstants {
 	public void setTipoCalculoValorInvestido(
 			TipoCalculoValorInvestido tipoCalculoValorInvestido) {
 		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
+	}
+	public int getPercValorInvestido() {
+		return percValorInvestido;
+	}
+	public void setPercValorInvestido(int percValorInvestido) {
+		this.percValorInvestido = percValorInvestido;
 	}
 }

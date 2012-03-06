@@ -12,32 +12,39 @@
 			<h:panelGroup id="page">
 			<ui:include src="include/operacoes.xhtml" />
 			<p:separator />			
-			<h:panelGrid id="formSimulacao" columns="3">
+			<h:panelGrid id="formSimulacao" columns="2">
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.acao.label']}:" for="acao" />
 				<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}">
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao}" />
 				</p:selectOneMenu>
-				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.valorInvestido.label']}:" for="valorInvestido" />
 				<p:selectOneMenu id="valorInvestido" value="#{simulacaoMB.tipoCalculoValorInvestido}">
 					<f:selectItems value="#{simulacaoMB.tiposCalculoValorInvestido}" />
+					<p:ajax update="formSimulacao" process="formSimulacao" />
 				</p:selectOneMenu>
-				<h:outputText value="" />
+				
+				<h:outputLabel value="#{msgs['simulacao.formSimulacao.percValorInvestido.label']}:" for="percValorInvestido" 
+					rendered="#{simulacaoMB.showPercValorInvestido}" />
+				<h:panelGroup rendered="#{simulacaoMB.showPercValorInvestido}">
+					<p:spinner id="percValorInvestido" value="#{simulacaoMB.percValorInvestido}" size="4" stepFactor="5"
+						rendered="#{simulacaoMB.showPercValorInvestido}" />
+					<h:outputText value="%" />
+				</h:panelGroup>
 					
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoInicial.label']}:" for="anoInicial"/>
 				<p:spinner value="#{simulacaoMB.anoInicial}" size="4" id="anoInicial"/>
-				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoFinal.label']}:" for="anoFinal"/>
 				<p:spinner value="#{simulacaoMB.anoFinal}" size="4" id="anoFinal"/>
-				<h:outputText value="" />
 				
 				<h:outputLabel value="#{msgs['simulacao.formSimulacao.taxaDeJuros.label']}:" for="taxaDeJuros"/>
-				<p:inputText value="#{simulacaoMB.taxaDeJuros}" size="4" id="taxaDeJuros" >
-					<f:convertNumber minFractionDigits="2" />
-				</p:inputText>%
+				<h:panelGroup>
+					<p:inputText value="#{simulacaoMB.taxaDeJuros}" size="4" id="taxaDeJuros" >
+						<f:convertNumber minFractionDigits="2" />
+					</p:inputText>%
+				</h:panelGroup>
 			</h:panelGrid>
 			<p:commandButton value="#{msgs['simulacao.formSimulacao.button.simular']}" action="#{simulacaoMB.simular}" update="page"/><br/>
 			
