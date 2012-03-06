@@ -64,6 +64,7 @@ public class SimulacaoMB implements IConstants {
 	char tipoAtivo;
 	int ordemOpcao;
 	int mesesParaVencimento = 1;
+	int diasParaFechamento = 1;
 	int anoInicial = 2000;
 	int anoFinal = 2011;
 	TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM;
@@ -88,6 +89,7 @@ public class SimulacaoMB implements IConstants {
 				operacao.setCondicao(trataCondicao());
 				operacao.setQtdLotes(qtdLotes);
 				operacao.setMesesParaVencimento(mesesParaVencimento);
+				operacao.setDiasParaFechamento(diasParaFechamento);
 				setReversivel(operacao);
 				operacoes.add(operacao);
 				limpaCampos();
@@ -106,6 +108,7 @@ public class SimulacaoMB implements IConstants {
 			if (isOpcaoSelecionada())
 				ordemOpcao = ((Opcao)operacao.getAtivo()).getOrdem();
 			mesesParaVencimento = operacao.getMesesParaVencimento();
+			diasParaFechamento = operacao.getDiasParaFechamento();
 			alterar = true;
 			if (operacao.getCondicao() != null)
 				condicao = operacao.getCondicao();
@@ -454,6 +457,14 @@ public class SimulacaoMB implements IConstants {
 
 	public void setMesesParaVencimento(int mesesParaVencimento) {
 		this.mesesParaVencimento = mesesParaVencimento;
+	}
+
+	public int getDiasParaFechamento() {
+		return diasParaFechamento;
+	}
+
+	public void setDiasParaFechamento(int diasParaFechamento) {
+		this.diasParaFechamento = diasParaFechamento;
 	}
 
 	public Resultado getResultado() {

@@ -77,6 +77,7 @@ public class PrecoOpcao extends Preco implements IConstants {
 		return SATAUtil.getMessage(MSG_PATTERN_PRECO_OPCAO, 
 				opcao, 
 				SATAUtil.formataNumero(precoExercicioOpcao), 
+				SATAUtil.formataNumero(precoAcao),
 				dia.toString(),
 				SATAUtil.formataNumero(valor),
 				String.valueOf(diasParaVencimento));

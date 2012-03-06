@@ -73,6 +73,7 @@ public interface IConstants {
 	
 	String MSG_PATTERN_OPERACAO = "toString.operacao.pattern";
 	String MSG_PATTERN_OPERACAO_MESES = "toString.operacao.pattern.meses";
+	String MSG_PATTERN_OPERACAO_DIAS = "toString.operacao.pattern.dias";
 	String MSG_PATTERN_PRECO_ACAO = "toString.precoAcao.pattern";
 	String MSG_PATTERN_PRECO_OPCAO = "toString.precoOpcao.pattern";
 	String MSG_PATTERN_PRECO_RENDA_FIXA = "toString.precoRendaFixa.pattern";
