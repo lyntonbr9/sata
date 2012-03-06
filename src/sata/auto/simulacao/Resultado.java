@@ -30,6 +30,7 @@ public class Resultado implements IConstants {
 	private Integer anoInicial;
 	private Integer anoFinal;
 	private TipoCalculoValorInvestido tipoCalculoValorInvestido;
+	private int percValorInvestido = 100;
 	
 	public void addResultado(Resultado resultado) {
 		if (anoInicial == null || anoInicial.intValue() > resultado.anoInicial.intValue())
@@ -174,7 +175,7 @@ public class Resultado implements IConstants {
 				try {
 				switch (tipoCalculoValorInvestido) {
 				case PRECO_ACAO:
-						return valorOperacao.getPrecoAcao();
+						return valorOperacao.getPrecoAcao().multiply(new BigDecimal(percValorInvestido).divide(CEM));
 				case CUSTO_MONTAGEM:
 				case CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES:
 					if (valorOperacao.getOperacao().getMomento() == ABERTURA)
@@ -501,5 +502,11 @@ public class Resultado implements IConstants {
 	public void setTipoCalculoValorInvestido(
 			TipoCalculoValorInvestido tipoCalculoValorInvestido) {
 		this.tipoCalculoValorInvestido = tipoCalculoValorInvestido;
+	}
+	public int getPercValorInvestido() {
+		return percValorInvestido;
+	}
+	public void setPercValorInvestido(int percValorInvestido) {
+		this.percValorInvestido = percValorInvestido;
 	}
 }

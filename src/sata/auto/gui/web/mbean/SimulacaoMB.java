@@ -62,12 +62,13 @@ public class SimulacaoMB implements IConstants {
 	char tipoOperacao;
 	int qtdLotes = 1;
 	char tipoAtivo;
-	int ordemOpcao;
+	int ordemOpcao = 0;
 	int mesesParaVencimento = 1;
 	int diasParaFechamento = 1;
 	int anoInicial = 2000;
 	int anoFinal = 2011;
 	TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM;
+	int percValorInvestido = 100;
 	Resultado resultado;
 	String relatorio;
 	Operacao operacao;
@@ -151,6 +152,7 @@ public class SimulacaoMB implements IConstants {
 				simulacao.setAnoInicial(anoInicial);
 				simulacao.setAnoFinal(anoFinal);
 				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
+				simulacao.setPercValorInvestido(percValorInvestido);
 				SATAUtil.setTaxaDeJuros(taxaDeJuros/100);
 				resultado = simulacao.getResultado();
 				relatorio = formataTexto(resultado.imprime(tipoRelatorio));
@@ -393,6 +395,10 @@ public class SimulacaoMB implements IConstants {
 		return tipoAtivo == CALL || tipoAtivo == PUT;
 	}
 	
+	public boolean isShowPercValorInvestido() {
+		return tipoCalculoValorInvestido == TipoCalculoValorInvestido.PRECO_ACAO;
+	}
+	
 	public boolean isRendaFixaSelecionada() {
 		return tipoAtivo == RENDA_FIXA;
 	}
@@ -574,5 +580,13 @@ public class SimulacaoMB implements IConstants {
 
 	public void setTaxaDeJuros(double taxaDeJuros) {
 		this.taxaDeJuros = taxaDeJuros;
+	}
+
+	public int getPercValorInvestido() {
+		return percValorInvestido;
+	}
+
+	public void setPercValorInvestido(int percValorInvestido) {
+		this.percValorInvestido = percValorInvestido;
 	}
 }
