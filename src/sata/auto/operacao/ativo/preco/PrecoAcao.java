@@ -2,10 +2,7 @@ package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,20 +11,20 @@ import sata.auto.exception.BancoDadosEX;
 import sata.auto.exception.CotacaoInexistenteEX;
 import sata.auto.exception.SATAEX;
 import sata.auto.operacao.ativo.Acao;
-import sata.auto.to.AnoCotacao;
 import sata.auto.to.Dia;
 import sata.auto.to.DiaCotacao;
 import sata.auto.to.Periodo;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.CotacaoAtivoTO;
+import sata.domain.util.Cache;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
 public class PrecoAcao extends Preco implements IConstants {
 	
-	private static Map<AnoCotacao,List<CotacaoAtivoTO>> cacheCotacoes = new HashMap<AnoCotacao, List<CotacaoAtivoTO>>();
-	private static Map<DiaCotacao,BigDecimal> cacheMM = new HashMap<DiaCotacao,BigDecimal>();
+	private static Cache<DiaCotacao,CotacaoAtivoTO> cacheCotacoes = new Cache<DiaCotacao,CotacaoAtivoTO>(500);
+	private static Cache<DiaCotacao,BigDecimal> cacheMM = new Cache<DiaCotacao,BigDecimal>(500);
 	
 	private Acao acao;
 	
@@ -64,29 +61,20 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	
 	private CotacaoAtivoTO getCotacaoAtivo(Dia dia) throws SATAEX {
-		for (CotacaoAtivoTO cotacao : getListaCotacoesAcao(dia.getAno())) {
-			if(dia.formatoBrasileiro().equals(cotacao.getPeriodo())){
-				return cotacao;
-			}
-		}
-		return null;
-	}
-	
-	private List<CotacaoAtivoTO> getListaCotacoesAcao(Integer ano) throws SATAEX {
-		return getListaCotacoesAcao(new AnoCotacao(ano, acao));
-	}
-	
-	private static List<CotacaoAtivoTO> getListaCotacoesAcao(AnoCotacao anoCotacao) throws SATAEX {
-		if (!cacheCotacoes.containsKey(anoCotacao)) {
+		DiaCotacao diaCotacao = new DiaCotacao(dia, acao);
+		if (!cacheCotacoes.containsKey(diaCotacao)) {
 			try {
 				ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-				cacheCotacoes.put(anoCotacao, caDAO.getCotacoesDoAtivo(anoCotacao.getAcao().getNome(), anoCotacao.getAno().toString()));
-				
-			} catch (SQLException e) {
+				List<CotacaoAtivoTO> result = caDAO.getCotacoesDoAtivo(acao.getNome(), dia.formatoBanco(), dia.formatoBanco());
+				if (result.isEmpty())
+					return null;
+				CotacaoAtivoTO cotacao = result.get(0);
+				cacheCotacoes.put(diaCotacao, cotacao);
+			} catch (Exception e) {
 				throw new BancoDadosEX(e.getMessage());
 			}
 		}
-		return cacheCotacoes.get(anoCotacao);
+		return cacheCotacoes.get(diaCotacao);
 	}
 	
 	private static BigDecimal calculaMediaMovel(Dia dia, int periodo, Acao acao) {
