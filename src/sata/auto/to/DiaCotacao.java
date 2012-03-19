@@ -19,7 +19,7 @@ public class DiaCotacao {
 
 	@Override
 	public String toString() {
-		return acao + "/" + dia;
+		return acao + "-" + dia;
 	}
 	
 	public Dia getDia() {

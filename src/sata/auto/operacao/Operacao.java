@@ -79,6 +79,7 @@ public abstract class Operacao implements IConstants {
 			}
 			reversa = criaOperacaoReversa(mesesParaVencimentoReverso, momentoReverso, mesesParaReveresaoReverso);
 		}
+		reversa.setAtivo(ativo);
 		return reversa;
 	}
 	
