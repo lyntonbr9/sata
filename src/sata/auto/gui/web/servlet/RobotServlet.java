@@ -18,9 +18,9 @@ public class RobotServlet extends HttpServlet {
 	private static final long serialVersionUID = -2956783815151391222L;
 
 	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String msg = "Robot running at " + SATAUtil.getDataAtualFormatada();
-		System.out.println(msg);
+		System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
 		OperacaoLhamaOpcoes.alertaLhama();
+		System.out.println("--- End of Robot running at " + SATAUtil.getDataAtualFormatada());
 	}
 
 	/**
