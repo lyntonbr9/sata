@@ -14,8 +14,6 @@ Author : Sudhir Ancha
 
 package sata.metastock.mail;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -30,6 +28,7 @@ import javax.mail.internet.MimeMessage;
 
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.util.IConstants;
+import sata.domain.util.SATAUtil;
 
 /*
  To use this program, change values for the following three constants,
@@ -61,8 +60,8 @@ public class SendMailUsingAuthentication implements IConstants{
 	private static final String SMTP_AUTH_PWD = "sata2011";
 
 	// Add List of Email address to who email needs to be sent to
-	private static final String[] emailList = { "lyntonbr@gmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br", "leojardim@gmail.com" };
-	//, "flaviogc@br.com.br"
+	private static final String[] emailList = { "lyntonbr@gmail.com",
+			"lyntonbr@hotmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br", "leojardim@gmail.com" };
 	
 	private static final String[] emailListSimulaGanhoOpcoes = { "tobebendo@gmail.com", "flaviogc@br.com.br" };
 
@@ -128,19 +127,13 @@ public class SendMailUsingAuthentication implements IConstants{
 		
 		String emailMsg="Lista de Ativos do alerta da Operacao da Lhama:" + NOVA_LINHA;
 		for(OperacaoRealizadaTO operacao : operacoes){
-			emailMsg+= operacao.getCodigoAtivo() + " data: " + now() +"        valor: " + operacao.getValorDouble() 
+			emailMsg+= operacao.getCodigoAtivo() + " data: " + SATAUtil.getDataAtualFormatada() +"        valor: " + operacao.getValorDouble() 
 				+ "        valorAlertaSuperior: " + operacao.getValorAlertaSuperiorDouble()
 				+ "        valorAlertaInferior: " + operacao.getValorAlertaInferiorDouble() + NOVA_LINHA;
 		}
 		return emailMsg;
 	}
 		
-	public static String now() {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		return sdf.format(cal.getTime());
-	}
-	  
 	public static String getMsgTxt(List<String> listaAcoesOperAltaVarPoucoTempo){
 		String emailMsg="Lista de Ativos do alerta da Operacao de Alta Variacao em Pouco Tempo:" + NOVA_LINHA ;
 		for (String acao : listaAcoesOperAltaVarPoucoTempo)
@@ -180,6 +173,18 @@ public class SendMailUsingAuthentication implements IConstants{
 		msg.setSubject(subject);
 		msg.setContent(message, "text/plain");
 		Transport.send(msg);
+	}
+	
+	public static void sendMail(String recipients[], String subject, String message,
+			String from) throws MessagingException {
+		SendMailUsingAuthentication sendMail = new SendMailUsingAuthentication();
+		sendMail.postMail(recipients, subject, message, from);
+	}
+	
+	public static void sendMail(String subject, String message,
+			String from) throws MessagingException {
+		SendMailUsingAuthentication sendMail = new SendMailUsingAuthentication();
+		sendMail.postMail(emailList, subject, message, from);
 	}
 
 	/**

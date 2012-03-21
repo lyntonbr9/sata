@@ -45,4 +45,15 @@
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
+	
+	<servlet>
+		<servlet-name>RobotServlet</servlet-name>
+		<servlet-class>sata.auto.gui.web.servlet.RobotServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>RobotServlet</servlet-name>
+		<url-pattern>/robot</url-pattern>
+	</servlet-mapping>
+	
 </web-app>
