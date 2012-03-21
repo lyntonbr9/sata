@@ -14,6 +14,8 @@ Author : Sudhir Ancha
 
 package sata.metastock.mail;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,6 +28,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.util.IConstants;
 
 /*
@@ -58,8 +61,8 @@ public class SendMailUsingAuthentication implements IConstants{
 	private static final String SMTP_AUTH_PWD = "sata2011";
 
 	// Add List of Email address to who email needs to be sent to
-	private static final String[] emailList = { "lyntonbr@gmail.com",
-			"lyntonbr@hotmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br" };
+	private static final String[] emailList = { "lyntonbr@gmail.com", "lyntonbr9@gmail.com", "lynton@br.com.br", "flaviogc@br.com.br", "leojardim@gmail.com" };
+	//, "flaviogc@br.com.br"
 	
 	private static final String[] emailListSimulaGanhoOpcoes = { "tobebendo@gmail.com", "flaviogc@br.com.br" };
 
@@ -106,7 +109,38 @@ public class SendMailUsingAuthentication implements IConstants{
 			e.printStackTrace();
 		}
 	}
+	
+	public static void sendEmailOperacaoLhama(String emailSubjectTxt, List<OperacaoRealizadaTO> operacoes){
+		String emailFromAddress = SMTP_AUTH_USER;
+		String emailMsgTxt = getMsgTxtLhama(operacoes);
+
+		try {
+			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
+			smtpMailSender.postMail(emailList, emailSubjectTxt, emailMsgTxt,
+					emailFromAddress);
+			System.out.println("E-mail enviado com sucesso.");			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	public static String getMsgTxtLhama(List<OperacaoRealizadaTO> operacoes){
 		
+		String emailMsg="Lista de Ativos do alerta da Operacao da Lhama:" + NOVA_LINHA;
+		for(OperacaoRealizadaTO operacao : operacoes){
+			emailMsg+= operacao.getCodigoAtivo() + " data: " + now() +"        valor: " + operacao.getValorDouble() 
+				+ "        valorAlertaSuperior: " + operacao.getValorAlertaSuperiorDouble()
+				+ "        valorAlertaInferior: " + operacao.getValorAlertaInferiorDouble() + NOVA_LINHA;
+		}
+		return emailMsg;
+	}
+		
+	public static String now() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		return sdf.format(cal.getTime());
+	}
+	  
 	public static String getMsgTxt(List<String> listaAcoesOperAltaVarPoucoTempo){
 		String emailMsg="Lista de Ativos do alerta da Operacao de Alta Variacao em Pouco Tempo:" + NOVA_LINHA ;
 		for (String acao : listaAcoesOperAltaVarPoucoTempo)
