@@ -36,6 +36,9 @@ public interface IConstants {
 	public String BD_POSTGRE = "postgre";
 	public String BD_MYSQL = "mysql";
 	
+	public String AMBIENTE_PROD = "prod";
+	public String AMBIENTE_DESENV = "desenv";
+	
 	public int QTD_DIAS_ANO = 365;
 	public int QTD_DIAS_FALTA_1_MES_VENC = 29; //quando for saber 1 mes
 	public int QTD_DIAS_FALTA_2_MES_VENC = 59; //quando for saber 2 meses

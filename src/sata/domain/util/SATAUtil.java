@@ -264,8 +264,11 @@ public class SATAUtil implements IConstants{
 	
 	public static Calendar getDataAtual(){
 		TimeZone tz = TimeZone.getTimeZone("America/Sao_Paulo");  
-        TimeZone.setDefault(tz);  
-        Calendar calendario = GregorianCalendar.getInstance(tz);  
+        TimeZone.setDefault(tz);
+        Calendar calendario = GregorianCalendar.getInstance(tz); 
+        if (SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_PROD)) {
+        	calendario.add(Calendar.MINUTE, -26);
+        }
 		return calendario;		
 	}
 	
@@ -278,7 +281,7 @@ public class SATAUtil implements IConstants{
 		string += getStrDoisDigitos(calendar.get(Calendar.DAY_OF_MONTH)) + "/";
 		string += getStrDoisDigitos(calendar.get(Calendar.MONTH)+1) + "/";
 		string += calendar.get(Calendar.YEAR) + " ";
-		string += getStrDoisDigitos(calendar.get(Calendar.HOUR)) + ":";
+		string += getStrDoisDigitos(calendar.get(Calendar.HOUR_OF_DAY)) + ":";
 		string += getStrDoisDigitos(calendar.get(Calendar.MINUTE)) + ":";
 		string += getStrDoisDigitos(calendar.get(Calendar.SECOND));
 		return string;
