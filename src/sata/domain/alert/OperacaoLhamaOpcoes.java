@@ -3,8 +3,12 @@ package sata.domain.alert;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
+import sata.domain.dao.IOperacaoAlertaDAO;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.OperacaoRealizadaTO;
+import sata.domain.util.SATAUtil;
 import sata.metastock.mail.SendMailUsingAuthentication;
 import sata.metastock.robos.CotacaoLopesFilho;
 
@@ -14,21 +18,21 @@ public class OperacaoLhamaOpcoes {
 		
 		System.out.println("ALERTA OperacaoLhamaOpcoes");
 		
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = SATAUtil.getDataAtual();
 		
-		int hora = cal.get(Calendar.HOUR);
+		int hora = cal.get(Calendar.HOUR_OF_DAY);
 		
 		System.out.println("Hora: " + hora);
 		
+		IOperacaoAlertaDAO oaDAO = SATAFactoryFacade.getOperacaoAlertaDAO();
+		
 		if (hora >= 10 && hora <= 17)
 		{
-			List<OperacaoRealizadaTO> operacoesRealizadas = OperacaoRealizadaTO.getOperacoesParaAcompanhar();
+			List<OperacaoRealizadaTO> operacoesRealizadas = oaDAO.getOperacoesParaAcompanhar();
 			
 			List<OperacaoRealizadaTO> operacoesInvertidas = inverterOperacoes(copyList(operacoesRealizadas));
 			
 			List<OperacaoRealizadaTO> operacoesInvertidasAtualizadas = atualizarOperacoes(operacoesInvertidas);
-			
-			alertaValorAlcancado(operacoesInvertidasAtualizadas);
 			
 			double saldoOperacoesRealizadas = getSaldo(operacoesRealizadas);
 			
@@ -42,11 +46,33 @@ public class OperacaoLhamaOpcoes {
 			
 			System.out.println("saldoFinal: " + saldoFinal);
 			
-			System.out.println("objetivo saldo (" + getPorcentagemAlerta()*100 + "%) : " + getPorcentagemAlerta() * getValorDeParametro(operacoesRealizadas));
-			if(saldoFinal >= getPorcentagemAlerta() * getValorDeParametro(operacoesRealizadas)){
-				System.out.println("Vai enviar o e-mail de objetivo saldo alcancado");
-				SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Objetivo " + getPorcentagemAlerta()*100 + "% de saldo alcancado " + saldoFinal, operacoesInvertidasAtualizadas);
-			}	
+			System.out.println("Porcentagem saldoFinal: " + (saldoFinal/getValorDeParametro(operacoesRealizadas))*100 + "%");
+			
+			alertaValorAlcancado(operacoesInvertidasAtualizadas);
+			
+			alertaPorcentagemAlcancada(saldoFinal, operacoesInvertidasAtualizadas);
+			
+			System.out.println("Operacoes Realizadas:");
+			printList(operacoesRealizadas);
+			
+			System.out.println("Operacoes Invertidas Atualizadas:");
+			printList(operacoesInvertidasAtualizadas);
+			
+		}
+	}
+	
+	public static void printList(List<OperacaoRealizadaTO> operacoes)
+	{
+		for(OperacaoRealizadaTO operacao : operacoes){
+			System.out.println("CodigoAtivo: " + operacao.getCodigoAtivo());
+//			System.out.println("Posicao: " + operacao.getPosicao());
+//			System.out.println("PorcentagemGanhoAlerta: " + operacao.getPorcentagemGanhoAlerta() + "%");
+//			System.out.println("PorcentagemPerdaAlerta: " + operacao.getPorcentagemPerdaAlerta() + "%");
+//			System.out.println("QuantidadeLotes: " + operacao.getQuantidadeLotes());
+			System.out.println("Valor: " + operacao.getValorDouble());
+//			System.out.println("ValorAlertaSuperiorDouble: " + operacao.getValorAlertaSuperiorDouble());
+//			System.out.println("ValorAlertaInferiorDouble: " + operacao.getValorAlertaInferiorDouble());
+//			System.out.println("");
 		}
 	}
 	
@@ -57,7 +83,8 @@ public class OperacaoLhamaOpcoes {
 			novaOperacao.setAcompanhar(operacao.isAcompanhar());
 			novaOperacao.setCodigoAtivo(operacao.getCodigoAtivo());
 			novaOperacao.setDataExecucao(operacao.getDataExecucao());
-			novaOperacao.setPorcentagemAlerta(operacao.getPorcentagemAlerta());
+			novaOperacao.setPorcentagemPerdaAlerta(operacao.getPorcentagemPerdaAlerta());
+			novaOperacao.setPorcentagemGanhoAlerta(operacao.getPorcentagemGanhoAlerta());
 			novaOperacao.setPosicao(operacao.getPosicao());
 			novaOperacao.setQuantidadeLotes(operacao.getQuantidadeLotes());
 			novaOperacao.setValor(operacao.getValor());
@@ -79,8 +106,28 @@ public class OperacaoLhamaOpcoes {
 		return valorDeParametro;
 	}
 	
-	public static double getPorcentagemAlerta(){
-		return 0.05;
+	public static void alertaPorcentagemAlcancada(double saldoFinal, List<OperacaoRealizadaTO> operacoes){
+		
+		boolean enviarAlerta = false;
+		double valorPorcentagemAlcancada = 0.0;
+		double valorDeParametro = getValorDeParametro(operacoes);
+		
+		for(OperacaoRealizadaTO operacao: operacoes){
+			if(saldoFinal >= operacao.getPorcentagemGanhoAlertaDouble() * valorDeParametro){
+				enviarAlerta = true;
+				valorPorcentagemAlcancada = operacao.getPorcentagemGanhoAlertaDouble();
+				break;
+			}
+			if(saldoFinal <= (-1) * operacao.getPorcentagemPerdaAlertaDouble() * valorDeParametro){
+				enviarAlerta = true;
+				valorPorcentagemAlcancada = (-1) * operacao.getPorcentagemPerdaAlertaDouble();
+				break;
+			}
+		}
+		if(enviarAlerta){
+			System.out.println("Vai enviar o e-mail de porcentagem alancada");
+			SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Porcentagem de Alerta " + valorPorcentagemAlcancada*100 + "% alcancada " + saldoFinal, operacoes);
+		}
 	}
 	
 	public static void alertaValorAlcancado(List<OperacaoRealizadaTO> operacoes){

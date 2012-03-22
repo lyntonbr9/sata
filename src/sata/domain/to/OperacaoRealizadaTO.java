@@ -19,7 +19,8 @@ public class OperacaoRealizadaTO{
 	private String valorAlertaInferior;
 	private int quantidadeLotes;
 	private String dataExecucao;
-	private String porcentagemAlerta;
+	private String porcentagemGanhoAlerta;
+	private String porcentagemPerdaAlerta;
 	private boolean acompanhar;
 	
 	public String getTipo() {
@@ -85,14 +86,23 @@ public class OperacaoRealizadaTO{
 	public void setAcompanhar(boolean acompanhar) {
 		this.acompanhar = acompanhar;
 	}
-	public String getPorcentagemAlerta() {
-		return porcentagemAlerta;
+	public String getPorcentagemGanhoAlerta() {
+		return porcentagemGanhoAlerta;
 	}
-	public void setPorcentagemAlerta(String porcentagemAlerta) {
-		this.porcentagemAlerta = porcentagemAlerta;
+	public void setPorcentagemGanhoAlerta(String porcentagemGanhoAlerta) {
+		this.porcentagemGanhoAlerta = porcentagemGanhoAlerta;
 	}
-	public double getPorcentagemAlertaDouble() {
-		return Double.parseDouble(this.porcentagemAlerta) / 100;
+	public double getPorcentagemGanhoAlertaDouble() {
+		return Double.parseDouble(this.porcentagemGanhoAlerta) / 100;
+	}
+	public String getPorcentagemPerdaAlerta() {
+		return porcentagemPerdaAlerta;
+	}
+	public void setPorcentagemPerdaAlerta(String porcentagemPerdaAlerta) {
+		this.porcentagemPerdaAlerta = porcentagemPerdaAlerta;
+	}
+	public double getPorcentagemPerdaAlertaDouble() {
+		return Double.parseDouble(this.porcentagemPerdaAlerta) / 100;
 	}
 	
 	public static List<OperacaoRealizadaTO> getOperacoesParaAcompanhar(){
@@ -107,7 +117,8 @@ public class OperacaoRealizadaTO{
 		operacaoParaAcompanhar.setQuantidadeLotes(400);
 		operacaoParaAcompanhar.setDataExecucao("20110312");
 		operacaoParaAcompanhar.setAcompanhar(true);
-		operacaoParaAcompanhar.setPorcentagemAlerta("7");
+		operacaoParaAcompanhar.setPorcentagemPerdaAlerta("5");
+		operacaoParaAcompanhar.setPorcentagemGanhoAlerta("7");
 		listaOperacoesParaAcompanhar.add(operacaoParaAcompanhar);
 		
 		operacaoParaAcompanhar = new OperacaoRealizadaTO();
@@ -120,7 +131,8 @@ public class OperacaoRealizadaTO{
 		operacaoParaAcompanhar.setQuantidadeLotes(800);
 		operacaoParaAcompanhar.setDataExecucao("20110312");
 		operacaoParaAcompanhar.setAcompanhar(true);
-		operacaoParaAcompanhar.setPorcentagemAlerta("8");
+		operacaoParaAcompanhar.setPorcentagemPerdaAlerta("5");
+		operacaoParaAcompanhar.setPorcentagemGanhoAlerta("8");
 		listaOperacoesParaAcompanhar.add(operacaoParaAcompanhar);
 		
 		operacaoParaAcompanhar = new OperacaoRealizadaTO();
@@ -133,7 +145,8 @@ public class OperacaoRealizadaTO{
 		operacaoParaAcompanhar.setQuantidadeLotes(400);
 		operacaoParaAcompanhar.setDataExecucao("20110312");
 		operacaoParaAcompanhar.setAcompanhar(true);
-		operacaoParaAcompanhar.setPorcentagemAlerta("5");
+		operacaoParaAcompanhar.setPorcentagemPerdaAlerta("7");
+		operacaoParaAcompanhar.setPorcentagemGanhoAlerta("5");
 		listaOperacoesParaAcompanhar.add(operacaoParaAcompanhar);
 		
 		operacaoParaAcompanhar = new OperacaoRealizadaTO();
@@ -146,7 +159,8 @@ public class OperacaoRealizadaTO{
 		operacaoParaAcompanhar.setQuantidadeLotes(200);
 		operacaoParaAcompanhar.setDataExecucao("20110312");
 		operacaoParaAcompanhar.setAcompanhar(true);
-		operacaoParaAcompanhar.setPorcentagemAlerta("5");
+		operacaoParaAcompanhar.setPorcentagemPerdaAlerta("7");
+		operacaoParaAcompanhar.setPorcentagemGanhoAlerta("5");
 		listaOperacoesParaAcompanhar.add(operacaoParaAcompanhar);
 		
 		return listaOperacoesParaAcompanhar;
