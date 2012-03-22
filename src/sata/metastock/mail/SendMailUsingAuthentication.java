@@ -55,9 +55,10 @@ import sata.domain.util.SATAUtil;
 
 public class SendMailUsingAuthentication implements IConstants{
 
-	private static final String SMTP_HOST_NAME = "smtps.bol.com.br";
-	private static final String SMTP_AUTH_USER = "sata-project@bol.com.br";
-	private static final String SMTP_AUTH_PWD = "sata2011";
+	private static final String SMTP_HOST_NAME = "mail.stockoptionsanalysis.com";
+	private static final String SMTP_PORT = "2525";
+	private static final String SMTP_AUTH_USER = "robot@stockoptionsanalysis.com";
+	private static final String SMTP_AUTH_PWD = "black&scholes";
 
 	// Add List of Email address to who email needs to be sent to
 	private static final String[] emailList = { "lyntonbr@gmail.com",
@@ -148,8 +149,9 @@ public class SendMailUsingAuthentication implements IConstants{
 		// Set the host smtp address
 		Properties props = new Properties();
 		props.put("mail.smtp.host", SMTP_HOST_NAME);
+		props.put("mail.smtp.port", SMTP_PORT);
 		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable","true"); 
+//		props.put("mail.smtp.starttls.enable","true"); 
 
 		Authenticator auth = new SMTPAuthenticator();
 		Session session = Session.getDefaultInstance(props, auth);

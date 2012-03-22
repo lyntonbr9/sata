@@ -3,7 +3,6 @@ package sata.domain.alert;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import sata.domain.dao.IOperacaoAlertaDAO;
 import sata.domain.dao.SATAFactoryFacade;
@@ -26,8 +25,8 @@ public class OperacaoLhamaOpcoes {
 		
 		IOperacaoAlertaDAO oaDAO = SATAFactoryFacade.getOperacaoAlertaDAO();
 		
-		if (hora >= 10 && hora <= 17)
-		{
+//		if (hora >= 10 && hora <= 17)
+//		{
 			List<OperacaoRealizadaTO> operacoesRealizadas = oaDAO.getOperacoesParaAcompanhar();
 			
 			List<OperacaoRealizadaTO> operacoesInvertidas = inverterOperacoes(copyList(operacoesRealizadas));
@@ -58,7 +57,7 @@ public class OperacaoLhamaOpcoes {
 			System.out.println("Operacoes Invertidas Atualizadas:");
 			printList(operacoesInvertidasAtualizadas);
 			
-		}
+//		}
 	}
 	
 	public static void printList(List<OperacaoRealizadaTO> operacoes)
@@ -118,9 +117,9 @@ public class OperacaoLhamaOpcoes {
 				valorPorcentagemAlcancada = operacao.getPorcentagemGanhoAlertaDouble();
 				break;
 			}
-			if(saldoFinal <= (-1) * operacao.getPorcentagemPerdaAlertaDouble() * valorDeParametro){
+			if(saldoFinal <= operacao.getPorcentagemPerdaAlertaDouble() * valorDeParametro){
 				enviarAlerta = true;
-				valorPorcentagemAlcancada = (-1) * operacao.getPorcentagemPerdaAlertaDouble();
+				valorPorcentagemAlcancada = operacao.getPorcentagemPerdaAlertaDouble();
 				break;
 			}
 		}
