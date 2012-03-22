@@ -9,6 +9,7 @@ public interface ICotacaoAtivoDAO {
 
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo);
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) throws SQLException;
+	public boolean possuiCotacaoNoAno(String codigoAtivo, String ano) throws SQLException;
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, String dataFinal);
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO);
 	public boolean existeCotacao(String codigoAtivo, String periodo);

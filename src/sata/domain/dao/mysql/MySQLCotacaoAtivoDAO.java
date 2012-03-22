@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.SATAFactoryFacade;
+import sata.domain.dao.postgre.PostgreDAOFactory;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAPropertyLoader;
@@ -80,6 +81,19 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			MySQLDAOFactory.returnConnection(con);
 			
 		return listaCotacoesDoAtivo;
+	}
+	
+	public boolean possuiCotacaoNoAno(String codigoAtivo, String ano) throws SQLException {
+		String sqlStmt = "SELECT COUNT(*) AS qtd FROM CotacaoAtivo WHERE "
+			+ " codigoAtivo = ? AND ano = ? ";
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, codigoAtivo);
+			ps.setString(2, ano);
+			ResultSet rs = ps.executeQuery();
+			PostgreDAOFactory.returnConnection(con);
+		if (rs.next())
+			return rs.getInt("qtd") > 0;
+		else return false;
 	}
 	
 	public int getSplit(CotacaoAtivoTO caTO){

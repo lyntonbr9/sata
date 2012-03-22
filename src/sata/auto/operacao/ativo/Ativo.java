@@ -1,17 +1,15 @@
 package sata.auto.operacao.ativo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import sata.auto.exception.SATAEX;
 import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.to.Dia;
+import sata.domain.util.Cache;
 import sata.domain.util.SATAUtil;
 
 public abstract class Ativo {
 	
-	Map<Dia,Preco> precos = new HashMap<Dia, Preco>();
+	Cache<Dia,Preco> precos = new Cache<Dia, Preco>(200);
 	
 	abstract Preco criaPreco(Dia dia, Operacao operacao) throws SATAEX;
 	public abstract String getBundleMessage();
@@ -33,6 +31,14 @@ public abstract class Ativo {
 	
 	public void limpaPrecos() {
 		precos.clear();
+	}
+	
+	public Acao getAcao() {
+		if (this instanceof Acao)
+			return (Acao)this;
+		else if (this instanceof Derivado)
+			return ((Derivado)this).getAcao();
+		return null;
 	}
 	
 	@Override

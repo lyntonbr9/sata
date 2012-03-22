@@ -1,21 +1,20 @@
 package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.exception.SATAEX;
 import sata.auto.to.Dia;
+import sata.domain.util.Cache;
 
 public abstract class Preco {
 	
 	BigDecimal valor;
 	BigDecimal volatilidade;
 	Dia dia;
-	Map<Integer, BigDecimal> mediasMoveis = new HashMap<Integer, BigDecimal>();
+	Cache<Integer, BigDecimal> mediasMoveis = new Cache<Integer, BigDecimal>(200);
 
 	public abstract void calculaPreco() throws SATAEX;
 	

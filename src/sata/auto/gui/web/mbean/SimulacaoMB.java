@@ -154,6 +154,7 @@ public class SimulacaoMB implements IConstants {
 				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
 				simulacao.setPercValorInvestido(percValorInvestido);
 				SATAUtil.setTaxaDeJuros(taxaDeJuros/100);
+				if (resultado != null) resultado.limpa();
 				resultado = simulacao.getResultado();
 				relatorio = formataTexto(resultado.imprime(tipoRelatorio));
 			}

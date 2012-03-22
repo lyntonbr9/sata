@@ -12,11 +12,9 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
-import java.util.TreeMap;
 
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
@@ -99,7 +97,7 @@ public class SATAUtil implements IConstants{
 		else return ResourceBundle.getBundle(MSG_BUNDLE);
 	}
 	
-	private static Map<String, MessageFormat> patterns = new TreeMap<String, MessageFormat>();
+	private static Cache<String, MessageFormat> patterns = new Cache<String, MessageFormat>(20);
 	
 	private static MessageFormat getMessageFormat(String pattern){
     	MessageFormat formatter = (MessageFormat) patterns.get(pattern);
@@ -266,9 +264,9 @@ public class SATAUtil implements IConstants{
 		TimeZone tz = TimeZone.getTimeZone("America/Sao_Paulo");  
         TimeZone.setDefault(tz);
         Calendar calendario = GregorianCalendar.getInstance(tz); 
-        if (SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_PROD)) {
-        	calendario.add(Calendar.MINUTE, -26);
-        }
+//        if (SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_PROD)) {
+//        	calendario.add(Calendar.MINUTE, -26);
+//        }
 		return calendario;		
 	}
 	

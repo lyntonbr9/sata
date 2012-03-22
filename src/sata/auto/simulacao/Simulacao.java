@@ -13,6 +13,8 @@ import sata.auto.operacao.Stop;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.to.Dia;
 import sata.auto.to.Mes;
+import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
@@ -30,32 +32,36 @@ public class Simulacao implements IConstants {
 	}
 	
 	public Resultado getResultado() throws SATAEX {
+		System.gc();
 		Resultado resultado = new Resultado();
 		resultado.setAnoInicial(anoInicial);
 		resultado.setAnoFinal(anoFinal);
 		resultado.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
 		resultado.setPercValorInvestido(percValorInvestido);
 		for (int ano=anoInicial.intValue(); ano <= anoFinal.intValue(); ano++) {
-			for (int iMes=1; iMes <= 12; iMes++) {
-				Mes mes = new Mes(iMes,ano);
-				try {
-					executaOperacoes(resultado, operacoes, mes, getDiaAbertura(mes));
-					
-					Dia diaFechamento;
-					if (stop != null) diaFechamento = getDiaAbertura(mes).getProximoDia();
-					else diaFechamento = getDiaFechamento(mes);
-					while (!stop(resultado, mes)) {
-						executaOperacoesReversas(resultado, operacoes, mes, diaFechamento);
-						if (diaFechamento.equals(getDiaFechamento(mes)))
-							break;
-						diaFechamento = diaFechamento.getProximoDia();
+			if (possuiCotacaoNoAno(ano)) {
+				for (int iMes=1; iMes <= 12; iMes++) {
+					Mes mes = new Mes(iMes,ano);
+					try {
+						executaOperacoes(resultado, operacoes, mes, getDiaAbertura(mes));
+
+						Dia diaFechamento;
+						if (stop != null) diaFechamento = getDiaAbertura(mes).getProximoDia();
+						else diaFechamento = getDiaFechamento(mes);
+						while (!stop(resultado, mes)) {
+							executaOperacoesReversas(resultado, operacoes, mes, diaFechamento);
+							if (diaFechamento.equals(getDiaFechamento(mes)))
+								break;
+							diaFechamento = diaFechamento.getProximoDia();
+						}
+
+					} catch (CotacaoInexistenteEX e) {
+						resultado.remove(mes);
 					}
-					
-				} catch (CotacaoInexistenteEX e) {
-					resultado.remove(mes);
 				}
 			}
 		}
+		limpaCaches();
 		return resultado;
 	}
 	
@@ -111,6 +117,22 @@ public class Simulacao implements IConstants {
 	
 	public static Dia getDiaFechamento(Mes mes) {
 		return new Dia(SATAUtil.getDiaMes(mes.getAno(), mes.getMes(), Calendar.MONDAY, 3)-3, mes);
+	}
+	
+	private boolean possuiCotacaoNoAno(int ano) {
+		try {
+			String codigoAcao = operacoes.get(0).getAtivo().getAcao().getNome();
+			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+			return caDAO.possuiCotacaoNoAno(codigoAcao, String.valueOf(ano));
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private void limpaCaches() {
+		for (Operacao operacao: operacoes) {
+			operacao.getAtivo().limpaPrecos();
+		}
 	}
 	
 	public List<Operacao> getOperacoes() {

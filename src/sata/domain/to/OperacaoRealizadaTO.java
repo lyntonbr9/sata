@@ -22,6 +22,7 @@ public class OperacaoRealizadaTO{
 	private String porcentagemGanhoAlerta;
 	private String porcentagemPerdaAlerta;
 	private boolean acompanhar;
+	private String[] emails;
 	
 	public String getTipo() {
 		return tipo;
@@ -104,7 +105,12 @@ public class OperacaoRealizadaTO{
 	public double getPorcentagemPerdaAlertaDouble() {
 		return Double.parseDouble(this.porcentagemPerdaAlerta) / 100;
 	}
-	
+	public String[] getEmails() {
+		return emails;
+	}
+	public void setEmails(String[] emails) {
+		this.emails = emails;
+	}
 	public static List<OperacaoRealizadaTO> getOperacoesParaAcompanhar(){
 		List<OperacaoRealizadaTO> listaOperacoesParaAcompanhar = new ArrayList<OperacaoRealizadaTO>();
 		OperacaoRealizadaTO operacaoParaAcompanhar = new OperacaoRealizadaTO();

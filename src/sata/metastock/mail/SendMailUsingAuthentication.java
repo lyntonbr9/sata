@@ -110,7 +110,7 @@ public class SendMailUsingAuthentication implements IConstants{
 		}
 	}
 	
-	public static void sendEmailOperacaoLhama(String emailSubjectTxt, List<OperacaoRealizadaTO> operacoes){
+	public static void sendEmailOperacaoLhama(String emailSubjectTxt, String[] emailList, List<OperacaoRealizadaTO> operacoes){
 		String emailFromAddress = SMTP_AUTH_USER;
 		String emailMsgTxt = getMsgTxtLhama(operacoes);
 

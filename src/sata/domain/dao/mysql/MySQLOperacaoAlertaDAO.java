@@ -6,10 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.IOperacaoAlertaDAO;
-import sata.domain.to.AtivoTO;
-import sata.domain.to.CotacaoAtivoTO;
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.util.SATAUtil;
 
@@ -42,6 +39,7 @@ public class MySQLOperacaoAlertaDAO implements IOperacaoAlertaDAO {
 				orTO.setValorAlertaInferior(rs.getString("valorAlertaInferior"));
 				orTO.setValorAlertaSuperior(rs.getString("valorAlertaSuperior"));
 				orTO.setAcompanhar((rs.getString("acompanhar").equals("1")) ? true : false);
+				orTO.setEmails(rs.getString("emails").split(";"));
 				listaOperacoesParaAcompanhar.add(orTO);
 			}
 			MySQLDAOFactory.returnConnection(con);

@@ -105,6 +105,15 @@ public class OperacaoLhamaOpcoes {
 		return valorDeParametro;
 	}
 	
+	public static String[] getEmails(List<OperacaoRealizadaTO> operacoes){
+		for(OperacaoRealizadaTO operacao: operacoes){
+			if(operacao.getPosicao().equals(OperacaoRealizadaTO.OPERACAO_POSICAO_NEUTRA)){
+				return operacao.getEmails();
+			}
+		}
+		return null;
+	}
+	
 	public static void alertaPorcentagemAlcancada(double saldoFinal, List<OperacaoRealizadaTO> operacoes){
 		
 		boolean enviarAlerta = false;
@@ -125,7 +134,7 @@ public class OperacaoLhamaOpcoes {
 		}
 		if(enviarAlerta){
 			System.out.println("Vai enviar o e-mail de porcentagem alancada");
-			SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Porcentagem de Alerta " + valorPorcentagemAlcancada*100 + "% alcancada " + saldoFinal, operacoes);
+			SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Porcentagem de Alerta " + valorPorcentagemAlcancada*100 + "% alcancada " + saldoFinal, getEmails(operacoes), operacoes);
 		}
 	}
 	
@@ -142,7 +151,7 @@ public class OperacaoLhamaOpcoes {
 		}
 		if(enviarAlerta){
 			System.out.println("Vai enviar o e-mail de alertaValorAlcancado");
-			SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Valor de Alerta Alcancado " + valorAlertaAlcancado, operacoes);
+			SendMailUsingAuthentication.sendEmailOperacaoLhama("[SATA-Alerta] Valor de Alerta Alcancado " + valorAlertaAlcancado, getEmails(operacoes), operacoes);
 		}
 	}
 	
