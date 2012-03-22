@@ -3,6 +3,7 @@ package sata.domain.dao.postgre;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -84,6 +85,19 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 			e.printStackTrace();
 		}
 		return listaCotacoesDoAtivo;
+	}
+	
+	public boolean possuiCotacaoNoAno(String codigoAtivo, String ano) throws SQLException {
+		String sqlStmt = "SELECT COUNT(*) AS \"qtd\" FROM \"CotacaoAtivo\" WHERE "
+			+ " \"codigoAtivo\" = ? AND ano = ? ";
+			PreparedStatement ps = con.prepareStatement(sqlStmt);
+			ps.setString(1, codigoAtivo);
+			ps.setString(2, ano);
+			ResultSet rs = ps.executeQuery();
+			PostgreDAOFactory.returnConnection(con);
+		if (rs.next())
+			return rs.getInt("qtd") > 0;
+		else return false;
 	}
 	
 	public int getSplit(CotacaoAtivoTO caTO){
