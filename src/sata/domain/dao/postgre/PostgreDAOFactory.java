@@ -6,6 +6,7 @@ import sata.domain.dao.ConnectionPoolManager;
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.IOperacaoAlertaDAO;
 
 public class PostgreDAOFactory extends DAOFactory{
 	
@@ -17,6 +18,10 @@ public class PostgreDAOFactory extends DAOFactory{
 	
 	public ICotacaoAtivoDAO getCotacaoAtivoDAO(){
 		return new PostgreCotacaoAtivoDAO(conPoolManager.getConnectionFromPool());
+	}
+	
+	public IOperacaoAlertaDAO getOperacaoAlertaDAO(){
+		return new PostgreOpcaoAlertaDAO(conPoolManager.getConnectionFromPool());
 	}
 	
 	public static void returnConnection(Connection con){
