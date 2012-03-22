@@ -39,7 +39,10 @@ public class MySQLOperacaoAlertaDAO implements IOperacaoAlertaDAO {
 				orTO.setValorAlertaInferior(rs.getString("valorAlertaInferior"));
 				orTO.setValorAlertaSuperior(rs.getString("valorAlertaSuperior"));
 				orTO.setAcompanhar((rs.getString("acompanhar").equals("1")) ? true : false);
-				orTO.setEmails(rs.getString("emails").split(";"));
+				if (rs.getString("emails") != null) {
+					String[] emails = rs.getString("emails").split(";");
+					orTO.setEmails(emails);
+				}
 				listaOperacoesParaAcompanhar.add(orTO);
 			}
 			MySQLDAOFactory.returnConnection(con);

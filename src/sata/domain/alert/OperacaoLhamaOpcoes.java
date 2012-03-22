@@ -25,8 +25,8 @@ public class OperacaoLhamaOpcoes {
 		
 		IOperacaoAlertaDAO oaDAO = SATAFactoryFacade.getOperacaoAlertaDAO();
 		
-//		if (hora >= 10 && hora <= 17)
-//		{
+		if (hora >= 10 && hora <= 17)
+		{
 			List<OperacaoRealizadaTO> operacoesRealizadas = oaDAO.getOperacoesParaAcompanhar();
 			
 			List<OperacaoRealizadaTO> operacoesInvertidas = inverterOperacoes(copyList(operacoesRealizadas));
@@ -57,7 +57,7 @@ public class OperacaoLhamaOpcoes {
 			System.out.println("Operacoes Invertidas Atualizadas:");
 			printList(operacoesInvertidasAtualizadas);
 			
-//		}
+		}
 	}
 	
 	public static void printList(List<OperacaoRealizadaTO> operacoes)
@@ -89,6 +89,7 @@ public class OperacaoLhamaOpcoes {
 			novaOperacao.setValor(operacao.getValor());
 			novaOperacao.setValorAlertaSuperior(operacao.getValorAlertaSuperior());
 			novaOperacao.setValorAlertaInferior(operacao.getValorAlertaInferior());
+			novaOperacao.setEmails(operacao.getEmails());
 			novaLista.add(novaOperacao);
 		}
 		return novaLista;
@@ -108,7 +109,9 @@ public class OperacaoLhamaOpcoes {
 	public static String[] getEmails(List<OperacaoRealizadaTO> operacoes){
 		for(OperacaoRealizadaTO operacao: operacoes){
 			if(operacao.getPosicao().equals(OperacaoRealizadaTO.OPERACAO_POSICAO_NEUTRA)){
-				return operacao.getEmails();
+				if (operacao.getEmails() != null) {
+					return operacao.getEmails();
+				}
 			}
 		}
 		return null;
