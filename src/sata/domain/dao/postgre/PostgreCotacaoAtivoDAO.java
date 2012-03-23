@@ -52,7 +52,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) {
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, Integer ano) {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM \"CotacaoAtivo\" WHERE "
 			+ " \"codigoAtivo\" = ? AND ano = ? " 
@@ -60,7 +60,7 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		try {
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1, codigoAtivo);
-			ps.setString(2, ano);
+			ps.setString(2, ano.toString());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
@@ -87,12 +87,12 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	public boolean possuiCotacaoNoAno(String codigoAtivo, String ano) throws SQLException {
+	public boolean possuiCotacaoNoAno(String codigoAtivo, Integer ano) throws SQLException {
 		String sqlStmt = "SELECT COUNT(*) AS \"qtd\" FROM \"CotacaoAtivo\" WHERE "
 			+ " \"codigoAtivo\" = ? AND ano = ? ";
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1, codigoAtivo);
-			ps.setString(2, ano);
+			ps.setString(2, ano.toString());
 			ResultSet rs = ps.executeQuery();
 			PostgreDAOFactory.returnConnection(con);
 		if (rs.next())
@@ -450,6 +450,12 @@ public class PostgreCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		}
 		
 		return resultadoOpcaoPUT + resultadoOpcaoCALL;
+	}
+
+	@Override
+	public CotacaoAtivoTO getCotacaoDoAtivo(String codigoAtivo, String data)
+			throws SQLException {
+		return null;
 	}
 
 }

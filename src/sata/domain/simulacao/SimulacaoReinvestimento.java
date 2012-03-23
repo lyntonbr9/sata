@@ -175,7 +175,7 @@ public class SimulacaoReinvestimento implements ISimulacao{
 		for(int i=1998; i <= 2000; i++){
 			logger.info("ANO " + String.valueOf(i));
 //			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("BVMF3", String.valueOf(i));
-			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("PETR4", String.valueOf(i));
+			List<CotacaoAtivoTO> listaDasCotacoes2009 = caDAO.getCotacoesDoAtivo("PETR4", i);
 			SimulacaoReinvestimento sr = new SimulacaoReinvestimento();
 			sr.getResultado(listaDasCotacoes2009, null);			
 		}

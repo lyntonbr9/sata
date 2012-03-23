@@ -234,9 +234,9 @@ public class CalculoUtil implements IConstants {
 		//pega as cotacoes do ano passado e retrasado do ativo
 		int anoPassado = Integer.parseInt(ano) - 1;
 		int anoRetrasado = Integer.parseInt(ano) - 2;
-		List<CotacaoAtivoTO> listaDasCotacoesDoAno = caDAO.getCotacoesDoAtivo(codigoAtivo, String.valueOf(ano));
-		List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo(codigoAtivo, String.valueOf(anoPassado));
-		List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo(codigoAtivo, String.valueOf(anoRetrasado));
+		List<CotacaoAtivoTO> listaDasCotacoesDoAno = caDAO.getCotacoesDoAtivo(codigoAtivo, Integer.parseInt(ano));
+		List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo(codigoAtivo, anoPassado);
+		List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo(codigoAtivo, anoRetrasado);
 		
 		//cria uma lista com todas as cotacoes para calculo
 		List<CotacaoAtivoTO> listaDasCotacoesParaCalculo = new ArrayList<CotacaoAtivoTO>();

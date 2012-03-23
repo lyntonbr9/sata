@@ -20,10 +20,6 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 
 	private Connection con;
 	
-	public MySQLCotacaoAtivoDAO(Connection postgreConnection){
-		this.con = postgreConnection;
-	}
-
 	@Deprecated
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
@@ -53,14 +49,14 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String ano) throws SQLException {
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, Integer ano) throws SQLException {
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		String sqlStmt = "SELECT * FROM CotacaoAtivo WHERE "
 			+ " codigoAtivo = ? AND ano = ? " 
 			+ " ORDER BY periodo ASC";
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1, codigoAtivo);
-			ps.setString(2, ano);
+			ps.setString(2, ano.toString());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				CotacaoAtivoTO caTO = new CotacaoAtivoTO(); 
@@ -83,12 +79,12 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return listaCotacoesDoAtivo;
 	}
 	
-	public boolean possuiCotacaoNoAno(String codigoAtivo, String ano) throws SQLException {
+	public boolean possuiCotacaoNoAno(String codigoAtivo, Integer ano) throws SQLException {
 		String sqlStmt = "SELECT COUNT(*) AS qtd FROM CotacaoAtivo WHERE "
 			+ " codigoAtivo = ? AND ano = ? ";
 			PreparedStatement ps = con.prepareStatement(sqlStmt);
 			ps.setString(1, codigoAtivo);
-			ps.setString(2, ano);
+			ps.setString(2, ano.toString());
 			ResultSet rs = ps.executeQuery();
 			PostgreDAOFactory.returnConnection(con);
 		if (rs.next())
@@ -133,7 +129,6 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		
 		List<CotacaoAtivoTO> listaCotacoesDoAtivo = new ArrayList<CotacaoAtivoTO>();
 		
-		// TODO Auto-generated method stub
 		String tabela = "CotacaoAtivo"; //tabela das acoes
 		if (codigoAtivo.length() != 5)
 			tabela = "CotacaoOpcao"; //tabela das opções
@@ -170,7 +165,7 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		}
 		return listaCotacoesDoAtivo;
 	}
-
+	
 	//TODO: Colocar a volatilidade anual e mensal
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) {
 		
@@ -448,5 +443,50 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 		return resultadoOpcaoPUT + resultadoOpcaoCALL;
 	}
 
+	@Override
+	public CotacaoAtivoTO getCotacaoDoAtivo(String codigoAtivo, String data) throws SQLException {
+		String tabela = "CotacaoAtivo"; //tabela das acoes
+		if (codigoAtivo.length() != 5)
+			tabela = "CotacaoOpcao"; //tabela das opções
+		
+		String sqlStmt = "SELECT * FROM " + tabela 
+		+ " WHERE codigoAtivo = ? AND periodo LIKE ?";
+		PreparedStatement ps = con.prepareStatement(sqlStmt);
+		ps.setString(1, codigoAtivo);
+		ps.setString(2, data+"%");
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			CotacaoAtivoTO caTO = new CotacaoAtivoTO();
+			caTO.setCodigo(rs.getString("codigoAtivo"));
+			caTO.setPeriodo(SATAUtil.getTimeStampFormatado(rs.getTimestamp("periodo"),false));
+			caTO.setTipoPeriodo(rs.getString("tipoperiodo"));
+			caTO.setAbertura(rs.getString("abertura"));
+			caTO.setMaxima(rs.getString("maxima"));
+			caTO.setMinima(rs.getString("minima"));
+			caTO.setFechamento(rs.getString("fechamento"));
+			caTO.setAno(rs.getString("ano"));
+			caTO.setVolume(rs.getString("volume"));
+			caTO.setVolatilidadeAnual(Double.valueOf(rs.getString("volatilidadeAnual")));
+			caTO.setVolatilidadeMensal(Double.valueOf(rs.getString("volatilidadeMensal")));
+			caTO.setSplit(getSplit(caTO));
+			return caTO;
+		}
+		MySQLDAOFactory.returnConnection(con);
+
+		return null;
+	}
+
+	// Implementação do singleton
+	private MySQLCotacaoAtivoDAO(Connection connection){
+		this.con = connection;
+	}
+	private static MySQLCotacaoAtivoDAO instance;
+	public static MySQLCotacaoAtivoDAO get(Connection connection) {	
+		return (instance != null)? instance : create(connection); 
+	}
+	private static synchronized MySQLCotacaoAtivoDAO create(Connection connection) {
+		if (instance == null) instance = new MySQLCotacaoAtivoDAO(connection);
+		return instance;
+	}
 }
 

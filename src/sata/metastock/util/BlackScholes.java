@@ -67,8 +67,8 @@ public class BlackScholes implements IConstants{
         PropertyConfigurator.configure("log4j.properties");
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		
-		List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo("PETR4", "2011");
-		List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo("PETR4", "2010");		
+		List<CotacaoAtivoTO> listaDasCotacoesAnoPassado = caDAO.getCotacoesDoAtivo("PETR4", 2011);
+		List<CotacaoAtivoTO> listaDasCotacoesAnoRetrasado = caDAO.getCotacoesDoAtivo("PETR4", 2010);		
 		double volatilidade = CalculoUtil.getVolatilidadeAnualAcao(listaDasCotacoesAnoPassado, listaDasCotacoesAnoRetrasado);
 		
 //		List<CotacaoAtivoTO> listaDasCotacoesVol = new ArrayList<CotacaoAtivoTO>(); 

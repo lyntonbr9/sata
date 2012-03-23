@@ -19,7 +19,7 @@ public class Principal {
 	public static void simulaAcao(String codigoAcao, String ano) throws SQLException{
 		System.out.println("testando Simulacao " + codigoAcao + " ano de " + ano);
 		ICotacaoAtivoDAO cotacaoAtivoDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, ano);
+		List<CotacaoAtivoTO> listaCotacoesAtivo = cotacaoAtivoDAO.getCotacoesDoAtivo(codigoAcao, Integer.valueOf(ano));
 		Object[] paramSimulacao = {10, 12, 0.5}; //{stopGain, stopLoss, probStopLoss}
 		ISimulacao simulacao = new SimulacaoAcaoOperacaoDeAlta();
 		//ISimulacao simulacao = new SimulacaoAcaoOperacaoDeBaixa();
