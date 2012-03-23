@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import sata.domain.alert.OperacaoLhamaOpcoes;
+import sata.domain.alert.Alerta;
 import sata.domain.util.SATAUtil;
 
 /**
@@ -19,7 +19,12 @@ public class RobotServlet extends HttpServlet {
 
 	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
-		OperacaoLhamaOpcoes.alertaLhama();
+		try {
+			Alerta.verificarAlertasAtivos();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println("--- End of Robot running at " + SATAUtil.getDataAtualFormatada());
 	}
 

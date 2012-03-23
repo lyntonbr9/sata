@@ -1,6 +1,7 @@
 package sata.domain.util;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
@@ -20,6 +21,12 @@ import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
+	
+	public static Calendar converte(Date data) {
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(data);
+		return cal;
+	}
 	
 	public static Locale getCurrentLocale() {
 		Locale locale = FacesUtil.getCurrentLocale();
@@ -274,6 +281,10 @@ public class SATAUtil implements IConstants{
 		return formataCalendar(getDataAtual());
 	}
 	
+	public static String getSomenteDataAtualFormatada() {
+		return formataData(getDataAtual());
+	}
+	
 	public static String formataCalendar(Calendar calendar) {
 		String string = "";
 		string += getStrDoisDigitos(calendar.get(Calendar.DAY_OF_MONTH)) + "/";
@@ -282,6 +293,14 @@ public class SATAUtil implements IConstants{
 		string += getStrDoisDigitos(calendar.get(Calendar.HOUR_OF_DAY)) + ":";
 		string += getStrDoisDigitos(calendar.get(Calendar.MINUTE)) + ":";
 		string += getStrDoisDigitos(calendar.get(Calendar.SECOND));
+		return string;
+	}
+	
+	public static String formataData(Calendar calendar) {
+		String string = "";
+		string += getStrDoisDigitos(calendar.get(Calendar.DAY_OF_MONTH)) + "/";
+		string += getStrDoisDigitos(calendar.get(Calendar.MONTH)+1) + "/";
+		string += calendar.get(Calendar.YEAR);
 		return string;
 	}
 

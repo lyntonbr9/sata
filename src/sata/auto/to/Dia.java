@@ -22,7 +22,7 @@ public class Dia implements Comparable<Dia>, IConstants {
 		FORMATOS_DATA_PADRAO.put(LOCALE_BRASIL, "dd/MM/yyyy");
 		FORMATOS_DATA_PADRAO.put(LOCALE_EUA, "MM/dd/yyyy");
     }
-	private static final String FORMATO_DATA_BANCO = "yyyyMMdd";
+	private static final String FORMATO_DATA_BANCO = "yyyy-MM-dd";
 	
 	Integer dia;
 	Mes mes;

@@ -26,9 +26,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.util.IConstants;
-import sata.domain.util.SATAUtil;
 
 /*
  To use this program, change values for the following three constants,
@@ -110,31 +108,6 @@ public class SendMailUsingAuthentication implements IConstants{
 		}
 	}
 	
-	public static void sendEmailOperacaoLhama(String emailSubjectTxt, String[] emailList, List<OperacaoRealizadaTO> operacoes){
-		String emailFromAddress = SMTP_AUTH_USER;
-		String emailMsgTxt = getMsgTxtLhama(operacoes);
-
-		try {
-			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
-			smtpMailSender.postMail(emailList, emailSubjectTxt, emailMsgTxt,
-					emailFromAddress);
-			System.out.println("E-mail enviado com sucesso.");			
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-	}
-	public static String getMsgTxtLhama(List<OperacaoRealizadaTO> operacoes){
-		
-		String emailMsg="Lista de Ativos do alerta da Operacao da Lhama:" + NOVA_LINHA;
-		for(OperacaoRealizadaTO operacao : operacoes){
-			emailMsg+= operacao.getCodigoAtivo() + " data: " + SATAUtil.getDataAtualFormatada() +"        valor: " + operacao.getValorDouble() 
-				+ "        valorAlertaSuperior: " + operacao.getValorAlertaSuperiorDouble()
-				+ "        valorAlertaInferior: " + operacao.getValorAlertaInferiorDouble() + NOVA_LINHA;
-		}
-		return emailMsg;
-	}
-		
 	public static String getMsgTxt(List<String> listaAcoesOperAltaVarPoucoTempo){
 		String emailMsg="Lista de Ativos do alerta da Operacao de Alta Variacao em Pouco Tempo:" + NOVA_LINHA ;
 		for (String acao : listaAcoesOperAltaVarPoucoTempo)

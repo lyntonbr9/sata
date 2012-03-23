@@ -12,7 +12,7 @@ public abstract class DAOFactory {
 	
 	public abstract IAtivoDAO getAtivoDAO();
 	public abstract ICotacaoAtivoDAO getCotacaoAtivoDAO();
-	public abstract IOperacaoAlertaDAO getOperacaoAlertaDAO();
+	public abstract IAlertaDAO getAlertaDAO();
 	
 	public static DAOFactory getDAOFactory(int wichFactory){
 		switch(wichFactory)
@@ -20,9 +20,9 @@ public abstract class DAOFactory {
 			case ARQUIVO:
 //				return new ArquivoDAOFactory();
 			case POSTGRESQL:
-				return new PostgreDAOFactory();
+				return PostgreDAOFactory.singleton();
 			case MYSQL:
-				return new MySQLDAOFactory();
+				return MySQLDAOFactory.singleton();
 			default:
 				return null;
 		}

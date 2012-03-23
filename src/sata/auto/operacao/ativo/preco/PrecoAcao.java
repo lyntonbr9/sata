@@ -65,12 +65,10 @@ public class PrecoAcao extends Preco implements IConstants {
 		if (!cacheCotacoes.containsKey(diaCotacao)) {
 			try {
 				ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-				List<CotacaoAtivoTO> result = caDAO.getCotacoesDoAtivo(acao.getNome(), dia.formatoBanco(), dia.formatoBanco());
-				if (result.isEmpty())
-					return null;
-				CotacaoAtivoTO cotacao = result.get(0);
+				CotacaoAtivoTO cotacao = caDAO.getCotacaoDoAtivo(acao.getNome(), dia.formatoBanco());
 				cacheCotacoes.put(diaCotacao, cotacao);
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new BancoDadosEX(e.getMessage());
 			}
 		}

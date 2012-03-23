@@ -12,8 +12,8 @@ public class SATAFactoryFacade implements IConstants {
 	public static ICotacaoAtivoDAO getCotacaoAtivoDAO(){
 		return getDAOFactory().getCotacaoAtivoDAO();
 	}
-	public static IOperacaoAlertaDAO getOperacaoAlertaDAO(){
-		return getDAOFactory().getOperacaoAlertaDAO();
+	public static IAlertaDAO getAlertaDAO(){
+		return getDAOFactory().getAlertaDAO();
 	}
 	
 	private static DAOFactory getDAOFactory() {

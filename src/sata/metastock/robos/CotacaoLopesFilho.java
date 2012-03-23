@@ -8,8 +8,7 @@ package sata.metastock.robos;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -18,8 +17,6 @@ import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.TimeZone;
-
-import org.openqa.selenium.internal.Base64Encoder;
 
 /**
  * @author Flavio
@@ -31,6 +28,11 @@ public class CotacaoLopesFilho {
 
 	private static String cotacao = "43,80";
 	private static String hora = "07:00:00";
+	
+	public static BigDecimal getCotacao(String codigo) {
+		get(codigo);
+		return new BigDecimal(cotacao.replace(".","").replace(",", "."));
+	}
 
 	public static void get(String codigo) {
 		// Populate the hashtable with key value pairs of
@@ -100,9 +102,8 @@ public class CotacaoLopesFilho {
 	public static String POST(String targetURL, Hashtable contentHash) {
 
 		try {
-
-//			System.setProperty("https.proxyHost", "proxyad.br-petrobras.com.br");
-//			System.setProperty("https.proxyPort", "9090");
+			System.setProperty("https.proxyHost", "proxyad.br-petrobras.com.br");
+			System.setProperty("https.proxyPort", "9090");
 			
 			URL url;
 			URLConnection conn;

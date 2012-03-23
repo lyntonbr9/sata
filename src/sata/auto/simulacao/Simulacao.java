@@ -123,7 +123,7 @@ public class Simulacao implements IConstants {
 		try {
 			String codigoAcao = operacoes.get(0).getAtivo().getAcao().getNome();
 			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-			return caDAO.possuiCotacaoNoAno(codigoAcao, String.valueOf(ano));
+			return caDAO.possuiCotacaoNoAno(codigoAcao, ano);
 		} catch (Exception e) {
 			return false;
 		}
