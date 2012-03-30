@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import sata.auto.enums.Posicao;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public class OperacaoRealizadaTO  {
@@ -13,11 +14,28 @@ public class OperacaoRealizadaTO  {
 	public static final char VENDIDO = 'V';
 	
 	private Integer id;
-	private char posicao;
+	private Posicao posicao;
 	private Integer qtdLotes;
 	private String ativo;
 	private BigDecimal valor;
 	private BigDecimal valorAtual;
+	
+	public BigDecimal getValorReal() {
+		if (valor != null) {
+			valor = valor.setScale(50);
+			if (posicao == Posicao.COMPRADO)
+				return valor.negate();
+		}
+		return valor;
+	}
+	
+	public BigDecimal getValorAtual() {
+		if (valorAtual == null)
+			valorAtual = CotacaoLopesFilho.getCotacao(ativo).setScale(50);
+		if (posicao == Posicao.VENDIDO)
+			return valorAtual.negate();
+		return valorAtual;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -37,10 +55,10 @@ public class OperacaoRealizadaTO  {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public char getPosicao() {
+	public Posicao getPosicao() {
 		return posicao;
 	}
-	public void setPosicao(char posicao) {
+	public void setPosicao(Posicao posicao) {
 		this.posicao = posicao;
 	}
 	public Integer getQtdLotes() {
@@ -56,20 +74,10 @@ public class OperacaoRealizadaTO  {
 		this.ativo = ativo;
 	}
 	public BigDecimal getValor() {
-		valor = valor.setScale(50);
-		if (posicao == COMPRADO)
-			return valor.negate();
-		return valor;
+		return this.valor;
 	}
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
-	}
-	public BigDecimal getValorAtual() {
-		if (valorAtual == null)
-			valorAtual = CotacaoLopesFilho.getCotacao(ativo).setScale(50);
-		if (posicao == VENDIDO)
-			return valorAtual.negate();
-		return valorAtual;
 	}
 	public void setValorAtual(BigDecimal valorAtual) {
 		this.valorAtual = valorAtual;

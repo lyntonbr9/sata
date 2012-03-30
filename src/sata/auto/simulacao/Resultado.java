@@ -304,14 +304,14 @@ public class Resultado implements IConstants {
 		BigDecimal valorFinal = getResultadoComReivestimento(valorInicial);
 		BigDecimal caixa = valorInicial;
 		List<ValorResultado> resultados = new ArrayList<ValorResultado>();
-		resultados.add(new ValorResultado(SATAUtil.getMessage(MSG_LABEL_VALOR_INICIAL),valorInicial));
+		resultados.add(new ValorResultado(SATAUtil.getMessage(MSG_SIMULACAO_LABEL_VALOR_INICIAL),valorInicial));
 		for (int ano=anoInicial; ano<=anoFinal; ano++) 
 			for (int mes=1; mes<=12; mes++) {
 				BigDecimal valor = getResultadoMensalComReivestimento(caixa, ano, mes);
 				resultados.add(new ValorResultado(new Mes(mes,ano).toString(),valor));
 				caixa = valor;
 			}
-		resultados.add(new ValorResultado(SATAUtil.getMessage(MSG_LABEL_VALOR_FINAL),valorFinal));
+		resultados.add(new ValorResultado(SATAUtil.getMessage(MSG_SIMULACAO_LABEL_VALOR_FINAL),valorFinal));
 		return resultados;
 	}
 	
@@ -449,8 +449,8 @@ public class Resultado implements IConstants {
 	}
 	
 	private String imprimeResultadoConsolidado() {
-		String string = "\n" + SATAUtil.getMessage(MSG_LABEL_MEDIA_ANUAL) + ": " + SATAUtil.formataNumero(getMediaAnual()) + "%";
-		string += "\n" + SATAUtil.getMessage(MSG_LABEL_MEDIA_MENSAL) + ": " + SATAUtil.formataNumero(getMediaMensal()) + "%";
+		String string = "\n" + SATAUtil.getMessage(MSG_SIMULACAO_LABEL_MEDIA_ANUAL) + ": " + SATAUtil.formataNumero(getMediaAnual()) + "%";
+		string += "\n" + SATAUtil.getMessage(MSG_SIMULACAO_LABEL_MEDIA_MENSAL) + ": " + SATAUtil.formataNumero(getMediaMensal()) + "%";
 		return string;
 	}
 	

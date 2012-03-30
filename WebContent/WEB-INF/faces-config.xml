@@ -17,5 +17,10 @@
 			<var>msgs</var>
 		</resource-bundle>
 	</application>
+	
+	<converter>
+		<converter-id>toConverter</converter-id>
+		<converter-class>sata.auto.gui.web.converter.TOConverter</converter-class>
+	</converter>
 
 </faces-config>

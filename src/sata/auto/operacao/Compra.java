@@ -11,7 +11,7 @@ public class Compra extends Operacao {
 	
 	@Override
 	public String getBundleMessage() {
-		return MSG_LABEL_COMPRA;
+		return MSG_ENUM_LABEL_COMPRA;
 	}
 
 	public Compra() {

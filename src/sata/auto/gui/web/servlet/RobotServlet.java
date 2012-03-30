@@ -20,7 +20,7 @@ public class RobotServlet extends HttpServlet {
 	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
 		try {
-			Alerta.verificarAlertasAtivos();
+			Alerta.verificarAlertasOperacoesAtivos();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

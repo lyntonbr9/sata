@@ -482,7 +482,11 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 	}
 	private static MySQLCotacaoAtivoDAO instance;
 	public static MySQLCotacaoAtivoDAO get(Connection connection) {	
-		return (instance != null)? instance : create(connection); 
+		if (instance != null) {
+			instance.con = connection;
+			return instance;
+		}
+		return create(connection);  
 	}
 	private static synchronized MySQLCotacaoAtivoDAO create(Connection connection) {
 		if (instance == null) instance = new MySQLCotacaoAtivoDAO(connection);

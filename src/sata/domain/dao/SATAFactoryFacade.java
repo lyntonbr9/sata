@@ -15,6 +15,9 @@ public class SATAFactoryFacade implements IConstants {
 	public static IAlertaDAO getAlertaDAO(){
 		return getDAOFactory().getAlertaDAO();
 	}
+	public static IInvestidorDAO getInvestidorDAO(){
+		return getDAOFactory().getInvestidorDAO();
+	}
 	
 	private static DAOFactory getDAOFactory() {
 		String driver = SATAPropertyLoader.getProperty(PROP_SATA_BD);

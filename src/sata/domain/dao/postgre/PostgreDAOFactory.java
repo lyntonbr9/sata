@@ -7,6 +7,7 @@ import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IAlertaDAO;
+import sata.domain.dao.IInvestidorDAO;
 
 public class PostgreDAOFactory extends DAOFactory{
 	
@@ -21,6 +22,10 @@ public class PostgreDAOFactory extends DAOFactory{
 	}
 	
 	public IAlertaDAO getAlertaDAO() {
+		return null;
+	}
+	
+	public IInvestidorDAO getInvestidorDAO() {
 		return null;
 	}
 	

@@ -18,6 +18,8 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.TimeZone;
 
+import sata.domain.util.SATAUtil;
+
 /**
  * @author Flavio
  * 
@@ -102,8 +104,10 @@ public class CotacaoLopesFilho {
 	public static String POST(String targetURL, Hashtable contentHash) {
 
 		try {
-			System.setProperty("https.proxyHost", "proxyad.br-petrobras.com.br");
-			System.setProperty("https.proxyPort", "9090");
+			if (SATAUtil.isAmbienteDesenvolvimento()) {
+				System.setProperty("https.proxyHost", "proxyad.br-petrobras.com.br");
+				System.setProperty("https.proxyPort", "9090");
+			}
 			
 			URL url;
 			URLConnection conn;

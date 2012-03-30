@@ -10,9 +10,10 @@ import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoAcao;
 import sata.auto.to.Dia;
+import sata.domain.to.TO;
 
 
-public class Acao extends Ativo {
+public class Acao extends Ativo implements TO {
 	
 	String nome;
 	
@@ -30,6 +31,11 @@ public class Acao extends Ativo {
 	@Override
 	public String getBundleMessage() {
 		return "list.ativo.acao";
+	}
+	
+	@Override
+	public Integer getId() {
+		return nome.hashCode();
 	}
 
 	public BigDecimal getPreco(Dia dia) throws SATAEX {

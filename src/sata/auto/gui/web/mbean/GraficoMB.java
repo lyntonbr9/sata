@@ -41,8 +41,8 @@ public class GraficoMB implements IConstants {
 		// eixo x => variar de -VARIACAO_PERCENTUAL% a +VARIACAO_PERCENTUAL% o preço da ação no encerramento
 		// eixo y => percentual de variação da operação em cada preço de ação
 		// séries => o tempo para o vencimento de 30 dias ao último dia (de VARIACAO_DIARIA em VARIACAO_DIARIA)
-		SimulacaoMB simulacaoMB = FacesUtil.getMB(SimulacaoMB.class);
-		if (!simulacaoMB.getOperacoes().isEmpty()) {
+		OperacaoMB operacaoMB = FacesUtil.getMB(OperacaoMB.class);
+		if (!operacaoMB.getOperacoes().isEmpty()) {
 			try {
 				graficoModel.clear();
 				minY = 0;
@@ -53,7 +53,7 @@ public class GraficoMB implements IConstants {
 					for (int variacaoAcao=-variacaoPrecoAcao; variacaoAcao<=+variacaoPrecoAcao; variacaoAcao++) {
 						BigDecimal valorTotal = BigDecimal.ZERO;
 						BigDecimal valorInvestido = BigDecimal.ZERO;
-						for (Operacao operacao : simulacaoMB.getOperacoes()) {
+						for (Operacao operacao : operacaoMB.getOperacoes()) {
 							BigDecimal valorOperacao = calculaValorOperacao(operacao, 31, variacaoAcao);
 							if (isCondicaoVerdadeira(operacao, valorOperacao, variacaoAcao)) {
 								valorInvestido = valorInvestido.add(calculaValorInvestido(operacao, valorOperacao,variacaoAcao));

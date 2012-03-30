@@ -156,6 +156,11 @@ public class SendMailUsingAuthentication implements IConstants{
 		sendMail.postMail(recipients, subject, message, from);
 	}
 	
+	public static void sendMail(String recipients[], String subject, String message) throws MessagingException {
+		SendMailUsingAuthentication sendMail = new SendMailUsingAuthentication();
+		sendMail.postMail(recipients, subject, message, SMTP_AUTH_USER);
+	}
+	
 	public static void sendMail(String subject, String message,
 			String from) throws MessagingException {
 		SendMailUsingAuthentication sendMail = new SendMailUsingAuthentication();
