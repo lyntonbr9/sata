@@ -1,7 +1,7 @@
 package sata.domain.to;
 
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,8 +16,9 @@ public class AlertaTO implements IConstants {
 	private Integer porcentagemGanho;
 	private Integer porcentagemPerda;
 	private TipoCalculoValorInvestido tipoCalculoVI;
-	private Integer percCalculoVI;
-	private Collection<SerieOperacoesTO> series;
+	private Integer percCalculoVI = 100;
+	private boolean ativo;
+	private List<SerieOperacoesTO> series;
 	
 	public boolean alertaPorcentagemGanho(BigDecimal porcentagemSerie) {
 		BigDecimal percGanho = new BigDecimal(porcentagemGanho);
@@ -77,10 +78,16 @@ public class AlertaTO implements IConstants {
 	public void setPercCalculoVI(Integer percCalculoVI) {
 		this.percCalculoVI = percCalculoVI;
 	}
-	public Collection<SerieOperacoesTO> getSeries() {
+	public List<SerieOperacoesTO> getSeries() {
 		return series;
 	}
-	public void setSeries(Collection<SerieOperacoesTO> series) {
+	public void setSeries(List<SerieOperacoesTO> series) {
 		this.series = series;
+	}
+	public boolean isAtivo() {
+		return ativo;
+	}
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 }

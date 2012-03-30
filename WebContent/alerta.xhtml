@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="/templates/pagina.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">#{msgs['alerta.page.title']}</ui:define>
+	<ui:define name="pagina">
+		<h:panelGroup id="tableAlertas">
+			<p:toolbar> 
+				<p:toolbarGroup align="left">
+					<p:commandButton icon="ui-icon-plus" value="#{msgs['alerta.button.addAlerta']}" process=":form:tableAlertas"
+						action="#{alertaMB.incluirAlerta}" update=":form:formAlerta" oncomplete="formAlerta.show();"/>
+					<p:commandButton icon="ui-icon-refresh" title="#{msgs['general.label.refresh']}" process="@this"
+						action="#{alertaMB.atualizar}" update="tableAlertas"/>
+				</p:toolbarGroup>
+    		</p:toolbar>  
+			<p:dataTable id="alertas" value="#{alertaMB.alertas}" var="alerta" rendered="#{not empty alertaMB.alertas}">  
+	    		<p:column headerText="#{msgs['alerta.formAlerta.nome.label']}">  
+		            #{alerta.nome}  
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['alerta.formAlerta.percGanho.label']}">  
+		            <h:outputText value="#{alerta.porcentagemGanho}"><f:convertNumber /></h:outputText>%
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['alerta.formAlerta.percPerda.label']}">  
+		            <h:outputText value="#{alerta.porcentagemPerda}"><f:convertNumber /></h:outputText>%
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['alerta.formAlerta.ativo.label']}">  
+		            <h:outputText value="X" rendered="#{alerta.ativo}" />
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.open']}">
+	       			<p:commandButton icon="ui-icon-folder-open" process=":form:tableAlertas"
+		            	title="#{msgs['general.label.open']}" update=":form:tableSeries" oncomplete="tableSeries.show();">
+		            	<f:setPropertyActionListener target="#{alertaMB.alerta}" value="#{alerta}" />
+		            </p:commandButton>
+				</p:column>
+				<p:column styleClass="center" headerText="#{msgs['general.label.update']}">
+					<p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editar}" process=":form:tableAlertas"
+		            	update=":form:formAlerta" oncomplete="formAlerta.show();" title="#{msgs['general.label.update']}" >
+		            	<f:setPropertyActionListener target="#{alertaMB.alerta}" value="#{alerta}" />
+		            </p:commandButton>
+				</p:column>
+				<p:column styleClass="center" headerText="#{msgs['general.label.delete']}">
+					<p:commandButton icon="ui-icon-close" action="#{alertaMB.excluirAlerta}" update=":form:tableAlertas"
+		            	process=":form:tableAlertas" title="#{msgs['general.label.delete']}">
+		            	<f:setPropertyActionListener target="#{alertaMB.alerta}" value="#{alerta}" />
+		            </p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:panelGroup>
+		
+		<p:dialog header="#{msgs[alertaMB.textoOperacao]} #{msgs['alerta.alerta.label']}"
+			widgetVar="formAlerta" modal="true" id="formAlerta"> 
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{msgs['alerta.formAlerta.nome.label']}:" for="alerta" />
+				<p:inputText id="alerta" value="#{alertaMB.alerta.nome}" />
+				
+				<h:outputLabel value="#{msgs['alerta.formAlerta.percGanho.label']}:" for="percGanho" />
+				<h:panelGroup>
+					<p:spinner id="percGanho" value="#{alertaMB.alerta.porcentagemGanho}" size="4" />%
+				</h:panelGroup>
+			
+				<h:outputLabel value="#{msgs['alerta.formAlerta.percPerda.label']}:" for="percPerda" />
+				<h:panelGroup>
+					<p:spinner id="percPerda" value="#{alertaMB.alerta.porcentagemPerda}" size="4" />%
+				</h:panelGroup>
+				
+				<h:outputLabel value="#{msgs['alerta.formAlerta.tipoCalculoVI.label']}:" for="tipoCalculoVI" />
+				<p:selectOneMenu id="tipoCalculoVI" value="#{alertaMB.alerta.tipoCalculoVI}">
+					<f:selectItems value="#{alertaMB.tiposCalculoValorInvestido}" />
+					<p:ajax update="formAlerta" process="formAlerta" oncomplete="formAlerta.show()"/>
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['alerta.formAlerta.percCalculoVI.label']}:" for="percCalculoVI" 
+					rendered="#{alertaMB.showPercValorInvestido}" />
+				<h:panelGroup rendered="#{alertaMB.showPercValorInvestido}">
+					<p:spinner id="percCalculoVI" value="#{alertaMB.alerta.percCalculoVI}" size="4" stepFactor="5"
+						rendered="#{alertaMB.showPercValorInvestido}" />
+					<h:outputText value="%" />
+				</h:panelGroup>
+				
+				<h:outputLabel value="#{msgs['alerta.formAlerta.ativo.label']}:" for="ativo" />
+				<p:selectBooleanCheckbox id="ativo" value="#{alertaMB.alerta.ativo}" />
+   			</h:panelGrid>
+			<p:separator />
+			<p:commandButton icon="ui-icon-check" title="#{msgs[alertaMB.textoOperacao]}" process=":form:formAlerta"
+				action="#{alertaMB.salvarAlerta}" update=":form:tableAlertas" onclick="formAlerta.hide();"/>
+			<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formAlerta.hide();"/>
+		</p:dialog>
+		
+		<p:dialog id="tableSeries" header="#{alertaMB.alerta.nome}" widgetVar="tableSeries" modal="true">
+			<p:toolbar> 
+				<p:toolbarGroup align="left">
+					<p:commandButton icon="ui-icon-plus" value="#{msgs['alerta.button.addSerie']}" process=":form:tableSeries"
+						action="#{alertaMB.incluirSerie}" update=":form:formSerie" oncomplete="formSerie.show();"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:dataTable id="series" value="#{alertaMB.alerta.series}" var="serie" 
+				rendered="#{not empty alertaMB.alerta.series}">  
+	    		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.serie.label']}</f:facet>
+		            <h:outputText value="#{serie.dataExecucao}">
+		            	<f:convertDateTime pattern="dd/MM/yyyy" />
+		            </h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.investidor.label']}</f:facet>
+		            #{serie.investidor.nome}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.acao.label']}</f:facet>
+		            #{serie.acao.nome}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.qtdLotesAcao.label']}</f:facet>
+		            #{serie.qtdLotesAcao}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.precoAcao.label']}</f:facet>
+		            <h:outputText value="#{serie.precoAcao}" >
+		            	<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+		            </h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.ativa.label']}</f:facet>
+		           <h:outputText value="X" rendered="#{serie.ativa}" />
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.open']}">
+	       			<p:commandButton icon="ui-icon-folder-open" process=":form:tableSeries"
+		            	title="#{msgs['general.label.open']}" update=":form:tableOp" oncomplete="tableOp.show();">
+		            	<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
+		            </p:commandButton>
+		        </p:column>
+		        <p:column styleClass="center" headerText="#{msgs['general.label.update']}">
+					<p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editar}" process=":form:tableSeries"
+						update=":form:formSerie" oncomplete="formSerie.show();" title="#{msgs['general.label.update']}">
+						<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
+					</p:commandButton>
+				</p:column>
+				<p:column styleClass="center" headerText="#{msgs['general.label.delete']}">
+					<p:commandButton icon="ui-icon-close" action="#{alertaMB.excluirSerie}" process=":form:tableSeries"
+						update=":form:tableSeries" title="#{msgs['general.label.delete']}" oncomplete="tableSeries.show();">
+						<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+		
+		<p:dialog id="formSerie" header="#{msgs[alertaMB.textoOperacao]} #{msgs['alerta.serie.label']}"
+			widgetVar="formSerie" modal="true"> 
+			<h:panelGrid columns="2" rendered="#{not empty alertaMB.serie}">
+				<h:outputLabel value="#{msgs['alerta.formSerie.dataExecucao.label']}:" for="dataExecucao" />
+				<p:calendar id="dataExecucao" value="#{alertaMB.serie.dataExecucao}" 
+					showOn="button" size="10" pattern="dd/MM/yyyy" effect="slideDown" />
+				
+				<h:outputLabel value="#{msgs['alerta.formSerie.acao.label']}:" for="acao" />
+				<p:selectOneMenu id="acao" value="#{alertaMB.serie.acao}" converter="toConverter" >
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{alertaMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['alerta.formSerie.qtdLotesAcao.label']}:" for="qtdLotesAcao" />
+				<p:spinner id="qtdLotesAcao" value="#{alertaMB.serie.qtdLotesAcao}" size="4" />
+			
+				<h:outputLabel value="#{msgs['alerta.formSerie.precoAcao.label']}:" for="precoAcao" />
+				<p:inputText id="precoAcao" value="#{alertaMB.serie.precoAcao}" size="4">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+				</p:inputText>
+				
+				<h:outputLabel value="#{msgs['alerta.formSerie.investidor.label']}:" for="investidor" />
+				<p:selectOneMenu id="investidor" value="#{alertaMB.serie.investidor}" converter="toConverter">
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{alertaMB.investidores}" var="inv" itemValue="#{inv}" itemLabel="#{inv.nome}" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['alerta.formSerie.ativa.label']}:" for="ativa" />
+				<p:selectBooleanCheckbox id="ativa" value="#{alertaMB.serie.ativa}" />
+   			</h:panelGrid>
+			<p:separator />
+			<p:commandButton icon="ui-icon-check" title="#{msgs[alertaMB.textoOperacao]}" update=":form:tableSeries" 
+				action="#{alertaMB.salvarSerie}" onsuccess="formSerie.hide();" oncomplete="tableSeries.show();"
+				process=":form:formSerie" />
+			<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formSerie.hide();"/>
+		</p:dialog>
+		
+		<p:dialog id="tableOp" widgetVar="tableOp" modal="true">
+			<f:facet name="header">
+				#{msgs['alerta.serie.label']} #{msgs['alerta.de.label']}
+				<h:outputText value="#{alertaMB.serie.dataExecucao}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</f:facet>
+			<p:toolbar> 
+				<p:toolbarGroup align="left">
+					<p:commandButton icon="ui-icon-plus" value="#{msgs['alerta.button.addOperacao']}" process=":form:tableOp"
+					action="#{alertaMB.incluirOperacao}" update=":form:formOp" oncomplete="formOp.show();"/>
+				</p:toolbarGroup>
+    		</p:toolbar>
+			<p:dataTable id="operacoes" value="#{alertaMB.serie.operacoes}" var="op" 
+				rendered="#{not empty alertaMB.serie.operacoes}">  
+	    		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formOp.posicao.label']}</f:facet>
+					#{op.posicao.label}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formOp.qtdLotes.label']}</f:facet>
+		            #{op.qtdLotes}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formOp.ativo.label']}</f:facet>
+		            #{op.ativo}
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formOp.valor.label']}</f:facet>
+		            <h:outputText value="#{op.valor}">
+		            	<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+		            </h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['general.label.update']}</f:facet>
+		            <p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editar}" process=":form:tableOp"
+		            	update=":form:formOp" oncomplete="formOp.show();" title="#{msgs['general.label.update']}">
+		            	<f:setPropertyActionListener target="#{alertaMB.operacao}" value="#{op}" />
+		            </p:commandButton>
+	       		</p:column>
+	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['general.label.delete']}</f:facet>
+		            <p:commandButton icon="ui-icon-close" action="#{alertaMB.excluirOperacao}" update=":form:tableOp"
+		            	process=":form:tableOp" title="#{msgs['general.label.delete']}" oncomplete="tableOp.show();">
+		            	<f:setPropertyActionListener target="#{alertaMB.operacao}" value="#{op}" />
+		            </p:commandButton>
+	       		</p:column>
+			</p:dataTable>
+		</p:dialog>
+		
+		<p:dialog id="formOp" header="#{msgs[alertaMB.textoOperacao]} #{msgs['alerta.operacao.label']}"
+			widgetVar="formOp" modal="true"> 
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{msgs['alerta.formOp.posicao.label']}:" for="posicao" />
+				<p:selectOneMenu id="posicao" value="#{alertaMB.operacao.posicao}" >
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{alertaMB.posicoes}" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['alerta.formOp.qtdLotes.label']}:" for="qtdLotes" />
+				<p:spinner id="qtdLotes" value="#{alertaMB.operacao.qtdLotes}" size="4" />
+				
+				<h:outputLabel value="#{msgs['alerta.formOp.ativo.label']}:" for="ativoOp" />
+				<p:inputText id="ativoOp" value="#{alertaMB.operacao.ativo}" size="7" />
+			
+				<h:outputLabel value="#{msgs['alerta.formOp.valor.label']}:" for="valor" />
+				<p:inputText id="valor" value="#{alertaMB.operacao.valor}" size="4">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+				</p:inputText>
+   			</h:panelGrid>
+			<p:separator />
+			<p:commandButton icon="ui-icon-check" title="#{msgs[alertaMB.textoOperacao]}" process=":form:formOp"
+				action="#{alertaMB.salvarOperacao}" update=":form:tableOp" oncomplete="formOp.hide();tableOp.show();"/>
+			<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formOp.hide();"/>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

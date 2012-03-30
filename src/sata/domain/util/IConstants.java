@@ -61,18 +61,32 @@ public interface IConstants {
 	
 	String MSG_BUNDLE = "msg/messages";
 	
-	String MSG_LABEL_ACAO = "simulacao.formSimulacao.acao.label";
-	String MSG_LABEL_OPERACAO = "simulacao.formOperacao.operacao.label";
-	String MSG_LABEL_QTD = "simulacao.formOperacao.qtd.label";
-	String MSG_LABEL_ORDEM = "simulacao.formOperacao.ordem.label";
-	String MSG_LABEL_ATIVO = "simulacao.formOperacao.ativo.label";
-	String MSG_LABEL_MESES = "simulacao.formOperacao.meses.label";
-	String MSG_LABEL_MEDIA_ANUAL = "simulacao.resultado.mediaAnual";
-	String MSG_LABEL_MEDIA_MENSAL = "simulacao.resultado.mediaMensal";
-	String MSG_LABEL_VALOR_INICIAL = "simulacao.resultado.valorInicial";
-	String MSG_LABEL_VALOR_FINAL = "simulacao.resultado.valorFinal";
-	String MSG_LABEL_COMPRA = "list.operacao.compra";
-	String MSG_LABEL_VENDA = "list.operacao.venda";
+	String MSG_OPERACOES_LABEL_POSICAO = "operacoes.posicao.label";
+	String MSG_OPERACOES_LABEL_QTD = "operacoes.qtd.label";
+	String MSG_OPERACOES_LABEL_ATIVO = "operacoes.ativo.label";
+	String MSG_OPERACOES_LABEL_MESES = "operacoes.meses.label";
+	String MSG_OPERACOES_LABEL_ORDEM = "operacoes.ordem.label";
+	String MSG_SIMULACAO_LABEL_ACAO = "simulacao.formSimulacao.acao.label";
+	String MSG_SIMULACAO_LABEL_MEDIA_ANUAL = "simulacao.resultado.mediaAnual";
+	String MSG_SIMULACAO_LABEL_MEDIA_MENSAL = "simulacao.resultado.mediaMensal";
+	String MSG_SIMULACAO_LABEL_VALOR_INICIAL = "simulacao.resultado.valorInicial";
+	String MSG_SIMULACAO_LABEL_VALOR_FINAL = "simulacao.resultado.valorFinal";
+	String MSG_ALERTA_LABEL_NOME = "alerta.formAlerta.nome.label";
+	String MSG_ALERTA_LABEL_PERC_GANHO = "alerta.formAlerta.percGanho.label";
+	String MSG_ALERTA_LABEL_PERC_PERDA = "alerta.formAlerta.percPerda.label";
+	String MSG_ALERTA_LABEL_DATA_EXECUCAO = "alerta.formSerie.dataExecucao.label";
+	String MSG_ALERTA_LABEL_ACAO = "alerta.formSerie.acao.label";
+	String MSG_ALERTA_LABEL_QTD_LOTES_ACAO = "alerta.formSerie.qtdLotesAcao.label";
+	String MSG_ALERTA_LABEL_PRECO_ACAO = "alerta.formSerie.precoAcao.label";
+	String MSG_ALERTA_LABEL_INVESTIDOR = "alerta.formSerie.investidor.label";
+	String MSG_ALERTA_LABEL_POSICAO = "alerta.formOp.posicao.label";
+	String MSG_ALERTA_LABEL_QTD_LOTES = "alerta.formOp.qtdLotes.label";
+	String MSG_ALERTA_LABEL_ATIVO = "alerta.formOp.ativo.label";
+	String MSG_ALERTA_LABEL_VALOR = "alerta.formOp.valor.label";
+	String MSG_ENUM_LABEL_COMPRA = "enum.posicao.C";
+	String MSG_ENUM_LABEL_VENDA = "enum.posicao.V";
+	String MSG_GENERAL_LABEL_ALTERAR = "general.label.update";
+	String MSG_GENERAL_LABEL_INCLUIR = "general.label.add";
 	
 	String MSG_PATTERN_OPERACAO = "toString.operacao.pattern";
 	String MSG_PATTERN_OPERACAO_MESES = "toString.operacao.pattern.meses";
@@ -84,6 +98,7 @@ public interface IConstants {
 	String MSG_ENUM_PREFIX_ATRIBUTO = "enum.atributo.";
 	String MSG_ENUM_PREFIX_TIPO_RELATORIO = "enum.tipoRelatorio.";
 	String MSG_ENUM_PREFIX_TIPO_CALCULO_VALOR_INVESTIDO = "enum.tipoCalculoValorInvestido.";
+	String MSG_ENUM_PREFIX_POSICAO = "enum.posicao.";
 	
 	String MSG_ERRO_CAMPO_OBRIGATORIO = "general.msg.error.campoObrigatorio";
 	String MSG_ERRO_VALOR_MAIOR_QUE_ZERO = "general.msg.error.maiorQueZero";

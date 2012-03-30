@@ -1,8 +1,8 @@
 package sata.domain.to;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,11 +14,12 @@ public class SerieOperacoesTO {
 	private Integer id;
 	private AlertaTO alerta;
 	private InvestidorTO investidor;
-	private Calendar dataExecucao;
+	private Date dataExecucao;
 	private Acao acao;
 	private Integer qtdLotesAcao;
 	private BigDecimal precoAcao;
-	private Collection<OperacaoRealizadaTO> operacoes;
+	private boolean ativa;
+	private List<OperacaoRealizadaTO> operacoes;
 	
 	@Override
 	public int hashCode() {
@@ -41,21 +42,19 @@ public class SerieOperacoesTO {
 	public AlertaTO getAlerta() {
 		return alerta;
 	}
-
 	public void setAlerta(AlertaTO alerta) {
 		this.alerta = alerta;
 	}
-
 	public InvestidorTO getInvestidor() {
 		return investidor;
 	}
 	public void setInvestidor(InvestidorTO investidor) {
 		this.investidor = investidor;
 	}
-	public Calendar getDataExecucao() {
+	public Date getDataExecucao() {
 		return dataExecucao;
 	}
-	public void setDataExecucao(Calendar dataExecucao) {
+	public void setDataExecucao(Date dataExecucao) {
 		this.dataExecucao = dataExecucao;
 	}
 	public Acao getAcao() {
@@ -76,11 +75,16 @@ public class SerieOperacoesTO {
 	public void setPrecoAcao(BigDecimal precoAcao) {
 		this.precoAcao = precoAcao;
 	}
-
-	public Collection<OperacaoRealizadaTO> getOperacoes() {
+	public List<OperacaoRealizadaTO> getOperacoes() {
 		return operacoes;
 	}
-	public void setOperacoes(Collection<OperacaoRealizadaTO> operacoes) {
+	public void setOperacoes(List<OperacaoRealizadaTO> operacoes) {
 		this.operacoes = operacoes;
+	}
+	public boolean isAtiva() {
+		return ativa;
+	}
+	public void setAtiva(boolean ativa) {
+		this.ativa = ativa;
 	}
 }

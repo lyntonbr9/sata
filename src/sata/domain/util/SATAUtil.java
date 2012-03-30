@@ -3,6 +3,7 @@ package sata.domain.util;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -22,10 +23,14 @@ import sata.metastock.robos.CotacaoLopesFilho;
 
 public class SATAUtil implements IConstants{
 	
-	public static Calendar converte(Date data) {
+	public static Calendar converteToCalendar(Date data) {
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(data);
 		return cal;
+	}
+	
+	public static java.sql.Date converteToSQLDate(java.util.Date date) {
+		return new java.sql.Date(date.getTime());  
 	}
 	
 	public static Locale getCurrentLocale() {
@@ -271,10 +276,18 @@ public class SATAUtil implements IConstants{
 		TimeZone tz = TimeZone.getTimeZone("America/Sao_Paulo");  
         TimeZone.setDefault(tz);
         Calendar calendario = GregorianCalendar.getInstance(tz); 
-//        if (SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_PROD)) {
+//        if (isAmbienteProducao()) {
 //        	calendario.add(Calendar.MINUTE, -26);
 //        }
 		return calendario;		
+	}
+	
+	public static boolean isAmbienteProducao() {
+		return SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_PROD);
+	}
+	
+	public static boolean isAmbienteDesenvolvimento() {
+		return SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE).equals(AMBIENTE_DESENV);
 	}
 	
 	public static String getDataAtualFormatada() {
@@ -282,7 +295,7 @@ public class SATAUtil implements IConstants{
 	}
 	
 	public static String getSomenteDataAtualFormatada() {
-		return formataData(getDataAtual());
+		return formataCalendarData(getDataAtual());
 	}
 	
 	public static String formataCalendar(Calendar calendar) {
@@ -296,14 +309,19 @@ public class SATAUtil implements IConstants{
 		return string;
 	}
 	
-	public static String formataData(Calendar calendar) {
+	public static String formataCalendarData(Calendar calendar) {
 		String string = "";
 		string += getStrDoisDigitos(calendar.get(Calendar.DAY_OF_MONTH)) + "/";
 		string += getStrDoisDigitos(calendar.get(Calendar.MONTH)+1) + "/";
 		string += calendar.get(Calendar.YEAR);
 		return string;
 	}
-
+	
+	public static String formataData(java.util.Date data) {
+		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, getCurrentLocale());
+		return format.format(data);
+	}
+	
 	// pega as cotacoes do site
 	// (http://br.finance.yahoo.com/q/hp?s=PETR4.SA) no intervalo
 	public static List<CotacaoAtivoTO> getCotacoesFromYahooFinances(String acao, String dataInicial, String dataFinal)

@@ -10,6 +10,11 @@ label {
 	font-size: 14px;
 }
 
+.ui-widget {
+  	font-family: Georgia;
+	font-size: 14px;
+}
+
 h1 {
 	font-family: Georgia;
 	font-size: 20px;
@@ -49,7 +54,7 @@ h1 {
 #rodape {
 	clear: both;
 	padding: 2px;
-	border-top: 1px solid #630;
+	border-top: none;
 	width: 800px; 
 }
 

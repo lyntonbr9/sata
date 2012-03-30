@@ -4,10 +4,13 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:a4j="http://richfaces.org/a4j">
+    xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="conteudo">
 		<h1><ui:insert name="titulo" /></h1>
-		<ui:insert name="pagina" />
+		<p:growl autoUpdate="true"/>
+		<h:panelGroup id="page">
+			<ui:insert name="pagina" />
+		</h:panelGroup>
 	</ui:define>
 </ui:composition>

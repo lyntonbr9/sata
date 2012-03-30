@@ -1,10 +1,25 @@
 package sata.domain.to;
 
-public class InvestidorTO {
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+public class InvestidorTO implements TO {
 
 	private Integer id;
 	private String nome;
 	private String email;
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(14,22).
+	       append(id).
+	       toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
 	
 	public Integer getId() {
 		return id;

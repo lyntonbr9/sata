@@ -18,14 +18,16 @@
 		<h:form id="form" enctype="multipart/form-data">
 			<div id="pagina">
 				<div id="adsense">
-					<h:commandButton value="English" action="#{localeMB.changeLocal}" rendered="#{localeMB.selectedLanguage != 'en'}">
+					<p:commandButton value="English" action="#{localeMB.changeLocal}" 
+						rendered="#{localeMB.selectedLanguage != 'en'}" ajax="false">
 	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="en" />
 	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="" />
-					</h:commandButton>
-					<h:commandButton value="Português" action="#{localeMB.changeLocal}" rendered="#{localeMB.selectedLanguage != 'pt'}">
+					</p:commandButton>
+					<p:commandButton value="Português" action="#{localeMB.changeLocal}" 
+						rendered="#{localeMB.selectedLanguage != 'pt'}" ajax="false">
 	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="pt" />
 	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="BR" />
-					</h:commandButton>
+					</p:commandButton>
 					<ui:include src="/include/adsense.xhtml" />
 				</div>
 				<div id="cabecalho">

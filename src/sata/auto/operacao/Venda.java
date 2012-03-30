@@ -11,7 +11,7 @@ public class Venda extends Operacao {
 	
 	@Override
 	public String getBundleMessage() {
-		return MSG_LABEL_VENDA;
+		return MSG_ENUM_LABEL_VENDA;
 	}
 
 	public Venda() {
