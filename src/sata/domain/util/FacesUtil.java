@@ -15,6 +15,11 @@ import sata.auto.gui.web.mbean.LocaleMB;
 
 public final class FacesUtil {
 	
+	public static String formataTexto(String texto) {
+		texto = texto.replace("\n", "<br/>");
+		return texto;
+	}
+	
 	public static void putInSession(String key, Object value) {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(key, value);
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.to.AlertaTO;
 import sata.domain.to.InvestidorTO;
+import sata.domain.to.SerieOperacoesTO;
 
 public class HibernateAlertaDAO extends GenericDAOHibernate<AlertaTO> implements IAlertaDAO {
 
@@ -15,7 +16,12 @@ public class HibernateAlertaDAO extends GenericDAOHibernate<AlertaTO> implements
 
 	@Override
 	public List<AlertaTO> listaAlertasAtivos() throws SQLException {
-		return super.listar("ativo = 1");
+		List<AlertaTO> lista = super.listar("where ativo = 1");
+		for (AlertaTO alerta: lista)
+			for (SerieOperacoesTO serie: alerta.getSeries())
+				if (!serie.isAtiva())
+					alerta.getSeries().remove(serie);
+		return lista;
 	}
 
 	@Override
