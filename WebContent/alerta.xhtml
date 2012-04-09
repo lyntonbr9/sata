@@ -127,6 +127,12 @@
 		            <f:facet name="header">#{msgs['alerta.formSerie.ativa.label']}</f:facet>
 		           <h:outputText value="X" rendered="#{serie.ativa}" />
 	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.view']}">
+	       			<p:commandButton icon="ui-icon-search" process=":form:tableSeries"
+		            	title="#{msgs['general.label.view']}" update=":form:now" oncomplete="now.show();">
+		            	<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
+		            </p:commandButton>
+		        </p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.open']}">
 	       			<p:commandButton icon="ui-icon-folder-open" process=":form:tableSeries"
 		            	title="#{msgs['general.label.open']}" update=":form:tableOp" oncomplete="tableOp.show();">
@@ -260,5 +266,9 @@
 				action="#{alertaMB.salvarOperacao}" update=":form:tableOp" oncomplete="formOp.hide();tableOp.show();"/>
 			<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formOp.hide();"/>
 		</p:dialog>
+		
+		<p:dialog id="now" widgetVar="now" modal="true">
+			<h:outputText value="#{alertaMB.serieNow}" escape="false" />
+		</p:dialog> 
 	</ui:define>
 </ui:composition>

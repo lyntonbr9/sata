@@ -59,7 +59,7 @@ public class SimulacaoMB implements IConstants {
 				SATAUtil.setTaxaDeJuros(taxaDeJuros/100);
 				if (resultado != null) resultado.limpa();
 				resultado = simulacao.getResultado();
-				relatorio = formataTexto(resultado.imprime(tipoRelatorio));
+				relatorio = FacesUtil.formataTexto(resultado.imprime(tipoRelatorio));
 			}
 		}
 		catch (Exception e) {
@@ -69,7 +69,7 @@ public class SimulacaoMB implements IConstants {
 	
 	public void alterarRelatorio() {
 		try {
-			relatorio = formataTexto(resultado.imprime(tipoRelatorio));
+			relatorio = FacesUtil.formataTexto(resultado.imprime(tipoRelatorio));
 		}
 		catch (Exception e) {
 			FacesUtil.addException(e);
@@ -100,11 +100,6 @@ public class SimulacaoMB implements IConstants {
 		catch (Exception e) {
 			FacesUtil.addException(e);
 		}
-	}
-	
-	private String formataTexto(String texto) {
-		texto = texto.replace("\n", "<br/>");
-		return texto;
 	}
 	
 	private void setAcao(List<Operacao> operacoes, Acao acao) {

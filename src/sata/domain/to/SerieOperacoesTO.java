@@ -18,6 +18,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.operacao.ativo.Acao;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
@@ -29,11 +30,11 @@ public class SerieOperacoesTO implements TO {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="alerta_id")
+	@JoinColumn(name="id_alerta")
 	private AlertaTO alerta;
 	
 	@ManyToOne
-	@JoinColumn(name="investidor_id")
+	@JoinColumn(name="id_investidor")
 	private InvestidorTO investidor;
 	
 	@Column
@@ -42,23 +43,27 @@ public class SerieOperacoesTO implements TO {
 	@Transient
 	private Acao acao;
 	
+	@Column(name="acao")
+	private String nomeAcao;
+	
 	@Column
 	private Integer qtdLotesAcao;
 	
 	@Column
 	private BigDecimal precoAcao;
 	
+	@Transient
 	private BigDecimal precoAcaoAtual;
 	
-	@Column
+	@Column(name="ativo")
 	private boolean ativa;
 	
 	@OneToMany(mappedBy = "serie")
 	private List<OperacaoRealizadaTO> operacoes;
 	
-	@Column(name="acao")
-	public String getNomeAcao() {
-		return acao.getNome();
+	public void setNomeAcao(String nomeAcao) {
+		acao = AcaoConteiner.get(nomeAcao);
+		this.nomeAcao = nomeAcao;
 	}
 	
 	public BigDecimal getPrecoAcaoAtual() {
@@ -103,12 +108,6 @@ public class SerieOperacoesTO implements TO {
 	public void setDataExecucao(Date dataExecucao) {
 		this.dataExecucao = dataExecucao;
 	}
-	public Acao getAcao() {
-		return acao;
-	}
-	public void setAcao(Acao acao) {
-		this.acao = acao;
-	}
 	public Integer getQtdLotesAcao() {
 		return qtdLotesAcao;
 	}
@@ -135,5 +134,14 @@ public class SerieOperacoesTO implements TO {
 	}
 	public void setPrecoAcaoAtual(BigDecimal precoAcaoAtual) {
 		this.precoAcaoAtual = precoAcaoAtual;
+	}
+	public Acao getAcao() {
+		return acao;
+	}
+	public void setAcao(Acao acao) {
+		this.acao = acao;
+	}
+	public String getNomeAcao() {
+		return nomeAcao;
 	}
 }

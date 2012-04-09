@@ -14,6 +14,7 @@ import sata.auto.enums.Posicao;
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
+import sata.domain.alert.Alerta;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
@@ -195,6 +196,11 @@ public class AlertaMB implements IConstants {
 			valido = false;
 		}
 		return valido;
+	}
+	
+	public String getSerieNow() {
+		if (serie.getId() != null) return FacesUtil.formataTexto(Alerta.getMensagemSerie(serie));
+		else return "";
 	}
 	
 	public List<SelectItem> getTiposCalculoValorInvestido() {

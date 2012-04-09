@@ -41,7 +41,7 @@ public class OperacaoRealizadaTO implements TO  {
 	private BigDecimal valorAtual;
 	
 	@ManyToOne
-	@JoinColumn(name="serie_id")
+	@JoinColumn(name="id_serie")
 	private SerieOperacoesTO serie;
 	
 	public BigDecimal getValorReal() {
