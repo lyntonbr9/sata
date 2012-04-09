@@ -1,5 +1,6 @@
 package sata.domain.util;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import sata.domain.dao.ICotacaoAtivoDAO;
@@ -9,12 +10,12 @@ import sata.domain.to.CotacaoAtivoTO;
 public class SATAAjustarCotacoes {
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		
 		ajustaCotacaoPETR4();
 	}
 	
-	public static void ajustaCotacaoPETR4()
+	public static void ajustaCotacaoPETR4() throws SQLException
 	{
 		//PETR4 teve split dividido por 2 em 25/04/2008
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();

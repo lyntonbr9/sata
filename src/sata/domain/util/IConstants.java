@@ -35,6 +35,7 @@ public interface IConstants {
 	
 	public String BD_POSTGRE = "postgre";
 	public String BD_MYSQL = "mysql";
+	public String BD_HIBERNATE = "hibernate";
 	
 	public String AMBIENTE_PROD = "prod";
 	public String AMBIENTE_DESENV = "desenv";
@@ -71,9 +72,16 @@ public interface IConstants {
 	String MSG_SIMULACAO_LABEL_MEDIA_MENSAL = "simulacao.resultado.mediaMensal";
 	String MSG_SIMULACAO_LABEL_VALOR_INICIAL = "simulacao.resultado.valorInicial";
 	String MSG_SIMULACAO_LABEL_VALOR_FINAL = "simulacao.resultado.valorFinal";
+	String MSG_ALERTA_LABEL_ALERTA = "alerta.alerta.label";
+	String MSG_ALERTA_LABEL_SERIE = "alerta.serie.label";
+	String MSG_ALERTA_LABEL_OPERACAO = "alerta.operacao.label";
+	String MSG_ALERTA_LABEL_DE = "alerta.de.label";
+	String MSG_ALERTA_LABEL_VALOR_SERIE = "alerta.valorSerie.label";
+	String MSG_ALERTA_LABEL_PREC_SERIE = "alerta.percSerie.label";
 	String MSG_ALERTA_LABEL_NOME = "alerta.formAlerta.nome.label";
 	String MSG_ALERTA_LABEL_PERC_GANHO = "alerta.formAlerta.percGanho.label";
 	String MSG_ALERTA_LABEL_PERC_PERDA = "alerta.formAlerta.percPerda.label";
+	String MSG_ALERTA_LABEL_VALOR_INVESTIDO = "alerta.formAlerta.tipoCalculoVI.label";
 	String MSG_ALERTA_LABEL_DATA_EXECUCAO = "alerta.formSerie.dataExecucao.label";
 	String MSG_ALERTA_LABEL_ACAO = "alerta.formSerie.acao.label";
 	String MSG_ALERTA_LABEL_QTD_LOTES_ACAO = "alerta.formSerie.qtdLotesAcao.label";
@@ -83,6 +91,10 @@ public interface IConstants {
 	String MSG_ALERTA_LABEL_QTD_LOTES = "alerta.formOp.qtdLotes.label";
 	String MSG_ALERTA_LABEL_ATIVO = "alerta.formOp.ativo.label";
 	String MSG_ALERTA_LABEL_VALOR = "alerta.formOp.valor.label";
+	String MSG_ALERTA_EMAIL_ASSUNTO_GANHO = "alerta.email.assunto.ganho";
+	String MSG_ALERTA_EMAIL_ASSUNTO_PERDA = "alerta.email.assunto.perda";
+	String MSG_LOGIN_LABEL_EMAIL = "login.email.label";
+	String MSG_LOGIN_LABEL_SENHA = "login.senha.label";
 	String MSG_ENUM_LABEL_COMPRA = "enum.posicao.C";
 	String MSG_ENUM_LABEL_VENDA = "enum.posicao.V";
 	String MSG_GENERAL_LABEL_ALTERAR = "general.label.update";
@@ -102,5 +114,7 @@ public interface IConstants {
 	
 	String MSG_ERRO_CAMPO_OBRIGATORIO = "general.msg.error.campoObrigatorio";
 	String MSG_ERRO_VALOR_MAIOR_QUE_ZERO = "general.msg.error.maiorQueZero";
+	String MSG_ERRO_ERRO_EMAIL_NAO_CADASTRADO = "login.msg.error.emailNaoCadastrado";
+	String MSG_ERRO_ERRO_SENHA_INCORRETA = "login.msg.error.senhaIncorreta";
 }
 

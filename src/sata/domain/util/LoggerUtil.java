@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-public class LoggerUtil {
+public final class LoggerUtil {
 	
 	static Logger logger;
 	static boolean settedUp = false;
@@ -40,4 +40,6 @@ public class LoggerUtil {
 	public static void log(String msg) {
 		logger.info(msg);
 	}
+	
+	private LoggerUtil() {} // Não é possível instanciar classes utilitárias
 }

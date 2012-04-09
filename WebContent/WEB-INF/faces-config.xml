@@ -22,5 +22,17 @@
 		<converter-id>toConverter</converter-id>
 		<converter-class>sata.auto.gui.web.converter.TOConverter</converter-class>
 	</converter>
+	
+	<lifecycle>
+        <phase-listener>sata.auto.gui.web.listener.LoginPhaseListener</phase-listener>
+    </lifecycle>
+    
+    <navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 
 </faces-config>

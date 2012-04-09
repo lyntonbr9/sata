@@ -1,6 +1,8 @@
 package sata.domain.util;
 
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -21,7 +23,26 @@ import java.util.TimeZone;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.robos.CotacaoLopesFilho;
 
-public class SATAUtil implements IConstants{
+public final class SATAUtil implements IConstants{
+	
+	public static String encrypt(String value) {   
+		try {   
+			MessageDigest md = MessageDigest.getInstance("MD5");   
+			md.update(value.getBytes());   
+			byte[] hash = md.digest();   
+			StringBuffer hexString = new StringBuffer();   
+			for (int i = 0; i < hash.length; i++) {   
+				if ((0xff & hash[i]) < 0x10)   
+					hexString.append("0" + Integer.toHexString((0xFF & hash[i])));   
+				else hexString.append(Integer.toHexString(0xFF & hash[i]));   
+			}   
+			value = hexString.toString();
+
+		} catch (NoSuchAlgorithmException nsae) {   
+			nsae.printStackTrace();   
+		}   
+		return value;   
+	}
 	
 	public static Calendar converteToCalendar(Date data) {
 		Calendar cal = Calendar.getInstance(); 
@@ -106,7 +127,7 @@ public class SATAUtil implements IConstants{
 	private static ResourceBundle getBundle() {
 		ResourceBundle rb = FacesUtil.getContextBundle();
 		if (rb != null)	return rb;
-		else return ResourceBundle.getBundle(MSG_BUNDLE);
+		else return ResourceBundle.getBundle(MSG_BUNDLE, getCurrentLocale());
 	}
 	
 	private static Cache<String, MessageFormat> patterns = new Cache<String, MessageFormat>(20);
@@ -605,5 +626,7 @@ public class SATAUtil implements IConstants{
     	
     	return false;
     }
+	
+	private SATAUtil() {} // Não é possível instanciar classes utilitárias
 }
 

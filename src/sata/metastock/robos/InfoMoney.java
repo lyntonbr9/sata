@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import sata.domain.util.SATAUtil;
 
 /**
  * @author Flavio
@@ -23,6 +26,30 @@ public class InfoMoney {
 	
 	public static void main(String args[]){
 		InfoMoney.getTodasCotacoes();
+	}
+	
+	public static boolean isBolsaAberta() {
+		try {
+			URL url = new URL("http://www.infomoney.com.br/ibovespa%2Fcotacoes");
+	        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+	        StringBuffer html = new StringBuffer();
+	        String inputLine;
+	        while ((inputLine = in.readLine()) != null)
+	        	html.append(inputLine);
+	        in.close();			
+			
+	        return html.toString().contains("Bovespa") && html.toString().contains("Aberta");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Calendar calendar = SATAUtil.getDataAtual();
+			if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || 
+					calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+				return false;
+			
+			return calendar.get(Calendar.HOUR_OF_DAY) >= 10 &&
+			calendar.get(Calendar.HOUR_OF_DAY) <= 17;
+		}
 	}
 	
 	public static ArrayList getTodasCotacoes(){

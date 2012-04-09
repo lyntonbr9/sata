@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="/templates/pagina.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">#{msgs['login.page.title']}</ui:define>
+	<ui:define name="pagina">
+		<h:panelGrid columns="2">
+			<h:outputLabel value="#{msgs['login.email.label']}:" for="email" />
+			<p:inputText id="email" value="#{investidorMB.investidor.email}" />
+			
+			<h:outputLabel value="#{msgs['login.senha.label']}:" for="senha" />
+			<p:password id="senha" value="#{investidorMB.investidor.senha}" feedback="false" />
+			
+		</h:panelGrid>
+		<p:captcha rendered="#{investidorMB.tentativas >= 5}" 
+			requiredMessage="#{msgs['login.msg.error.captcha']}"  validatorMessage="#{msgs['login.msg.error.captcha']}" />
+		<p:commandButton action="#{investidorMB.login}" value="#{msgs['login.button.login']}" update="page"/>
+	</ui:define>
+</ui:composition>
