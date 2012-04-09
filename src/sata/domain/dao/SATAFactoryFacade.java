@@ -15,6 +15,12 @@ public class SATAFactoryFacade implements IConstants {
 	public static IAlertaDAO getAlertaDAO(){
 		return getDAOFactory().getAlertaDAO();
 	}
+	public static ISerieOperacoesDAO getSerieOperacoesDAO(){
+		return getDAOFactory().getSerieOperacoesDAO();
+	}
+	public static IOperacaoRealizadaDAO getOperacaoRealizadaDAO(){
+		return getDAOFactory().getOperacaoRealizadaDAO();
+	}
 	public static IInvestidorDAO getInvestidorDAO(){
 		return getDAOFactory().getInvestidorDAO();
 	}
@@ -26,6 +32,9 @@ public class SATAFactoryFacade implements IConstants {
 		
 		else if (driver.equals(BD_POSTGRE))
 			return DAOFactory.getDAOFactory(DAOFactory.POSTGRESQL);
+		
+		else if (driver.equals(BD_HIBERNATE))
+			return DAOFactory.getDAOFactory(DAOFactory.HIBERNATE);
 		
 		else return null;
 	}

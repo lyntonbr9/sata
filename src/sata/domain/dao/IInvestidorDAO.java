@@ -7,5 +7,7 @@ import sata.domain.to.InvestidorTO;
 
 public interface IInvestidorDAO {
 
-	public List<InvestidorTO> listaInvestidores() throws SQLException;
+	public List<InvestidorTO> listar() throws SQLException;
+	public void salvar(InvestidorTO investidor) throws SQLException;
+	public InvestidorTO recuperar(String email) throws SQLException;
 }

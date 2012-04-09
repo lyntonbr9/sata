@@ -1,23 +1,61 @@
 package sata.domain.to;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
+@Entity
+@Table(name="CotacaoAtivo")
+public class CotacaoAtivoTO implements TO, Comparable<CotacaoAtivoTO>, Serializable {
+	private static final long serialVersionUID = -7631873400428727309L;
 
+	@Id @Column(name="codigoAtivo")
 	private String codigo;
-	private String abertura;
-	private String maxima;
-	private String minima;
-	private String fechamento;
+
+	@Id @Column
 	private String periodo;
+	
+	@Column
+	private String abertura;
+	
+	@Column
+	private String maxima;
+	
+	@Column
+	private String minima;
+	
+	@Column
+	private String fechamento;
+	
+	@Column
 	private String tipoPeriodo;
+	
+	@Column
 	private String ano;
+	
+	@Column
 	private String volume;
+	
+	@Column
 	private double volatilidadeAnual;
+	
+	@Column
 	private double volatilidadeMensal;
+	
+	@Transient
 	private int split;
+	
+	@Override
+	public Integer getId() {
+		return codigo.hashCode() + periodo.hashCode();
+	}
 
 	public BigDecimal getValorFechamento() {
 		return new BigDecimal(Double.parseDouble(fechamento)/(100*split));
@@ -143,5 +181,4 @@ public class CotacaoAtivoTO implements Comparable<CotacaoAtivoTO> {
 	public void setSplit(int split) {
 		this.split = split;
 	}
-	
 }

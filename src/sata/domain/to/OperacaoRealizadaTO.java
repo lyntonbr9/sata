@@ -2,23 +2,47 @@ package sata.domain.to;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.enums.Posicao;
 import sata.metastock.robos.CotacaoLopesFilho;
 
-public class OperacaoRealizadaTO  {
+@Entity
+@Table(name="OperacaoRealizada")
+public class OperacaoRealizadaTO implements TO  {
 	
-	public static final char COMPRADO = 'C';
-	public static final char VENDIDO = 'V';
-	
+	@Id	@GeneratedValue
+	@Column
 	private Integer id;
+	
+	@Column
 	private Posicao posicao;
+	
+	@Column
 	private Integer qtdLotes;
+	
+	@Column
 	private String ativo;
+	
+	@Column
 	private BigDecimal valor;
+	
+	@Transient
 	private BigDecimal valorAtual;
+	
+	@ManyToOne
+	@JoinColumn(name="serie_id")
+	private SerieOperacoesTO serie;
 	
 	public BigDecimal getValorReal() {
 		if (valor != null) {
@@ -81,5 +105,11 @@ public class OperacaoRealizadaTO  {
 	}
 	public void setValorAtual(BigDecimal valorAtual) {
 		this.valorAtual = valorAtual;
+	}
+	public SerieOperacoesTO getSerie() {
+		return serie;
+	}
+	public void setSerie(SerieOperacoesTO serie) {
+		this.serie = serie;
 	}
 }

@@ -8,6 +8,8 @@ import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IInvestidorDAO;
+import sata.domain.dao.IOperacaoRealizadaDAO;
+import sata.domain.dao.ISerieOperacoesDAO;
 
 public class MySQLDAOFactory extends DAOFactory{
 	
@@ -25,6 +27,16 @@ public class MySQLDAOFactory extends DAOFactory{
 	@Override
 	public IAlertaDAO getAlertaDAO(){
 		return MySQLAlertaDAO.get(conPoolManager.getConnectionFromPool());
+	}
+	
+	@Override
+	public ISerieOperacoesDAO getSerieOperacoesDAO() {
+		return MySQLSerieOperacoesDAO.get(conPoolManager.getConnectionFromPool());
+	}
+
+	@Override
+	public IOperacaoRealizadaDAO getOperacaoRealizadaDAO() {
+		return MySQLOperacaoRealizadaDAO.get(conPoolManager.getConnectionFromPool());
 	}
 	
 	@Override

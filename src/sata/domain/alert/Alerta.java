@@ -25,33 +25,42 @@ public class Alerta implements IConstants {
 		IAlertaDAO dao = SATAFactoryFacade.getAlertaDAO();
 		List<AlertaTO> alertasAtivos = dao.listaAlertasAtivos();
 		for (AlertaTO alerta: alertasAtivos) {
-			BigDecimal valorAbertura = BigDecimal.ZERO;
-			BigDecimal valorFechamento = BigDecimal.ZERO;
 			for (SerieOperacoesTO serie: alerta.getSeries()) {
-				String msg = "Alerta " + alerta.getNome() + "\n";
-				msg += "Série de " + SATAUtil.formataData(serie.getDataExecucao()) + "\n";
+				BigDecimal valorAbertura = BigDecimal.ZERO;
+				BigDecimal valorFechamento = BigDecimal.ZERO;
+				String msg = "---\n";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_ALERTA) + " " + alerta.getNome() + "\n";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_SERIE) + " " 
+					+ SATAUtil.getMessage(MSG_ALERTA_LABEL_DE) + " " 
+					+ SATAUtil.formataData(serie.getDataExecucao()) + "\n";
 				for (OperacaoRealizadaTO op: serie.getOperacoes()) {
-					valorAbertura = valorAbertura.add(op.getValor().multiply(new BigDecimal(op.getQtdLotes())));
+					valorAbertura = valorAbertura.add(op.getValorReal().multiply(new BigDecimal(op.getQtdLotes())));
 					BigDecimal valorAtualTotal = op.getValorAtual().multiply(new BigDecimal(op.getQtdLotes()));
 					valorFechamento = valorFechamento.add(valorAtualTotal);
-					msg += "Operação " + op.getPosicao() + " " + op.getAtivo() + " = " 
-							+ SATAUtil.formataNumero(op.getValor(),defaultLocale) + " --> " 
-							+ SATAUtil.formataNumero(op.getValorAtual(),defaultLocale) + "\n";
+					msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_OPERACAO) + " " + op.getPosicao() 
+						+ " " + op.getAtivo() + " = " 
+						+ SATAUtil.formataNumero(op.getValorReal(),defaultLocale) + " --> " 
+						+ SATAUtil.formataNumero(op.getValorAtual(),defaultLocale) + "\n";
 				}
 				BigDecimal valorInvestido = getValorInvestido(serie);
 				BigDecimal valorSerie = valorAbertura.add(valorFechamento);
 				BigDecimal percentual = valorSerie.divide(valorInvestido, RoundingMode.HALF_EVEN).multiply(CEM);
-				msg += "Valor Investido: " + SATAUtil.formataNumero(valorInvestido,defaultLocale) + "\n";
-				msg += "Valor Série: " + SATAUtil.formataNumero(valorSerie,defaultLocale) + "\n";
-				msg += "Percentual Série: " + SATAUtil.formataNumero(percentual,defaultLocale)+ "%";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_PRECO_ACAO) + ": " 
+					+  SATAUtil.formataNumero(serie.getPrecoAcaoAtual(),defaultLocale) + "\n";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_VALOR_INVESTIDO) + ": " 
+					+ SATAUtil.formataNumero(valorInvestido,defaultLocale) + "\n";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_VALOR_SERIE) + ": " 
+					+ SATAUtil.formataNumero(valorSerie,defaultLocale) + "\n";
+				msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_PREC_SERIE) + ": " 
+					+ SATAUtil.formataNumero(percentual,defaultLocale)+ "%";
 				
 				if (alerta.alertaPorcentagemGanho(percentual)) {
-					String assunto = "[SATA-PROJ] Alerta de Ganho Percentual >= " + 
-						alerta.getPorcentagemGanho() + "% em " + SATAUtil.getSomenteDataAtualFormatada(); 
+					String assunto = SATAUtil.getMessage(MSG_ALERTA_EMAIL_ASSUNTO_GANHO,
+							alerta.getPorcentagemGanho().toString(),SATAUtil.getSomenteDataAtualFormatada()); 
 					sendMail(assunto, msg, serie.getInvestidor().getEmail());
 				} else if (alerta.alertaPorcentagemPerda(percentual)) {
-					String assunto = "[SATA-PROJ] Alerta de Perda Percentual <= " + 
-					alerta.getPorcentagemPerda() + "% em " + SATAUtil.getSomenteDataAtualFormatada();
+					String assunto = SATAUtil.getMessage(MSG_ALERTA_EMAIL_ASSUNTO_PERDA,
+							alerta.getPorcentagemGanho().toString(),SATAUtil.getSomenteDataAtualFormatada());
 					sendMail(assunto, msg, serie.getInvestidor().getEmail());
 				}
 				System.out.println(msg);
@@ -65,6 +74,12 @@ public class Alerta implements IConstants {
 			BigDecimal precoTotalAcao = serie.getPrecoAcao().multiply(new BigDecimal(serie.getQtdLotesAcao()));
 			BigDecimal percentual = (new BigDecimal(serie.getAlerta().getPercCalculoVI())).divide(CEM);
 			return precoTotalAcao.multiply(percentual);
+			
+		case CUSTO_MONTAGEM:
+			BigDecimal valorAbertura = BigDecimal.ZERO;
+			for (OperacaoRealizadaTO op: serie.getOperacoes()) 
+				valorAbertura = valorAbertura.add(op.getValorReal().multiply(new BigDecimal(op.getQtdLotes())));
+			return valorAbertura;
 
 		default:
 			return BigDecimal.ZERO;

@@ -1,9 +1,11 @@
 package sata.domain.util;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
@@ -11,7 +13,32 @@ import org.apache.commons.lang3.StringUtils;
 
 import sata.auto.gui.web.mbean.LocaleMB;
 
-public class FacesUtil {
+public final class FacesUtil {
+	
+	public static void putInSession(String key, Object value) {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(key, value);
+	}
+	
+	public static Object getFromSession(String key) {
+		return FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(key);
+	}
+	
+	public static void removeFromSession(String key) {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(key);
+	}
+	
+	public static String getPaginaAtual() {
+		return FacesContext.getCurrentInstance().getViewRoot().getViewId().replace("/", "").replace("xhtml", "jsf");
+	}
+	
+	public static void navigateTo(String stringNavegacao) {
+		NavigationHandler nh = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
+        nh.handleNavigation(FacesContext.getCurrentInstance(), null, stringNavegacao);	
+	}
+	
+	public static void redirect(String page) throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect(page);
+	}
 	
 	protected static ResourceBundle getContextBundle() {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -72,11 +99,22 @@ public class FacesUtil {
 	
 	@SuppressWarnings("unchecked")
 	public static <MB> MB getMB(Class<MB> clazz) {
-	    FacesContext context = FacesContext.getCurrentInstance();
-	    if (context != null) {
-	    	String mbName = clazz.getSimpleName().substring(0, 1).toLowerCase() + clazz.getSimpleName().substring(1);
-	    	return (MB) context.getExternalContext().getSessionMap().get(mbName);
-	    }
-	    else return null;
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context != null) {
+			String mbName = clazz.getSimpleName().substring(0, 1).toLowerCase() + clazz.getSimpleName().substring(1);
+			MB mb = (MB) context.getExternalContext().getSessionMap().get(mbName);
+			if (mb == null) {
+				try {
+					mb = clazz.newInstance();
+					context.getExternalContext().getSessionMap().put(mbName, mb);
+				} catch (Exception e) {
+					return null;
+				}
+			}
+			return mb;
+		}
+		else return null;
 	}
+	
+	private FacesUtil() {} // Não é possível instanciar classes utilitárias
 }

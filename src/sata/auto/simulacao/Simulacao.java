@@ -125,6 +125,7 @@ public class Simulacao implements IConstants {
 			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 			return caDAO.possuiCotacaoNoAno(codigoAcao, ano);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

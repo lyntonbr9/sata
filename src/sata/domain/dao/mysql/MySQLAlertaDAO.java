@@ -17,7 +17,6 @@ import sata.domain.to.AlertaTO;
 import sata.domain.to.InvestidorTO;
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.to.SerieOperacoesTO;
-import sata.domain.util.SATAUtil;
 
 public class MySQLAlertaDAO implements IAlertaDAO {
 	
@@ -25,7 +24,7 @@ public class MySQLAlertaDAO implements IAlertaDAO {
 	private final Integer[] noParam = {}; 
 	
 	@Override
-	public AlertaTO recuperaAlerta(Integer id) throws SQLException {
+	public AlertaTO recuperar(Integer id) throws SQLException {
 		Integer[] paramAlerta = {id};
 		List<AlertaTO> list = listaAlertas("id = ?", null, null, paramAlerta, noParam, noParam);
 		if (!list.isEmpty()) return list.get(0);
@@ -33,7 +32,7 @@ public class MySQLAlertaDAO implements IAlertaDAO {
 	}
 	
 	@Override
-	public List<AlertaTO> listaAlertas() throws SQLException {
+	public List<AlertaTO> listar() throws SQLException {
 		return listaAlertas(null, null, null);
 	}
 	
@@ -122,6 +121,7 @@ public class MySQLAlertaDAO implements IAlertaDAO {
 					op.setQtdLotes(rsOp.getInt("qtdLotes"));
 					op.setAtivo(rsOp.getString("ativo"));
 					op.setValor(rsOp.getBigDecimal("valor"));
+					op.setSerie(serie);
 					serie.getOperacoes().add(op);
 				}
 				alerta.getSeries().add(serie);
@@ -134,7 +134,7 @@ public class MySQLAlertaDAO implements IAlertaDAO {
 	}
 	
 	@Override
-	public void salvarAlerta(AlertaTO alerta) throws SQLException {
+	public void salvar(AlertaTO alerta) throws SQLException {
 		if (alerta.getId() == null) { // INSERT
 			String sql = "INSERT INTO AlertaOperacao (nome, porcentagemGanho, porcentagemPerda, tipoCalculoVI, " +
 						 "percCalculoVI, ativo) VALUES (?,?,?,?,?,?)";
@@ -167,98 +167,16 @@ public class MySQLAlertaDAO implements IAlertaDAO {
 			ps.setInt(i++, alerta.getId());
 			ps.executeUpdate();
 		}
+		MySQLDAOFactory.returnConnection(con);
 	}
 	
 	@Override
-	public void salvarSerie(SerieOperacoesTO serie) throws SQLException {
-		if (serie.getId() == null) { // INSERT
-			String sql = "INSERT INTO SerieOperacoes (id_alerta, id_investidor, dataExecucao, acao, " +
-						 "precoAcao, qtdLotesAcao, ativo) VALUES (?,?,?,?,?,?,?)";
-			PreparedStatement ps = con.prepareStatement(sql);
-			int i = 1;
-			ps.setInt(i++, serie.getAlerta().getId());
-			ps.setInt(i++, serie.getInvestidor().getId());
-			ps.setDate(i++, SATAUtil.converteToSQLDate(serie.getDataExecucao()));
-			ps.setString(i++, serie.getAcao().getNome());
-			ps.setBigDecimal(i++, serie.getPrecoAcao());
-			ps.setInt(i++, serie.getAlerta().getId());
-			ps.setBoolean(i++, serie.isAtiva());
-			ps.executeUpdate();
-			
-			sql = "SELECT max(id) as id FROM SerieOperacoes";
-			ps = con.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) serie.setId(rs.getInt("id"));
-		}
-		else { // UPDATE
-			String sql = "UPDATE SerieOperacoes SET id_investidor = ?, dataExecucao = ?, acao = ?, " +
-						"precoAcao = ?, qtdLotesAcao = ?, ativo = ? WHERE id = ?";
-			PreparedStatement ps = con.prepareStatement(sql);
-			int i = 1;
-			ps.setInt(i++, serie.getInvestidor().getId());
-			ps.setDate(i++, SATAUtil.converteToSQLDate(serie.getDataExecucao()));
-			ps.setString(i++, serie.getAcao().getNome());
-			ps.setBigDecimal(i++, serie.getPrecoAcao());
-			ps.setInt(i++, serie.getQtdLotesAcao());
-			ps.setBoolean(i++, serie.isAtiva());
-			ps.setInt(i++, serie.getId());
-			ps.executeUpdate();
-		}
-	}
-	
-	@Override
-	public void salvarOperacao(SerieOperacoesTO serie, OperacaoRealizadaTO operacao) throws SQLException {
-		if (operacao.getId() == null) { // INSERT
-			String sql = "INSERT INTO OperacaoRealizada (id_serie, posicao, qtdLotes, ativo, valor) " +
-						 "VALUES (?,?,?,?,?)";
-			PreparedStatement ps = con.prepareStatement(sql);
-			int i = 1;
-			ps.setInt(i++, serie.getId());
-			ps.setString(i++, String.valueOf(operacao.getPosicao().getKey()));
-			ps.setInt(i++, operacao.getQtdLotes());
-			ps.setString(i++, operacao.getAtivo());
-			ps.setBigDecimal(i++, operacao.getValor());
-			ps.executeUpdate();
-			
-			sql = "SELECT max(id) as id FROM OperacaoRealizada";
-			ps = con.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) operacao.setId(rs.getInt("id"));
-		}
-		else { // UPDATE
-			String sql = "UPDATE OperacaoRealizada SET posicao = ?, qtdLotes = ?, valor = ? WHERE id = ?";
-			PreparedStatement ps = con.prepareStatement(sql);
-			int i = 1;
-			ps.setString(i++, String.valueOf(operacao.getPosicao().getKey()));
-			ps.setInt(i++, operacao.getQtdLotes());
-			ps.setBigDecimal(i++, operacao.getValor());
-			ps.setInt(i++, operacao.getId());
-			ps.executeUpdate();
-		}
-	}
-	
-	@Override
-	public void excluirAlerta(AlertaTO alerta) throws SQLException {
+	public void excluir(AlertaTO alerta) throws SQLException {
 		String sql = "UPDATE AlertaOperacao SET dtExclusao = NOW() WHERE id = ?";
 		PreparedStatement ps = con.prepareStatement(sql);
 		ps.setInt(1, alerta.getId());
 		ps.executeUpdate();
-	}
-	
-	@Override
-	public void excluirSerie(SerieOperacoesTO serie) throws SQLException {
-		String sql = "UPDATE SerieOperacoes SET dtExclusao = NOW() WHERE id = ?";
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.setInt(1, serie.getId());
-		ps.executeUpdate();
-	}
-	
-	@Override
-	public void excluirOperacao(OperacaoRealizadaTO operacao) throws SQLException {
-		String sql = "UPDATE OperacaoRealizada SET dtExclusao = NOW() WHERE id = ?";
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.setInt(1, operacao.getId());
-		ps.executeUpdate();
+		MySQLDAOFactory.returnConnection(con);
 	}
 	
 	// Implementação do singleton

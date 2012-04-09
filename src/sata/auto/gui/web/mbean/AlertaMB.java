@@ -16,6 +16,8 @@ import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IInvestidorDAO;
+import sata.domain.dao.IOperacaoRealizadaDAO;
+import sata.domain.dao.ISerieOperacoesDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AlertaTO;
 import sata.domain.to.InvestidorTO;
@@ -29,6 +31,8 @@ import sata.domain.util.IConstants;
 public class AlertaMB implements IConstants {
 	
 	IAlertaDAO alertaDAO = SATAFactoryFacade.getAlertaDAO();
+	ISerieOperacoesDAO serieDAO = SATAFactoryFacade.getSerieOperacoesDAO();
+	IOperacaoRealizadaDAO opDAO = SATAFactoryFacade.getOperacaoRealizadaDAO();
 	
 	public AlertaMB() throws SQLException {
 		atualizar();
@@ -46,11 +50,10 @@ public class AlertaMB implements IConstants {
 	public void salvarAlerta() {
 		try {
 			if (alertaValido()) {
-				alertaDAO.salvarAlerta(alerta);
+				alertaDAO.salvar(alerta);
 				if (!alterar) alertas.add(alerta);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
@@ -59,11 +62,10 @@ public class AlertaMB implements IConstants {
 		try {
 			if (serieValida()) {
 				serie.setAlerta(alerta);
-				alertaDAO.salvarSerie(serie);
+				serieDAO.salvar(serie);
 				if (!alterar) alerta.getSeries().add(serie);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
@@ -71,41 +73,38 @@ public class AlertaMB implements IConstants {
 	public void salvarOperacao() {
 		try {
 			if (operacaoValida()) {
-				alertaDAO.salvarOperacao(serie, operacao);
+				operacao.setSerie(serie);
+				opDAO.salvar(operacao);
 				if (!alterar) serie.getOperacoes().add(operacao);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
 	
 	public void excluirAlerta() {
 		try {
-			alertaDAO.excluirAlerta(alerta);
-			alertas = alertaDAO.listaAlertas();
-		}
-		catch (Exception e) {
+			alertaDAO.excluir(alerta);
+			alertas = alertaDAO.listar();
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
 	
 	public void excluirSerie() {
 		try {
-			alertaDAO.excluirSerie(serie);
+			serieDAO.excluir(serie);
 			alerta.getSeries().remove(serie);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
 	
 	public void excluirOperacao() {
 		try {
-			alertaDAO.excluirOperacao(operacao);
+			opDAO.excluir(operacao);
 			serie.getOperacoes().remove(operacao);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
 	}
@@ -131,8 +130,8 @@ public class AlertaMB implements IConstants {
 	
 	public void atualizar() throws SQLException {
 		IInvestidorDAO investidorDAO = SATAFactoryFacade.getInvestidorDAO();
-		alertas = alertaDAO.listaAlertas();
-		investidores = investidorDAO.listaInvestidores();
+		alertas = alertaDAO.listar();
+		investidores = investidorDAO.listar();
 	}
 	
 	private boolean alertaValido() {

@@ -3,21 +3,46 @@ package sata.domain.to;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.domain.util.IConstants;
 
-public class AlertaTO implements IConstants {
+@Entity
+@Table(name="AlertaOperacao")
+public class AlertaTO implements TO,IConstants {
 	
+	@Id	@GeneratedValue
+	@Column
 	private Integer id;
+	
+	@Column
 	private String nome;
+	
+	@Column
 	private Integer porcentagemGanho;
+	
+	@Column
 	private Integer porcentagemPerda;
+	
+	@Column
 	private TipoCalculoValorInvestido tipoCalculoVI;
+	
+	@Column
 	private Integer percCalculoVI = 100;
+	
+	@Column
 	private boolean ativo;
+	
+	@OneToMany(mappedBy = "alerta")
 	private List<SerieOperacoesTO> series;
 	
 	public boolean alertaPorcentagemGanho(BigDecimal porcentagemSerie) {
