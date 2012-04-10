@@ -6,6 +6,7 @@
  */
 package sata.metastock.data;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import sata.domain.dao.DAOFactory;
@@ -31,37 +32,44 @@ public class ValuesMeta {
 	
 	private List<CotacaoAtivoTO> listaCotacoes;
 	
-	public ValuesMeta(String acao){
-		acao = acao.replace("D.txt", "");
-		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-		List<CotacaoAtivoTO> listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
-		
-        closes = new double[listaCotacoes.size()];
-        high = new double[listaCotacoes.size()];
-        low = new double[listaCotacoes.size()];
-        open = new double[listaCotacoes.size()];
-        volume = new double[listaCotacoes.size()];
-        data = new String[listaCotacoes.size()];
-        
-        CotacaoAtivoTO caTO;
-        int i;
-        for (i=0; i < listaCotacoes.size(); i++)
-        {
-			caTO = listaCotacoes.get(i);
-        	closes[i] = Double.parseDouble(caTO.getFechamento());
-        	high[i] = Double.parseDouble(caTO.getMaxima());
-        	low[i] = Double.parseDouble(caTO.getMinima());
-        	open[i] = Double.parseDouble(caTO.getAbertura());
-        	data[i] = SATAUtil.getDataSemFormato(caTO.getPeriodo()) ;
-        }
-	        
+	public ValuesMeta(String acao) {
+		try {
+			acao = acao.replace("D.txt", "");
+			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+			List<CotacaoAtivoTO> listaCotacoes;
+			listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
+
+			closes = new double[listaCotacoes.size()];
+			high = new double[listaCotacoes.size()];
+			low = new double[listaCotacoes.size()];
+			open = new double[listaCotacoes.size()];
+			volume = new double[listaCotacoes.size()];
+			data = new String[listaCotacoes.size()];
+
+			CotacaoAtivoTO caTO;
+			int i;
+			for (i=0; i < listaCotacoes.size(); i++)
+			{
+				caTO = listaCotacoes.get(i);
+				closes[i] = Double.parseDouble(caTO.getFechamento());
+				high[i] = Double.parseDouble(caTO.getMaxima());
+				low[i] = Double.parseDouble(caTO.getMinima());
+				open[i] = Double.parseDouble(caTO.getAbertura());
+				data[i] = SATAUtil.getDataSemFormato(caTO.getPeriodo()) ;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public ValuesMeta(String acao, String dois){
-		
-		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
-//		listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
-		listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
+	public ValuesMeta(String acao, String dois) {
+		try {
+			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+	//		listaCotacoes = caDAO.getCotacoesDoAtivo(acao, "2011");
+			listaCotacoes = caDAO.getCotacoesDoAtivo(acao);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 				
 	}
 

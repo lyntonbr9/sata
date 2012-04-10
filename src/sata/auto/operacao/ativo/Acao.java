@@ -2,6 +2,8 @@ package sata.auto.operacao.ativo;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Embeddable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -12,7 +14,7 @@ import sata.auto.operacao.ativo.preco.PrecoAcao;
 import sata.auto.to.Dia;
 import sata.domain.to.TO;
 
-
+@Embeddable
 public class Acao extends Ativo implements TO {
 	
 	String nome;

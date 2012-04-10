@@ -44,6 +44,11 @@ public enum Atributo {
 		return items;
 	}
 	
+	@Override
+	public String toString() {
+		return getLabel();
+	}
+	
 	public String getName() {
 		return name;
 	}

@@ -325,7 +325,7 @@ public class MySQLCotacaoAtivoDAO implements ICotacaoAtivoDAO, IConstants {
 //		}
 //		System.out.println(resultadoOperacao);
 	}
-	public static String analisaMelhorOpcaoCompra(CotacaoAtivoTO cotacaoAcaoTO, int indiceSerieOpcao, String dataInicial, String dataFinal){
+	public static String analisaMelhorOpcaoCompra(CotacaoAtivoTO cotacaoAcaoTO, int indiceSerieOpcao, String dataInicial, String dataFinal) throws SQLException{
 
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		Properties SATAProps = SATAPropertyLoader.loadProperties(IConstants.ARQ_SATA_CONF);

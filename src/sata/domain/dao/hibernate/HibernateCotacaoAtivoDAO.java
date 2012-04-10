@@ -10,7 +10,7 @@ import sata.domain.to.SplitAtivoTO;
 public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO> implements ICotacaoAtivoDAO {
 	
 	@Override
-	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) {
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) throws SQLException {
 		return setSplit(super.listar("where codigo = '" + codigoAtivo + "' order by periodo"));
 	}
 	@Override
@@ -30,7 +30,7 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 		return !getCotacoesDoAtivo(codigoAtivo, ano).isEmpty();
 	}
 	@Override
-	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, String dataFinal) {
+	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, String dataFinal) throws SQLException {
 		return setSplit(super.listar("where codigo = '" + codigoAtivo + " and periodo BETWEEN '" + dataInicial + "' and '" + dataFinal + "' order by periodo"));
 	}
 	@Override
@@ -46,13 +46,13 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 		return null; //TODO implementar
 	}
 	@Override
-	public int updateCotacaoDoAtivo(CotacaoAtivoTO caTO) {
+	public int updateCotacaoDoAtivo(CotacaoAtivoTO caTO) throws SQLException {
 		super.alterar(caTO);
 		return 0;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<CotacaoAtivoTO> setSplit(List<CotacaoAtivoTO> list) {
+	private List<CotacaoAtivoTO> setSplit(List<CotacaoAtivoTO> list) throws SQLException {
 		for (CotacaoAtivoTO cotacao: list) {
 			String query = "from SplitAtivoTO where codigoAtivo = '" + cotacao.getCodigo()
 				+ "' and periodo >= '" + cotacao.getPeriodo() + "'";

@@ -29,12 +29,24 @@ public enum Posicao {
 				return value;
 		return null;
 	}
+	
+	public static Posicao get(String name) {
+		for (Posicao value : values())
+			if (value.name().equals(name))
+				return value;
+		return null;
+	}
 
 	public static List<SelectItem> getSelectItems() {
 		List<SelectItem> items = new ArrayList<SelectItem>();
 		for (Posicao value : values())
 			items.add(new SelectItem(value, value.getLabel()));
 		return items;
+	}
+	
+	@Override
+	public String toString() {
+		return getLabel();
 	}
 
 	public char getKey() {

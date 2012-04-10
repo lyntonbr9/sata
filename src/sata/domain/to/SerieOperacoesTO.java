@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +21,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import sata.auto.operacao.ativo.Acao;
-import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
@@ -40,11 +42,11 @@ public class SerieOperacoesTO implements TO {
 	@Column
 	private Date dataExecucao;
 	
-	@Transient
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="nome", column=@Column(name="acao"))
+	})
 	private Acao acao;
-	
-	@Column(name="acao")
-	private String nomeAcao;
 	
 	@Column
 	private Integer qtdLotesAcao;
@@ -61,14 +63,9 @@ public class SerieOperacoesTO implements TO {
 	@OneToMany(mappedBy = "serie")
 	private List<OperacaoRealizadaTO> operacoes;
 	
-	public void setNomeAcao(String nomeAcao) {
-		acao = AcaoConteiner.get(nomeAcao);
-		this.nomeAcao = nomeAcao;
-	}
-	
 	public BigDecimal getPrecoAcaoAtual() {
 		if (precoAcaoAtual == null)
-			precoAcaoAtual = CotacaoLopesFilho.getCotacao(getNomeAcao()).setScale(50);
+			precoAcaoAtual = CotacaoLopesFilho.getCotacao(acao.getNome()).setScale(50);
 		return precoAcaoAtual;
 	}
 	
@@ -140,8 +137,5 @@ public class SerieOperacoesTO implements TO {
 	}
 	public void setAcao(Acao acao) {
 		this.acao = acao;
-	}
-	public String getNomeAcao() {
-		return nomeAcao;
 	}
 }

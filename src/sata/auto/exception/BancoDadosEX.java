@@ -11,4 +11,8 @@ public class BancoDadosEX extends SATAEX {
 	public BancoDadosEX(String msg){
 		super(msg);
 	}
+	
+	public BancoDadosEX(Throwable e){
+		super(e);
+	}
 }

@@ -32,6 +32,11 @@ public enum Operador {
 			items.add(new SelectItem(value, value.getSimbol()));
 		return items;
 	}
+	
+	@Override
+	public String toString() {
+		return simbol;
+	}
 
 	public String getSimbol() {
 		return simbol;
