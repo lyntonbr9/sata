@@ -2,6 +2,7 @@ package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -43,8 +44,12 @@ public class PrecoAcao extends Preco implements IConstants {
 	}
 	
 	@Override
-	public BigDecimal calculaMediaMovel(Integer periodo) {
-		return calculaMediaMovel(dia, periodo, acao);
+	public BigDecimal calculaMediaMovel(Integer periodo) throws BancoDadosEX {
+		try {
+			return calculaMediaMovel(dia, periodo, acao);
+		} catch (SQLException e) {
+			throw new BancoDadosEX(e);
+		}
 	}
 	
 	private CotacaoAtivoTO getCotacaoAcao(Dia dia) throws SATAEX {
@@ -69,13 +74,13 @@ public class PrecoAcao extends Preco implements IConstants {
 				cacheCotacoes.put(diaCotacao, cotacao);
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw new BancoDadosEX(e.getMessage());
+				throw new BancoDadosEX(e);
 			}
 		}
 		return cacheCotacoes.get(diaCotacao);
 	}
 	
-	private static BigDecimal calculaMediaMovel(Dia dia, int periodo, Acao acao) {
+	private static BigDecimal calculaMediaMovel(Dia dia, int periodo, Acao acao) throws SQLException {
 		if (periodo == 0) return BigDecimal.ZERO;
 		DiaCotacao diaCotacao = new DiaCotacao(dia, acao);
 		if (!cacheMM.containsKey(diaCotacao)) {
@@ -93,7 +98,7 @@ public class PrecoAcao extends Preco implements IConstants {
 		return cacheMM.get(diaCotacao);
 	}
 	
-	private static List<CotacaoAtivoTO> getListaCotacoesAteAData (Dia diaFinal, int qtdDias, Acao acao) {
+	private static List<CotacaoAtivoTO> getListaCotacoesAteAData (Dia diaFinal, int qtdDias, Acao acao) throws SQLException {
 		List<CotacaoAtivoTO> cotacoes = getListaCotacoesAcaoPeriodo(acao, diaFinal.getDiaAnterior(qtdDias*2), diaFinal);
 		while(cotacoes.size() > qtdDias) {
 			cotacoes.remove(0);
@@ -101,11 +106,11 @@ public class PrecoAcao extends Preco implements IConstants {
 		return cotacoes;
 	}
 	
-	private static List<CotacaoAtivoTO> getListaCotacoesAcaoPeriodo(Acao acao, Dia diaInicial, Dia diaFinal) {
+	private static List<CotacaoAtivoTO> getListaCotacoesAcaoPeriodo(Acao acao, Dia diaInicial, Dia diaFinal) throws SQLException {
 		return getListaCotacoesAcaoPeriodo(acao, new Periodo(diaInicial, diaFinal));
 	}
 	
-	private static List<CotacaoAtivoTO> getListaCotacoesAcaoPeriodo(Acao acao, Periodo periodo) {
+	private static List<CotacaoAtivoTO> getListaCotacoesAcaoPeriodo(Acao acao, Periodo periodo) throws SQLException {
 		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 		return caDAO.getCotacoesDoAtivo(acao.getNome(), periodo.getDiaInicial().formatoBanco(), periodo.getDiaFinal().formatoBanco());
 	}

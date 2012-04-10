@@ -11,4 +11,8 @@ public class SATAEX extends Exception {
 	public SATAEX(String msg){
 		super(msg);
 	}
+	
+	public SATAEX(Throwable e){
+		super(e);
+	}
 }

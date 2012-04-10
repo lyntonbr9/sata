@@ -76,7 +76,11 @@ public class AlertaMB implements IConstants {
 			if (operacaoValida()) {
 				operacao.setSerie(serie);
 				opDAO.salvar(operacao);
-				if (!alterar) serie.getOperacoes().add(operacao);
+				if (!alterar) {
+					if (serie.getOperacoes() == null)
+						serie.setOperacoes(new ArrayList<OperacaoRealizadaTO>());
+					serie.getOperacoes().add(operacao);
+				}
 			}
 		} catch (Exception e) {
 			FacesUtil.addException(e);

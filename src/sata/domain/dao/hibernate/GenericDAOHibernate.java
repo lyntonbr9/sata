@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import sata.domain.to.TO;
 
@@ -22,16 +23,47 @@ public class GenericDAOHibernate <T extends TO> {
 	}
 
 	public Integer incluir(T to) throws SQLException {
-		return (Integer) getSession().save(to);
+		Session sessao = getSession(); 
+		Integer id = null;
+		Transaction transaction = null;
+		try {
+			transaction = sessao.beginTransaction();
+			id = (Integer) sessao.save(to);
+			transaction.commit();
+		} catch (Exception e) { 
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new SQLException(e);
+		}
+		return id;
 	}
 	
-	public void alterar(T to) {
-		getSession().update(to);
+	public void alterar(T to) throws SQLException {
+		Session sessao = getSession(); 
+		Transaction transaction = null;
+		try {
+			transaction = sessao.beginTransaction();
+			sessao.update(to);
+			transaction.commit();
+		} catch (Exception e) { 
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new SQLException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public T recuperar(Integer id) throws SQLException {
-		return (T) getSession().get(type, id);
+		Session sessao = getSession(); 
+		T to = null;
+		try {
+			to = (T) sessao.get(type, id);
+		} catch (Exception e) { 
+			throw new SQLException(e);
+		}
+		return to;
 	}
 	
 	public List<T> listar() throws SQLException {
@@ -39,13 +71,23 @@ public class GenericDAOHibernate <T extends TO> {
 	}
 	
 	public void excluir(T to) throws SQLException {
-		getSession().delete(to);
+		Session sessao = getSession(); 
+		Transaction transaction = null;
+		try {
+			transaction = sessao.beginTransaction();
+			sessao.delete(to);
+			transaction.commit();
+		} catch (Exception e) { 
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw new SQLException(e);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<T> listar(String where) {
-		Query select = getSession().createQuery(getBaseHQL() + where);
-		return (List<T>) select.list();
+	protected List<T> listar(String where) throws SQLException {
+		return (List<T>) executeQuery(getBaseHQL() + where);
 	}
 	
 	private String getBaseHQL() {
@@ -57,8 +99,15 @@ public class GenericDAOHibernate <T extends TO> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	protected List executeQuery(String query) {
-		Query select = getSession().createQuery(query);
-		return select.list();
+	protected List executeQuery(String query) throws SQLException {
+		Session sessao = getSession(); 
+		List list = null;
+		try {
+			Query select = sessao.createQuery(query);
+			list = select.list();
+		} catch (Exception e) { 
+			throw new SQLException(e);
+		}
+		return list;
 	}
 }

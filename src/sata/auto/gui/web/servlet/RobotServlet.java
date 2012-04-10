@@ -20,11 +20,12 @@ public class RobotServlet extends HttpServlet {
 
 	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
 			if (isBolsaAberta()) {
-				System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
 				Alerta.verificarAlertasOperacoesAtivos();
-				System.out.println("--- End of Robot running at " + SATAUtil.getDataAtualFormatada());
 			}
+			else System.out.println("A bolsa não está aberta!");
+			System.out.println("--- End of Robot running at " + SATAUtil.getDataAtualFormatada());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
