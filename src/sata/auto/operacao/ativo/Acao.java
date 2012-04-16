@@ -2,7 +2,10 @@ package sata.auto.operacao.ativo;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,15 +17,21 @@ import sata.auto.operacao.ativo.preco.PrecoAcao;
 import sata.auto.to.Dia;
 import sata.domain.to.TO;
 
-@Embeddable
+@Entity
+@Table(name="Acao")
 public class Acao extends Ativo implements TO {
 	
+	@Id @Column(name="codigo")
 	String nome;
+	
+	@Column
+	String nomeEmpresa;
 	
 	public Acao() {}
 	
-	public Acao(String nome) {
+	public Acao(String nome, String nomeEmpresa) {
 		this.nome = nome;
+		this.nomeEmpresa = nomeEmpresa;
 	}
 	
 	@Override
@@ -69,5 +78,11 @@ public class Acao extends Ativo implements TO {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	public String getNomeEmpresa() {
+		return nomeEmpresa;
+	}
+	public void setNomeEmpresa(String nomeEmpresa) {
+		this.nomeEmpresa = nomeEmpresa;
 	}
 }

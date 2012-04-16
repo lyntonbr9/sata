@@ -10,7 +10,7 @@ import sata.domain.util.SATAPropertyLoader;
 public class HibernateUtil implements IConstants {
 	private static final SessionFactory sessionFactory;  
     
-    private static ThreadLocal<Session> sessions = new ThreadLocal<Session>();  
+    private static Session session;  
   
     static {  
     	String ambiente = SATAPropertyLoader.getProperty(PROP_SATA_AMBIENTE);
@@ -18,20 +18,23 @@ public class HibernateUtil implements IConstants {
     }  
   
     public static Session getSession() {  
-          
-        if (sessions.get() != null) {  
-        }  
-        sessions.set(sessionFactory.openSession());  
-        return sessions.get();  
+        if (session == null) {
+        	System.out.println("Criando nova sessao Hibernate...");
+        	session = sessionFactory.openSession();
+        }
+        return session;
     }  
   
-    public static void closeCurrentSession() {  
-        sessions.get().close();  
-        sessions.set(null);  
+    public static void closeCurrentSession() {
+    	if (session != null) {
+    		System.out.println("Fechando sessao Hibernate...");
+    		session.close();
+    		session = null;
+    	}
     }  
   
     public static Session currentSession() {  
-        return sessions.get();  
+        return session;  
     }  
       
     public static SessionFactory getSessionFactory() {  

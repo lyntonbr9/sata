@@ -85,13 +85,15 @@ public abstract class Operacao implements IConstants {
 	
 	public int getDiasParaVencimento(Dia dia) {
 		Dia diaOperacao = dia;
-		Dia diaFechamento = Simulacao.getDiaFechamento(dia.getMes());
+		Dia diaFechamento = null;
 		if (momento == ABERTURA) {
+			diaFechamento = Simulacao.getDiaFechamento(dia.getMes().getMesPosterior());
 			for (int i=2; i<=mesesParaVencimento; i++) {
 				diaOperacao = Simulacao.getDiaAbertura(diaOperacao.getMes().getMesAnterior());
 			}
 		}
 		if (momento == FECHAMENTO) {
+			diaFechamento = Simulacao.getDiaFechamento(dia.getMes());
 			for (int i=1; i<=mesesParaVencimento; i++) {
 				diaFechamento = Simulacao.getDiaFechamento(dia.getMes().getMesAnterior());
 			}

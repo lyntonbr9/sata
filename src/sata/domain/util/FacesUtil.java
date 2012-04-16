@@ -24,6 +24,10 @@ public final class FacesUtil {
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(key, value);
 	}
 	
+	public static void putInRequest(String key, Object value) {
+		FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put(key, value);
+	}
+	
 	public static Object getFromSession(String key) {
 		return FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(key);
 	}

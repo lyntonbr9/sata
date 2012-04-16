@@ -9,13 +9,15 @@
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sataproj_prod</property>
         <property name="hibernate.connection.username">sataproj_user</property>
         <property name="hibernate.connection.password"><![CDATA[black&scholes]]></property>
-		
+        
+        <property name="hibernate.current_session_context_class">org.hibernate.context.ManagedSessionContext</property>
+			
 		<!-- Configurações do poll de conexões -->
-		<property name="hibernate.c3p0.max_size">5</property>
-		<property name="hibernate.c3p0.min_size">0</property>
-		<property name="hibernate.c3p0.timeout">3000</property>
-		<property name="hibernate.c3p0.max_statements">50</property>
-		<property name="hibernate.c3p0.idle_test_period">50</property>
+		<property name="hibernate.c3p0.max_size">10</property>
+		<property name="hibernate.c3p0.min_size">2</property>
+		<property name="hibernate.c3p0.timeout">5000</property>
+		<property name="hibernate.c3p0.max_statements">10</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
 		<property name="hibernate.c3p0.acquire_increment">2</property>
 		
 		<!-- Configurações de debug -->
@@ -24,6 +26,10 @@
 		<property name="hibernate.use_sql_comments">false</property>
 		
 		<!-- Mapeando Pojos -->
+		<mapping class="sata.domain.to.AcompanhamentoTO"/>
+		<mapping class="sata.domain.to.AcompOpcaoTO"/>
+		<mapping class="sata.domain.to.OpcaoTO"/>
+		<mapping class="sata.auto.operacao.ativo.Acao"/>
 		<mapping class="sata.domain.to.SplitAtivoTO"/>
 		<mapping class="sata.domain.to.CotacaoAtivoTO"/>
 		<mapping class="sata.domain.to.AlertaTO"/>

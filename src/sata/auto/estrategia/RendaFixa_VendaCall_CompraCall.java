@@ -3,9 +3,9 @@ package sata.auto.estrategia;
 import sata.auto.enums.TipoRelatorio;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Venda;
-import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Call;
 import sata.auto.operacao.ativo.RendaFixa;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.simulacao.Simulacao;
 
 public class RendaFixa_VendaCall_CompraCall extends Estrategia {
@@ -24,7 +24,7 @@ public class RendaFixa_VendaCall_CompraCall extends Estrategia {
 	
 	public static void main(String[] args) {
 		RendaFixa_VendaCall_CompraCall estrategia = new RendaFixa_VendaCall_CompraCall();
-		estrategia.acao = new Acao("PETR4");
+		estrategia.acao = AcaoConteiner.get("PETR4");
 		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
 		estrategia.executa(TipoRelatorio.COMPLETO, 4, -1);

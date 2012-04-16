@@ -42,6 +42,8 @@ public abstract class Estrategia {
 				if (simulacao.getTipoCalculoValorInvestido() == null && tipoCalculoValorInvestido != null)
 					simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
 				resultado.addResultado(simulacao.getResultado());
+				resultado.setTipoCalculoValorInvestido(simulacao.getTipoCalculoValorInvestido());
+				resultado.setPercValorInvestido(simulacao.getPercValorInvestido());
 			}
 
 			LoggerUtil.log(resultado.imprime(tipoRelatorio));

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -12,12 +14,16 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.domain.util.IConstants;
 
 @Entity
 @Table(name="AlertaOperacao")
+@Where(clause = "dtExclusao IS NULL")  
+@SQLDelete(sql = "UPDATE AlertaOperacao SET dtExclusao = NOW() WHERE id = ?")  
 public class AlertaTO implements TO,IConstants {
 	
 	@Id	@GeneratedValue
@@ -33,7 +39,7 @@ public class AlertaTO implements TO,IConstants {
 	@Column
 	private Integer porcentagemPerda;
 	
-	@Column
+	@Enumerated(EnumType.STRING)
 	private TipoCalculoValorInvestido tipoCalculoVI;
 	
 	@Column
@@ -42,7 +48,8 @@ public class AlertaTO implements TO,IConstants {
 	@Column
 	private boolean ativo;
 	
-	@OneToMany(mappedBy = "alerta")
+	@OneToMany(mappedBy="alerta")
+	@Where(clause = "dtExclusao IS NULL")  
 	private List<SerieOperacoesTO> series;
 	
 	public boolean alertaPorcentagemGanho(BigDecimal porcentagemSerie) {

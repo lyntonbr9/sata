@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sata.auto.enums.TipoRelatorio;
-import sata.auto.estrategia.Acao_VendaCall_CompraPut_Volat;
 import sata.auto.estrategia.Estrategia;
+import sata.auto.estrategia.Lhama2;
 import sata.auto.estrategia.SomenteAcao;
-import sata.auto.operacao.ativo.Acao;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.to.Variacao;
 import sata.domain.util.IConstants;
 import sata.domain.util.LoggerUtil;
@@ -17,22 +17,14 @@ import sata.domain.util.SATAUtil;
 public class DataMining implements IConstants {
 	
 	public static void main(String[] args) throws Exception {
-		Variacao qtdLotesCallVolBaixa = new Variacao(1,1);
-		Variacao ordemCallVolBaixa = new Variacao(2,6);
-		Variacao qtdMesesCallVolBaixa = new Variacao(2,2);
-		Variacao ordemPutVolBaixa = new Variacao(-1,1);
-		Variacao qtdLotesCallVolAlta = new Variacao(2,2);
-		Variacao ordemCallVolAlta = new Variacao(2,6);
-		Variacao ordemPutVolAlta = new Variacao(-1,1);
-		Variacao volatilidade = new Variacao(30,30);
-		Variacao[] variacoes = {qtdLotesCallVolBaixa,ordemCallVolBaixa,qtdMesesCallVolBaixa,ordemPutVolBaixa,
-				qtdLotesCallVolAlta,ordemCallVolAlta,ordemPutVolAlta,volatilidade};
-		dataMine(Acao_VendaCall_CompraPut_Volat.class, "PETR4", 2000, 2011, variacoes);
+		Variacao stop = new Variacao(1,7);
+		Variacao diasParaFechamento = new Variacao(7,7);
+		dataMine(Lhama2.class, "PETR4", 2000, 2011, stop, diasParaFechamento);
 	}
 	
-	public static void dataMine(Class<? extends Estrategia> clazz, String acao, int anoInicial, int anoFinal, Variacao[] variacoes) throws Exception {
+	public static void dataMine(Class<? extends Estrategia> clazz, String acao, int anoInicial, int anoFinal, Variacao... variacoes) throws Exception {
 		try {
-			LoggerUtil.setup(clazz.getSimpleName()+"_"+acao+"_"+anoInicial+"_"+anoFinal);
+			LoggerUtil.setup("DM_"+clazz.getSimpleName()+"_"+acao+"_"+anoInicial+"_"+anoFinal);
 			LoggerUtil.log("Início: " + SATAUtil.getDataAtualFormatada());
 			BigDecimal valorInicial = CEM;
 			BigDecimal melhorResultado = BigDecimal.ZERO;
@@ -43,7 +35,7 @@ public class DataMining implements IConstants {
 
 			for (Integer[] parametros: listaParametros) {
 				Estrategia estrategia = (Estrategia) clazz.getDeclaredConstructor().newInstance();
-				estrategia.setAcao(new Acao(acao));
+				estrategia.setAcao(AcaoConteiner.get(acao));
 				estrategia.setAnoInicial(anoInicial);
 				estrategia.setAnoFinal(anoFinal);
 				estrategia.executa(TipoRelatorio.NENHUM, parametros);
@@ -60,7 +52,7 @@ public class DataMining implements IConstants {
 			LoggerUtil.log("\nSomente Ação = " + SATAUtil.formataNumero(getResultadoSomenteAcao(acao, anoInicial, anoFinal, valorInicial)));
 			LoggerUtil.log("\nFim: " + SATAUtil.getDataAtualFormatada());
 		}catch (Exception e) {
-			LoggerUtil.log(e.getStackTrace().toString());
+			LoggerUtil.log(e.getMessage());
 		}
 	}
 	
@@ -84,7 +76,7 @@ public class DataMining implements IConstants {
 	
 	private static BigDecimal getResultadoSomenteAcao(String acao, int anoInicial, int anoFinal, BigDecimal valorInicial) {
 		Estrategia estrategia = new SomenteAcao();
-		estrategia.setAcao(new Acao(acao));
+		estrategia.setAcao(AcaoConteiner.get(acao));
 		estrategia.setAnoInicial(anoInicial);
 		estrategia.setAnoFinal(anoFinal);
 		estrategia.executa(TipoRelatorio.NENHUM);

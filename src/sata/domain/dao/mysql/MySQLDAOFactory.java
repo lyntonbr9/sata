@@ -8,6 +8,8 @@ import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IInvestidorDAO;
+import sata.domain.dao.IAcompOpcoesDAO;
+import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
 
@@ -46,6 +48,16 @@ public class MySQLDAOFactory extends DAOFactory{
 	
 	@Override
 	public IAtivoDAO getAtivoDAO() {
+		return null;
+	}
+	
+	@Override
+	public IAcompOpcoesDAO getAcompOpcoesDAO() {
+		return null;
+	}
+	
+	@Override
+	public IOpcaoDAO getOpcaoDAO() {
 		return null;
 	}
 	

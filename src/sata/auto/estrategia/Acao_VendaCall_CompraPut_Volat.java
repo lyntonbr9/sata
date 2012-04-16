@@ -6,9 +6,9 @@ import sata.auto.enums.TipoRelatorio;
 import sata.auto.operacao.Compra;
 import sata.auto.operacao.Condicao;
 import sata.auto.operacao.Venda;
-import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Call;
 import sata.auto.operacao.ativo.Put;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.simulacao.Simulacao;
 
 public class Acao_VendaCall_CompraPut_Volat extends Estrategia {
@@ -38,7 +38,7 @@ public class Acao_VendaCall_CompraPut_Volat extends Estrategia {
 	
 	public static void main(String[] args) {
 		Acao_VendaCall_CompraPut_Volat estrategia = new Acao_VendaCall_CompraPut_Volat();
-		estrategia.acao = new Acao("OGXP3");
+		estrategia.acao = AcaoConteiner.get("OGXP3");
 		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
 		estrategia.executa(TipoRelatorio.COMPLETO, 1, 4, 2, 0, 2, 4, -1, 30);

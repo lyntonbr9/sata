@@ -48,12 +48,12 @@ public class Simulacao implements IConstants {
 						Dia diaFechamento;
 						if (stop != null) diaFechamento = getDiaAbertura(mes).getProximoDia();
 						else diaFechamento = getDiaFechamento(mes);
-						while (!stop(resultado, mes)) {
+						do  {
 							executaOperacoesReversas(resultado, operacoes, mes, diaFechamento);
 							if (diaFechamento.equals(getDiaFechamento(mes)))
 								break;
 							diaFechamento = diaFechamento.getProximoDia();
-						}
+						} while (!stop(resultado, mes));
 
 					} catch (CotacaoInexistenteEX e) {
 						resultado.remove(mes);
@@ -67,7 +67,10 @@ public class Simulacao implements IConstants {
 	
 	private void executaOperacoes(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws SATAEX {
 		for (Operacao operacao : operacoes) {
-			executaOperacao(resultado, operacao, mes, dia, false);
+			Dia diaOperacao = dia;
+			if (operacao.getDiasParaFechamento() > 1)
+				diaOperacao = dia.getDiaAnterior(operacao.getDiasParaFechamento()+1);
+			executaOperacao(resultado, operacao, mes, diaOperacao, false);
 		}
 	}
 	
@@ -85,7 +88,7 @@ public class Simulacao implements IConstants {
 					}
 					
 					if (operacao.getDiasParaFechamento() > 1) {
-						diaReversao = diaReversao.getDiaAnterior(operacao.getDiasParaFechamento());
+						diaReversao = diaReversao.getDiaAnterior(operacao.getDiasParaFechamento()-1);
 					}
 					
 					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao, true);
