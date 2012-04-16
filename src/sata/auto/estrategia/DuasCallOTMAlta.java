@@ -9,6 +9,7 @@ import sata.auto.operacao.Stop;
 import sata.auto.operacao.Venda;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.Call;
+import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.simulacao.Simulacao;
 
 public class DuasCallOTMAlta extends Estrategia {
@@ -17,7 +18,7 @@ public class DuasCallOTMAlta extends Estrategia {
 	public void prepara(Integer... parametros) {
 		anoInicial = 2000;
 		anoFinal = 2011;
-		Acao acao = new Acao("PETR4");
+		Acao acao = AcaoConteiner.get("PETR4");
 		
 		Simulacao simulacao = new Simulacao(
 				new Venda (new Call(acao, 1, true)),

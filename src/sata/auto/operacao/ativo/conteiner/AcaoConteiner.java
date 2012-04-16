@@ -7,7 +7,11 @@ import sata.auto.operacao.ativo.Acao;
 
 public class AcaoConteiner {
 	
-	private static List<Acao> acoes = Arrays.asList(new Acao("PETR4"), new Acao("VALE5"), new Acao("OGXP3"), new Acao("BVMF3"));
+	private static List<Acao> acoes = Arrays.asList(
+			new Acao("PETR4", "PETROBRAS"), 
+			new Acao("VALE5", "VALE"), 
+			new Acao("OGXP3", "OGX"), 
+			new Acao("BVMF3", "BMF"));
 	
 	public static Acao get(String codigoAcao) {
 		for (Acao acao: acoes)

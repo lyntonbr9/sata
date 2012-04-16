@@ -6,6 +6,7 @@ import javax.faces.event.PhaseListener;
 
 import sata.auto.gui.web.mbean.InvestidorMB;
 import sata.domain.util.FacesUtil;
+import sata.domain.util.SATAUtil;
 
 public class LoginPhaseListener implements PhaseListener {
 	private static final long serialVersionUID = -6002715477049826372L;
@@ -15,7 +16,8 @@ public class LoginPhaseListener implements PhaseListener {
 	public void afterPhase(PhaseEvent event) {
 		InvestidorMB investidorMB = FacesUtil.getMB(InvestidorMB.class);
 		boolean logado = true;
-		if (investidorMB == null) logado = false;
+		if (SATAUtil.isAmbienteDesenvolvimento()) logado = true;
+		else if (investidorMB == null) logado = false;
 		else if (!FacesUtil.getPaginaAtual().contains("login"))
 			if (!investidorMB.isLogado())
 				logado = false;

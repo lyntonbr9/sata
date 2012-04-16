@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import sata.domain.alert.Alerta;
+import sata.domain.alert.AcompOpcoes;
+import sata.domain.alert.AlertaOperacao;
+import sata.domain.dao.hibernate.HibernateUtil;
 import sata.domain.util.SATAUtil;
 import sata.metastock.robos.InfoMoney;
 
@@ -20,12 +22,15 @@ public class RobotServlet extends HttpServlet {
 
 	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			System.out.println("--- Start of Robot running at " + SATAUtil.getDataAtualFormatada());
+			System.out.println("--- Inicio da execucao do Robo em " + SATAUtil.getDataAtualFormatada());
 			if (isBolsaAberta()) {
-				Alerta.verificarAlertasOperacoesAtivos();
+				System.out.println("Bolsa aberta!");
+				AlertaOperacao.verificarAlertasOperacoesAtivos();
+				AcompOpcoes.verificarOpcoes();
 			}
-			else System.out.println("A bolsa não está aberta!");
-			System.out.println("--- End of Robot running at " + SATAUtil.getDataAtualFormatada());
+			else System.out.println("Bolsa fechada!");
+			HibernateUtil.closeCurrentSession();
+			System.out.println("--- Fim da execucao do Robo em " + SATAUtil.getDataAtualFormatada());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

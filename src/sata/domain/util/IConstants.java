@@ -93,6 +93,7 @@ public interface IConstants {
 	String MSG_ALERTA_LABEL_VALOR = "alerta.formOp.valor.label";
 	String MSG_ALERTA_EMAIL_ASSUNTO_GANHO = "alerta.email.assunto.ganho";
 	String MSG_ALERTA_EMAIL_ASSUNTO_PERDA = "alerta.email.assunto.perda";
+	String MSG_ACOMPANHAMENTO_EMAIL_ASSUNTO = "acompanhamento.email.assunto";
 	String MSG_LOGIN_LABEL_EMAIL = "login.email.label";
 	String MSG_LOGIN_LABEL_SENHA = "login.senha.label";
 	String MSG_ENUM_LABEL_COMPRA = "enum.posicao.C";

@@ -35,6 +35,8 @@ public class GenericDAOHibernate <T extends TO> {
 				transaction.rollback();
 			}
 			throw new SQLException(e);
+		} finally {
+			finalizeSession();
 		}
 		return id;
 	}
@@ -51,6 +53,8 @@ public class GenericDAOHibernate <T extends TO> {
 				transaction.rollback();
 			}
 			throw new SQLException(e);
+		} finally {
+			finalizeSession();
 		}
 	}
 
@@ -62,6 +66,8 @@ public class GenericDAOHibernate <T extends TO> {
 			to = (T) sessao.get(type, id);
 		} catch (Exception e) { 
 			throw new SQLException(e);
+		} finally {
+			finalizeSession();
 		}
 		return to;
 	}
@@ -82,12 +88,31 @@ public class GenericDAOHibernate <T extends TO> {
 				transaction.rollback();
 			}
 			throw new SQLException(e);
+		} finally {
+			finalizeSession();
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<T> listar(String where) throws SQLException {
-		return (List<T>) executeQuery(getBaseHQL() + where);
+	protected List<T> listar(String where, Object... params) throws SQLException {
+		Query query = executeQuery(getBaseHQL() + where);
+		for (int i=0; i<params.length; i++) {
+			query.setParameter(i, params[i]);
+		}
+		return (List<T>) query.list();
+	}
+	
+	protected Query executeQuery(String hql) throws SQLException {
+		Session sessao = getSession(); 
+		Query query = null;
+		try {
+			query = sessao.createQuery(hql);
+		} catch (Exception e) { 
+			throw new SQLException(e);
+		} finally {
+			finalizeSession();
+		}
+		return query;
 	}
 	
 	private String getBaseHQL() {
@@ -98,16 +123,7 @@ public class GenericDAOHibernate <T extends TO> {
 		return HibernateUtil.getSession();
 	}
 	
-	@SuppressWarnings("rawtypes")
-	protected List executeQuery(String query) throws SQLException {
-		Session sessao = getSession(); 
-		List list = null;
-		try {
-			Query select = sessao.createQuery(query);
-			list = select.list();
-		} catch (Exception e) { 
-			throw new SQLException(e);
-		}
-		return list;
+	protected static void finalizeSession() {
+		// Não fecha a sessão
 	}
 }

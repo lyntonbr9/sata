@@ -24,6 +24,12 @@ public class SATAFactoryFacade implements IConstants {
 	public static IInvestidorDAO getInvestidorDAO(){
 		return getDAOFactory().getInvestidorDAO();
 	}
+	public static IAcompOpcoesDAO getAcompOpcoesDAO(){
+		return getDAOFactory().getAcompOpcoesDAO();
+	}
+	public static IOpcaoDAO getOpcaoDAO(){
+		return getDAOFactory().getOpcaoDAO();
+	}
 	
 	private static DAOFactory getDAOFactory() {
 		String driver = SATAPropertyLoader.getProperty(PROP_SATA_BD);

@@ -15,12 +15,14 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 import sata.auto.enums.Posicao;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
 @Table(name="OperacaoRealizada")
+@SQLDelete(sql = "UPDATE OperacaoRealizada SET dtExclusao = NOW() WHERE id = ?")  
 public class OperacaoRealizadaTO implements TO  {
 	
 	@Id	@GeneratedValue

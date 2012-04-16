@@ -14,7 +14,7 @@ import sata.auto.enums.Posicao;
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
-import sata.domain.alert.Alerta;
+import sata.domain.alert.AlertaOperacao;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
@@ -64,7 +64,11 @@ public class AlertaMB implements IConstants {
 			if (serieValida()) {
 				serie.setAlerta(alerta);
 				serieDAO.salvar(serie);
-				if (!alterar) alerta.getSeries().add(serie);
+				if (!alterar) {
+					if (alerta.getSeries() == null)
+						alerta.setSeries(new ArrayList<SerieOperacoesTO>());
+					alerta.getSeries().add(serie);
+				}
 			}
 		} catch (Exception e) {
 			FacesUtil.addException(e);
@@ -203,7 +207,7 @@ public class AlertaMB implements IConstants {
 	}
 	
 	public String getSerieNow() {
-		if (serie.getId() != null) return FacesUtil.formataTexto(Alerta.getMensagemSerie(serie));
+		if (serie.getId() != null) return FacesUtil.formataTexto(AlertaOperacao.getMensagemSerie(serie));
 		else return "";
 	}
 	

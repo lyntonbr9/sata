@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,12 +16,15 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import sata.auto.operacao.ativo.Acao;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
 @Table(name="SerieOperacoes")
+@SQLDelete(sql = "UPDATE SerieOperacoes SET dtExclusao = NOW() WHERE id = ?")  
 public class SerieOperacoesTO implements TO {
 
 	@Id	@GeneratedValue
@@ -40,12 +40,10 @@ public class SerieOperacoesTO implements TO {
 	private InvestidorTO investidor;
 	
 	@Column
-	private Date dataExecucao;
+	private Date dataExecucao;	
 	
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="nome", column=@Column(name="acao"))
-	})
+	@ManyToOne
+	@JoinColumn(name="acao")
 	private Acao acao;
 	
 	@Column
@@ -60,7 +58,8 @@ public class SerieOperacoesTO implements TO {
 	@Column(name="ativo")
 	private boolean ativa;
 	
-	@OneToMany(mappedBy = "serie")
+	@OneToMany(mappedBy="serie")
+	@Where(clause = "dtExclusao IS NULL") 
 	private List<OperacaoRealizadaTO> operacoes;
 	
 	public BigDecimal getPrecoAcaoAtual() {
