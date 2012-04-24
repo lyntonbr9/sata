@@ -1,6 +1,7 @@
 package sata.domain.to;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.SQLDelete;
 
 import sata.auto.enums.Posicao;
+import sata.domain.dao.SATAFactoryFacade;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
@@ -36,8 +38,9 @@ public class OperacaoRealizadaTO implements TO  {
 	@Column
 	private Integer qtdLotes;
 	
-	@Column
-	private String ativo;
+	@ManyToOne
+	@JoinColumn(name="ativo")
+	private OpcaoTO opcao;
 	
 	@Column
 	private BigDecimal valor;
@@ -60,10 +63,21 @@ public class OperacaoRealizadaTO implements TO  {
 	
 	public BigDecimal getValorAtual() {
 		if (valorAtual == null)
-			valorAtual = CotacaoLopesFilho.getCotacao(ativo).setScale(50);
+			valorAtual = CotacaoLopesFilho.getCotacao(opcao.getCodigo()).setScale(50);
 		if (posicao == Posicao.VENDIDO)
 			return valorAtual.negate();
 		return valorAtual;
+	}
+	
+	public void setAtivo(String ativo) throws SQLException {
+		opcao = SATAFactoryFacade.getOpcaoDAO().recuperar(ativo);
+	}
+	
+	
+	public String getAtivo() {
+		if (opcao == null)
+			return null;
+		return opcao.getCodigo();
 	}
 	
 	@Override
@@ -96,12 +110,6 @@ public class OperacaoRealizadaTO implements TO  {
 	public void setQtdLotes(Integer qtdLotes) {
 		this.qtdLotes = qtdLotes;
 	}
-	public String getAtivo() {
-		return ativo;
-	}
-	public void setAtivo(String ativo) {
-		this.ativo = ativo;
-	}
 	public BigDecimal getValor() {
 		return this.valor;
 	}
@@ -116,5 +124,11 @@ public class OperacaoRealizadaTO implements TO  {
 	}
 	public void setSerie(SerieOperacoesTO serie) {
 		this.serie = serie;
+	}
+	public OpcaoTO getOpcao() {
+		return opcao;
+	}
+	public void setOpcao(OpcaoTO opcao) {
+		this.opcao = opcao;
 	}
 }

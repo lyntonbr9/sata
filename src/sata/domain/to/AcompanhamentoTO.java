@@ -12,15 +12,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import sata.auto.operacao.ativo.Acao;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
 @Table(name="Acompanhamento")
+@Where(clause = "dtExclusao IS NULL")  
+@SQLDelete(sql = "UPDATE Acompanhamento SET dtExclusao = NOW() WHERE id = ?")  
 public class AcompanhamentoTO implements TO {
 	
 	@Id @GeneratedValue
@@ -44,8 +49,13 @@ public class AcompanhamentoTO implements TO {
 	@OneToMany(mappedBy="acompanhamento")
 	private List<AcompOpcaoTO> acompanhamentos;
 	
+	@Transient
+	BigDecimal precoAcaoAtual;
+	
 	public BigDecimal getPrecoAcaoAtual() {
-		return CotacaoLopesFilho.getCotacao(acao.getNome()).setScale(50);
+		if (precoAcaoAtual == null)
+			precoAcaoAtual = CotacaoLopesFilho.getCotacao(acao.getNome()).setScale(50);
+		return precoAcaoAtual;
 	}
 	
 	@Override

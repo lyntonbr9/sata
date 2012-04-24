@@ -1,17 +1,22 @@
 package sata.auto.operacao.ativo.conteiner;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import sata.auto.operacao.ativo.Acao;
+import sata.domain.dao.SATAFactoryFacade;
 
 public class AcaoConteiner {
 	
-	private static List<Acao> acoes = Arrays.asList(
-			new Acao("PETR4", "PETROBRAS"), 
-			new Acao("VALE5", "VALE"), 
-			new Acao("OGXP3", "OGX"), 
-			new Acao("BVMF3", "BMF"));
+	private static List<Acao> acoes = new ArrayList<Acao>();
+	
+	static {
+		try {
+			acoes = SATAFactoryFacade.getAcaoDAO().listar();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static Acao get(String codigoAcao) {
 		for (Acao acao: acoes)

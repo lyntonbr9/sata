@@ -21,7 +21,7 @@ public class HibernateAlertaDAO extends GenericDAOHibernate<AlertaTO> implements
 		for (AlertaTO alerta: lista) {
 			List<SerieOperacoesTO> remover = new ArrayList<SerieOperacoesTO>();
 			for (SerieOperacoesTO serie: alerta.getSeries()) {
-				if (!serie.isAtiva()) {
+				if (!serie.isAtiva() || serie.isVencida()) {
 					remover.add(serie);
 				}
 			}
@@ -32,6 +32,11 @@ public class HibernateAlertaDAO extends GenericDAOHibernate<AlertaTO> implements
 
 	@Override
 	public List<AlertaTO> listaAlertasInvestidor(InvestidorTO investidor) throws SQLException {
+		return null;
+	}
+	
+	@Override
+	public AlertaTO recuperar(Integer id) throws SQLException {
 		return null;
 	}
 	

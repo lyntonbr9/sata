@@ -1,6 +1,7 @@
 package sata.auto.operacao.ativo.preco;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,6 +49,21 @@ public class PrecoOpcao extends Preco implements IConstants {
 			tempoParaVencimentoOpcaoEmAnos = BlackScholes.getQtdDiasEmAnos(diasParaVencimento);
 		double valor = BlackScholes.blackScholes(call, precoAcao.doubleValue(), precoExercicioOpcao.doubleValue(), tempoParaVencimentoOpcaoEmAnos, taxaJuros.doubleValue(), volatilidade.doubleValue());
 		return new BigDecimal(valor); 
+	}
+	
+	public static BigDecimal calculaVolatilidade(boolean call, BigDecimal precoAcao, BigDecimal precoExercicioOpcao, 
+			int diasParaVencimento, BigDecimal precoOpcao, BigDecimal taxaJuros) {
+		double menorDiferenca = Double.POSITIVE_INFINITY;
+		BigDecimal volatilidadeFinal = BigDecimal.ZERO;
+		for (double volatilidade = 0; volatilidade < 1; volatilidade += 0.01) {
+			BigDecimal bs = blackScholes(call, precoAcao, precoExercicioOpcao, diasParaVencimento, new BigDecimal(volatilidade), taxaJuros);
+			double diferenca = bs.subtract(precoOpcao).divide(precoOpcao, RoundingMode.HALF_EVEN).abs().doubleValue();
+			if (diferenca < menorDiferenca) {
+				menorDiferenca = diferenca;
+				volatilidadeFinal = new BigDecimal(volatilidade);
+			}
+		} 
+		return volatilidadeFinal;
 	}
 
 	private BigDecimal blackScholes() throws SATAEX {

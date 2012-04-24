@@ -102,13 +102,18 @@ public abstract class Operacao implements IConstants {
 	}
 	
 	private int getDiferenca(Dia dia1, Dia dia2) {
-		long longDia = dia1.getCalendar().getTimeInMillis();
-		long longFechamento = dia2.getCalendar().getTimeInMillis();
-		if (longDia > longFechamento) {
-			dia2 = Simulacao.getDiaFechamento(dia1.getMes().getMesPosterior());
-			longFechamento = dia2.getCalendar().getTimeInMillis();
-		}
-		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
+		int dif = SATAUtil.getDiferencaDias(dia1.getCalendar(), dia2.getCalendar());
+		if (dif < 0)
+			dif = SATAUtil.getDiferencaDias(dia1.getCalendar(), Simulacao.getDiaFechamento(dia1.getMes().getMesPosterior()).getCalendar());
+		return dif;
+		
+//		long longDia = dia1.getCalendar().getTimeInMillis();
+//		long longFechamento = dia2.getCalendar().getTimeInMillis();
+//		if (longDia > longFechamento) {
+//			dia2 = Simulacao.getDiaFechamento(dia1.getMes().getMesPosterior());
+//			longFechamento = dia2.getCalendar().getTimeInMillis();
+//		}
+//		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
 	}
 	
 	public Operacao() {}

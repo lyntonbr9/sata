@@ -17,19 +17,6 @@
 	<h:body>
 		<h:form id="form" enctype="multipart/form-data">
 			<div id="pagina">
-				<div id="adsense">
-					<p:commandButton value="English" action="#{localeMB.changeLocal}" 
-						rendered="#{localeMB.selectedLanguage != 'en'}" ajax="false">
-	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="en" />
-	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="" />
-					</p:commandButton>
-					<p:commandButton value="Português" action="#{localeMB.changeLocal}" 
-						rendered="#{localeMB.selectedLanguage != 'pt'}" ajax="false">
-	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="pt" />
-	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="BR" />
-					</p:commandButton>
-					<ui:include src="/include/adsense.xhtml" />
-				</div>
 				<div id="cabecalho">
 					<ui:include src="/include/cabecalho.xhtml" />
 					<ui:include src="/include/aguarde.xhtml" />
@@ -42,6 +29,19 @@
 				</div>
 				<div id="conteudo" class="conteudo">
 					<ui:insert name="conteudo" />
+				</div>
+				<div id="adsense">
+					<p:commandButton value="English" action="#{localeMB.changeLocal}" 
+						rendered="#{localeMB.selectedLanguage != 'en'}" ajax="false">
+	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="en" />
+	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="" />
+					</p:commandButton>
+					<p:commandButton value="Português" action="#{localeMB.changeLocal}" 
+						rendered="#{localeMB.selectedLanguage != 'pt'}" ajax="false">
+	     				<f:setPropertyActionListener target="#{localeMB.selectedLanguage}" value="pt" />
+	     				<f:setPropertyActionListener target="#{localeMB.selectedVariant}" value="BR" />
+					</p:commandButton>
+					<ui:include src="/include/adsense.xhtml" />
 				</div>
 				<div id="rodape">
 					<ui:include src="/include/rodape.xhtml" />

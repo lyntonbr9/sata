@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import sata.domain.dao.ConnectionPoolManager;
 import sata.domain.dao.DAOFactory;
+import sata.domain.dao.IAcaoDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IAlertaDAO;
@@ -14,6 +15,21 @@ import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
 
 public class PostgreDAOFactory extends DAOFactory{
+	
+	// Implementação do singleton
+	private PostgreDAOFactory() {}
+	private static PostgreDAOFactory instance;
+	public static PostgreDAOFactory singleton() {	
+		return (instance != null)? instance : create(); 
+	}
+	private static synchronized PostgreDAOFactory create() {
+		if (instance == null) instance = new PostgreDAOFactory();
+		return instance;
+	}
+	
+	public static void returnConnection(Connection con){
+		conPoolManager.returnConnectionToPool(con);
+	}
 	
 	private static ConnectionPoolManager conPoolManager = new ConnectionPoolManager();
 	
@@ -52,19 +68,8 @@ public class PostgreDAOFactory extends DAOFactory{
 	public IOpcaoDAO getOpcaoDAO() {
 		return null;
 	}
-	
-	public static void returnConnection(Connection con){
-		conPoolManager.returnConnectionToPool(con);
-	}
-	
-	// Implementação do singleton
-	private PostgreDAOFactory() {}
-	private static PostgreDAOFactory instance;
-	public static PostgreDAOFactory singleton() {	
-		return (instance != null)? instance : create(); 
-	}
-	private static synchronized PostgreDAOFactory create() {
-		if (instance == null) instance = new PostgreDAOFactory();
-		return instance;
+	@Override
+	public IAcaoDAO getAcaoDAO() {
+		return null;
 	}
 }

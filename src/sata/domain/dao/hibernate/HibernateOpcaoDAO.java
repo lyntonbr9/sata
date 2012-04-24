@@ -19,6 +19,17 @@ public class HibernateOpcaoDAO extends GenericDAOHibernate<OpcaoTO> implements I
 		return super.listar("where acao = ? and dataVencimento = ?", acao, dataVencimento);
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Date> listarDatasVencimento() throws SQLException {
+		return (List<Date>) super.executeQuery("select distinct dataVencimento from OpcaoTO").list();
+	}
+
+	@Override
+	public OpcaoTO recuperar(String codigo) throws SQLException {
+		return super.recuperar(codigo);
+	}
+	
 	// Implementação do singleton
 	private static HibernateOpcaoDAO instance;
 	public static HibernateOpcaoDAO singleton() {	

@@ -1,19 +1,34 @@
 package sata.domain.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationHandler;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang3.StringUtils;
-
+import sata.auto.gui.web.mbean.InvestidorMB;
 import sata.auto.gui.web.mbean.LocaleMB;
+import sata.domain.to.InvestidorTO;
 
-public final class FacesUtil {
+public final class FacesUtil implements IConstants {
+	
+	public static List<SelectItem> convertToSelectItems(List<Date> datas) {
+		List<SelectItem> items = new ArrayList<SelectItem>();
+		for (Date data : datas)
+			items.add(new SelectItem(data, SATAUtil.formataData(data)));
+		return items;
+	}
+	
+	public static InvestidorTO getInvestidorLogado() {
+		return getMB(InvestidorMB.class).getInvestidor();
+	}
 	
 	public static String formataTexto(String texto) {
 		texto = texto.replace("\n", "<br/>");
@@ -57,7 +72,7 @@ public final class FacesUtil {
 	}
 	
 	public static void addException(Exception e) {
-		addNonBundleMsg(FacesMessage.SEVERITY_FATAL, getMessage(e));
+		addBundleMsg(FacesMessage.SEVERITY_FATAL, MSG_ERRO_GENERICO, SATAUtil.getStackTrace(e));
 		e.printStackTrace();
 	}
 
@@ -77,33 +92,41 @@ public final class FacesUtil {
 		addBundleMsg(FacesMessage.SEVERITY_FATAL, key, arguments);  
 	}
 	
-	private static void addBundleMsg(Severity severity, String key, String... arguments) {
-		addMsg(severity, key, true, arguments);
+	private static void addBundleMsg(Severity severity, String key, String[] arguments) {
+		addMsg(severity, key, true, null, arguments);
 	}
 	
-	private static void addNonBundleMsg(Severity severity, String key, String... arguments) {
-		addMsg(severity, key, false, arguments);
+	private static void addBundleMsg(Severity severity, String key, String details) {
+		addMsg(severity, key, true, details);
 	}
+	
+	/*private static void addBundleMsg(Severity severity, String key, String details, String[] arguments) {
+		addMsg(severity, key, true, details, arguments);
+	}
+	
+	private static void addNonBundleMsg(Severity severity, String key, String[] arguments) {
+		addMsg(severity, key, false, null, arguments);
+	}*/
 
-	private static void addMsg(Severity severity, String msgKey, boolean bundle, String... arguments) {
+	private static void addMsg(Severity severity, String msgKey, boolean bundle, String detail, String... arguments) {
 		String msg;
 		if (bundle) msg = SATAUtil.getMessage(msgKey, arguments);
 		else msg = msgKey;
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, msg, null));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, msg, detail));
 	}
 
-	private static String getMessage(Exception e) {
+	/*private static String getMessage(Exception e) {
 		String msg = e.getLocalizedMessage();
 		if (StringUtils.isEmpty(msg)) {
 			msg = e.getClass().getSimpleName();
 		}
 		return msg;
-	}
+	}*/
 	
 	public static Locale getCurrentLocale() {
 		LocaleMB localeMB = getMB(LocaleMB.class);
 		if (localeMB!= null) return localeMB.getCurrentLocale();
-		else return null;
+		else return LOCALE_BRASIL;
 	}
 	
 	@SuppressWarnings("unchecked")

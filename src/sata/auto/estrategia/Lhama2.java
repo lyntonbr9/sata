@@ -54,7 +54,7 @@ public class Lhama2 extends Estrategia {
 		estrategia.acao = AcaoConteiner.get("PETR4");
 		estrategia.anoInicial = 2000;
 		estrategia.anoFinal = 2011;
-		estrategia.executa(TipoRelatorio.COMPLETO, 7, 7);
+		estrategia.executa(TipoRelatorio.COMPLETO, 100, 7);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package sata.domain.dao.hibernate;
 
+import java.sql.SQLException;
+
 import sata.domain.dao.IAcompOpcoesDAO;
 import sata.domain.to.AcompanhamentoTO;
 
@@ -7,6 +9,11 @@ public class HibernateAcompOpcoesDAO extends GenericDAOHibernate<AcompanhamentoT
 
 	public HibernateAcompOpcoesDAO() {
 		super(AcompanhamentoTO.class);
+	}
+	
+	@Override
+	public AcompanhamentoTO recuperar(Integer id) throws SQLException {
+		return super.recuperar(id);
 	}
 	
 	// Implementação do singleton

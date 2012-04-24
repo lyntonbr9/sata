@@ -11,6 +11,7 @@ public interface IOpcaoDAO {
 
 	public List<OpcaoTO> listar() throws SQLException;
 	public void salvar(OpcaoTO opcao) throws SQLException;
-	public OpcaoTO recuperar(Integer id) throws SQLException;
+	public OpcaoTO recuperar(String codigo) throws SQLException;
 	public List<OpcaoTO> pesquisa(Acao acao, Date dataVencimento) throws SQLException;
+	public List<Date> listarDatasVencimento() throws SQLException;
 }

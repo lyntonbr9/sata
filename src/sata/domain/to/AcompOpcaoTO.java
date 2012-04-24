@@ -27,14 +27,17 @@ public class AcompOpcaoTO implements TO {
 	private Integer percExercicio;
 	
 	@Column
-	private Integer percTolerancia;
+	private Integer percToleranciaSuperior;
+	
+	@Column
+	private Integer percToleranciaInferior;
 	
 	public Integer getPercToleradoSuperior() {
-		return percExercicio + percTolerancia;
+		return percExercicio + percToleranciaSuperior;
 	}
 	
 	public Integer getPercToleradoInferior() {
-		return percExercicio - percTolerancia;
+		return percExercicio - percToleranciaInferior;
 	}
 	
 	@Override
@@ -61,16 +64,22 @@ public class AcompOpcaoTO implements TO {
 	public void setPercExercicio(Integer percExercicio) {
 		this.percExercicio = percExercicio;
 	}
-	public Integer getPercTolerancia() {
-		return percTolerancia;
-	}
-	public void setPercTolerancia(Integer percTolerancia) {
-		this.percTolerancia = percTolerancia;
-	}
 	public AcompanhamentoTO getAcompanhamento() {
 		return acompanhamento;
 	}
 	public void setAcompanhamento(AcompanhamentoTO acompanhamento) {
 		this.acompanhamento = acompanhamento;
+	}
+	public Integer getPercToleranciaSuperior() {
+		return percToleranciaSuperior;
+	}
+	public void setPercToleranciaSuperior(Integer percToleranciaSuperior) {
+		this.percToleranciaSuperior = percToleranciaSuperior;
+	}
+	public Integer getPercToleranciaInferior() {
+		return percToleranciaInferior;
+	}
+	public void setPercToleranciaInferior(Integer percToleranciaInferior) {
+		this.percToleranciaInferior = percToleranciaInferior;
 	}
 }

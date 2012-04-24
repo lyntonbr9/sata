@@ -23,6 +23,11 @@
 		<converter-class>sata.auto.gui.web.converter.TOConverter</converter-class>
 	</converter>
 	
+	<converter>
+		<converter-id>dateConverter</converter-id>
+		<converter-class>sata.auto.gui.web.converter.DateConverter</converter-class>
+	</converter>
+	
 	<lifecycle>
         <phase-listener>sata.auto.gui.web.listener.LoginPhaseListener</phase-listener>
     </lifecycle>

@@ -1,5 +1,12 @@
 package sata.domain.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -20,10 +28,39 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
+import javax.mail.MessagingException;
+
 import sata.domain.to.CotacaoAtivoTO;
+import sata.metastock.mail.SendMailUsingAuthentication;
 import sata.metastock.robos.CotacaoLopesFilho;
 
 public final class SATAUtil implements IConstants{
+	
+	public static String getStackTrace(Throwable aThrowable) {
+		final Writer result = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(result);
+		aThrowable.printStackTrace(printWriter);
+		return result.toString();
+	}
+	
+	public static String lerArquivo(String filename) throws IOException {
+		File file = new File(filename);
+		StringBuffer contents = new StringBuffer();
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String text = null;
+		while ((text = reader.readLine()) != null) {
+			contents.append(text).append("\n");
+		}
+		if (reader != null) {
+			reader.close();
+		}
+		return contents.toString();
+	}
+	
+	public static void sendMail(String assunto, String msg, String... remetentes) throws MessagingException {
+		if (isAmbienteProducao())
+			SendMailUsingAuthentication.sendMail(remetentes, assunto, msg);
+	}
 	
 	public static String encrypt(String value) {   
 		try {   
@@ -42,6 +79,20 @@ public final class SATAUtil implements IConstants{
 			nsae.printStackTrace();   
 		}   
 		return value;   
+	}
+	
+	public static int getDiferencaDias(java.util.Date dia1, java.util.Date dia2) {
+		return getDiferencaDias(converteToSQLDate(dia1),converteToSQLDate(dia2));
+	}
+	
+	public static int getDiferencaDias(Date dia1, Date dia2) {
+		return getDiferencaDias(converteToCalendar(dia1), converteToCalendar(dia2));
+	}
+	
+	public static int getDiferencaDias(Calendar dia1, Calendar dia2) {
+		long longDia = dia1.getTimeInMillis();
+		long longFechamento = dia2.getTimeInMillis();
+		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
 	}
 	
 	public static Calendar converteToCalendar(Date data) {
@@ -339,8 +390,13 @@ public final class SATAUtil implements IConstants{
 	}
 	
 	public static String formataData(java.util.Date data) {
-		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, getCurrentLocale());
+		DateFormat format = DateFormat.getDateInstance(DateFormat.MEDIUM, getCurrentLocale());
 		return format.format(data);
+	}
+	
+	public static java.util.Date formataData(String data) throws ParseException {
+		DateFormat format = DateFormat.getDateInstance(DateFormat.MEDIUM, getCurrentLocale());
+		return format.parse(data);
 	}
 	
 	// pega as cotacoes do site

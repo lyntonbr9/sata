@@ -2,6 +2,7 @@ package sata.auto.gui.web.mbean;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -17,11 +18,13 @@ import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.domain.alert.AlertaOperacao;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IInvestidorDAO;
+import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AlertaTO;
 import sata.domain.to.InvestidorTO;
+import sata.domain.to.OpcaoTO;
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.to.SerieOperacoesTO;
 import sata.domain.util.FacesUtil;
@@ -34,6 +37,7 @@ public class AlertaMB implements IConstants {
 	IAlertaDAO alertaDAO = SATAFactoryFacade.getAlertaDAO();
 	ISerieOperacoesDAO serieDAO = SATAFactoryFacade.getSerieOperacoesDAO();
 	IOperacaoRealizadaDAO opDAO = SATAFactoryFacade.getOperacaoRealizadaDAO();
+	IOpcaoDAO opcaoDAO = SATAFactoryFacade.getOpcaoDAO();
 	
 	public AlertaMB() throws SQLException {
 		atualizar();
@@ -43,6 +47,8 @@ public class AlertaMB implements IConstants {
 	
 	List<AlertaTO> alertas = new ArrayList<AlertaTO>();
 	List<InvestidorTO> investidores = new ArrayList<InvestidorTO>();
+	List<OpcaoTO> opcoes = new ArrayList<OpcaoTO>();
+	List<Date> datasVencimento = new ArrayList<Date>();
 	
 	AlertaTO alerta = new AlertaTO();
 	SerieOperacoesTO serie = new SerieOperacoesTO();
@@ -122,6 +128,15 @@ public class AlertaMB implements IConstants {
 		alterar = true;
 	}
 	
+	public void editarOperacao() {
+		try {
+			opcoes = opcaoDAO.pesquisa(serie.getAcao(), serie.getDataVencimento());
+			editar();
+		} catch (Exception e) {
+			FacesUtil.addException(e);
+		}
+	}
+	
 	public void incluirAlerta() {
 		alerta = new AlertaTO();
 		alterar = false;
@@ -129,18 +144,25 @@ public class AlertaMB implements IConstants {
 	
 	public void incluirSerie() {
 		serie = new SerieOperacoesTO();
+		serie.setInvestidor(FacesUtil.getInvestidorLogado());
 		alterar = false;
 	}
 	
 	public void incluirOperacao() {
-		operacao = new OperacaoRealizadaTO();
-		alterar = false;
+		try {
+			operacao = new OperacaoRealizadaTO();
+			opcoes = opcaoDAO.pesquisa(serie.getAcao(), serie.getDataVencimento());
+			alterar = false;
+		} catch (Exception e) {
+			FacesUtil.addException(e);
+		}
 	}
 	
 	public void atualizar() throws SQLException {
 		IInvestidorDAO investidorDAO = SATAFactoryFacade.getInvestidorDAO();
 		alertas = alertaDAO.listar();
 		investidores = investidorDAO.listar();
+		datasVencimento = opcaoDAO.listarDatasVencimento();
 	}
 	
 	private boolean alertaValido() {
@@ -195,7 +217,7 @@ public class AlertaMB implements IConstants {
 			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_ALERTA_LABEL_QTD_LOTES);
 			valido = false;
 		}
-		if (StringUtils.isEmpty(operacao.getAtivo())) {
+		if (operacao.getOpcao() == null) {
 			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_ATIVO);
 			valido = false;
 		}
@@ -221,6 +243,10 @@ public class AlertaMB implements IConstants {
 	
 	public List<SelectItem> getPosicoes() {
 		return Posicao.getSelectItems();
+	}
+	
+	public List<SelectItem> getDatasVencimento() {
+		return FacesUtil.convertToSelectItems(datasVencimento);
 	}
 	
 	public String getTextoOperacao() {
@@ -261,5 +287,11 @@ public class AlertaMB implements IConstants {
 	}
 	public void setOperacao(OperacaoRealizadaTO operacao) {
 		this.operacao = operacao;
+	}
+	public List<OpcaoTO> getOpcoes() {
+		return opcoes;
+	}
+	public void setOpcoes(List<OpcaoTO> opcoes) {
+		this.opcoes = opcoes;
 	}
 }

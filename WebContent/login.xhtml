@@ -10,7 +10,7 @@
 	<ui:define name="pagina">
 		<h:panelGrid columns="2">
 			<h:outputLabel value="#{msgs['login.email.label']}:" for="email" />
-			<p:inputText id="email" value="#{investidorMB.investidor.email}" />
+			<p:inputText id="email" value="#{investidorMB.investidor.email}" size="30"/>
 			
 			<h:outputLabel value="#{msgs['login.senha.label']}:" for="senha" />
 			<p:password id="senha" value="#{investidorMB.investidor.senha}" feedback="false" />
@@ -18,6 +18,6 @@
 		</h:panelGrid>
 		<p:captcha rendered="#{investidorMB.tentativas >= 5}" 
 			requiredMessage="#{msgs['login.msg.error.captcha']}"  validatorMessage="#{msgs['login.msg.error.captcha']}" />
-		<p:commandButton action="#{investidorMB.login}" value="#{msgs['login.button.login']}" update="page"/>
+		<p:commandButton action="#{investidorMB.login}" value="#{msgs['login.button.login']}" update="page" type="submit"/>
 	</ui:define>
 </ui:composition>

@@ -1,5 +1,7 @@
 package sata.auto.gui.web.converter;
 
+import java.io.Serializable;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -9,7 +11,7 @@ import sata.domain.util.Cache;
 
 public class TOConverter implements Converter {
 	
-	private static Cache<Integer, TO> cache = new Cache<Integer, TO>(100);
+	private static Cache<Serializable, TO> cache = new Cache<Serializable, TO>(100);
 
 	public Object getAsObject(FacesContext ctx, UIComponent component, String value) {
 		if (value != null && cache.containsKey(getKey(value))) {
@@ -34,17 +36,17 @@ public class TOConverter implements Converter {
 	}
 
 	private void addAttribute( TO to) {
-		Integer key = to.getId();
+		Serializable key = to.getId();
 		if (!cache.containsKey(key))
 			cache.put(key, to);
 	}
 	
-	private Integer getKey(String value) {
+	private Serializable getKey(String value) {
 		try {
 			return Integer.parseInt(value);
 		}
 		catch (NumberFormatException e) {
-			return null;
+			return value;
 		}
 	}
 }

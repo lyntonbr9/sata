@@ -1,5 +1,6 @@
 package sata.domain.dao.hibernate;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class GenericDAOHibernate <T extends TO> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T recuperar(Integer id) throws SQLException {
+	public T recuperar(Serializable id) throws SQLException {
 		Session sessao = getSession(); 
 		T to = null;
 		try {
@@ -102,7 +103,7 @@ public class GenericDAOHibernate <T extends TO> {
 		return (List<T>) query.list();
 	}
 	
-	protected Query executeQuery(String hql) throws SQLException {
+	protected static Query executeQuery(String hql) throws SQLException {
 		Session sessao = getSession(); 
 		Query query = null;
 		try {

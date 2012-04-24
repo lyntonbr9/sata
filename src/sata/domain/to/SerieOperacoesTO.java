@@ -47,6 +47,9 @@ public class SerieOperacoesTO implements TO {
 	private Acao acao;
 	
 	@Column
+	private Date dataVencimento;
+	
+	@Column
 	private Integer qtdLotesAcao;
 	
 	@Column
@@ -66,6 +69,10 @@ public class SerieOperacoesTO implements TO {
 		if (precoAcaoAtual == null)
 			precoAcaoAtual = CotacaoLopesFilho.getCotacao(acao.getNome()).setScale(50);
 		return precoAcaoAtual;
+	}
+	
+	public boolean isVencida() {
+		return dataVencimento.compareTo(new Date()) == -1; // Data de vencimento menor que a data atual
 	}
 	
 	@Override
@@ -136,5 +143,11 @@ public class SerieOperacoesTO implements TO {
 	}
 	public void setAcao(Acao acao) {
 		this.acao = acao;
+	}
+	public Date getDataVencimento() {
+		return dataVencimento;
+	}
+	public void setDataVencimento(Date dataVencimento) {
+		this.dataVencimento = dataVencimento;
 	}
 }

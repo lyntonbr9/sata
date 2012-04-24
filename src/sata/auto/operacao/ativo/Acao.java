@@ -45,8 +45,8 @@ public class Acao extends Ativo implements TO {
 	}
 	
 	@Override
-	public Integer getId() {
-		return nome.hashCode();
+	public String getId() {
+		return nome;
 	}
 
 	public BigDecimal getPreco(Dia dia) throws SATAEX {
