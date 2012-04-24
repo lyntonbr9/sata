@@ -10,7 +10,6 @@ import sata.domain.util.SATAUtil;
 
 public class LoginPhaseListener implements PhaseListener {
 	private static final long serialVersionUID = -6002715477049826372L;
-	
 
 	@Override
 	public void afterPhase(PhaseEvent event) {

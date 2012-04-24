@@ -11,16 +11,16 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 	
 	@Override
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo) throws SQLException {
-		return setSplit(super.listar("where codigo = '" + codigoAtivo + "' order by periodo"));
+		return setSplit(super.listar("where codigo = ? order by periodo", codigoAtivo));
 	}
 	@Override
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, Integer ano) throws SQLException {
-		return setSplit(super.listar("where codigo = '" + codigoAtivo + "' and ano = '" + ano + "' order by periodo"));
+		return setSplit(super.listar("where codigo = ? and ano = ? order by periodo", codigoAtivo, ano.toString()));
 	}
 	@Override
 	public CotacaoAtivoTO getCotacaoDoAtivo(String codigoAtivo, String data) throws SQLException {
 		try {
-			return setSplit(super.listar("where codigo = '" + codigoAtivo + "' and periodo like '%" + data + "%'")).get(0);
+			return setSplit(super.listar("where codigo = ? and periodo like ?", codigoAtivo, data+"%")).get(0);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		} 
@@ -31,7 +31,7 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 	}
 	@Override
 	public List<CotacaoAtivoTO> getCotacoesDoAtivo(String codigoAtivo, String dataInicial, String dataFinal) throws SQLException {
-		return setSplit(super.listar("where codigo = '" + codigoAtivo + " and periodo BETWEEN '" + dataInicial + "' and '" + dataFinal + "' order by periodo"));
+		return setSplit(super.listar("where codigo = ? and periodo BETWEEN ? and ? order by periodo", codigoAtivo, dataInicial, dataFinal));
 	}
 	@Override
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) throws SQLException {
@@ -56,7 +56,7 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 		for (CotacaoAtivoTO cotacao: list) {
 			String query = "from SplitAtivoTO where codigoAtivo = '" + cotacao.getCodigo()
 				+ "' and periodo >= '" + cotacao.getPeriodo() + "'";
-			List<SplitAtivoTO> splits = (List<SplitAtivoTO>) super.executeQuery(query);
+			List<SplitAtivoTO> splits = (List<SplitAtivoTO>) super.executeQuery(query).list();
 			int split = 1;
 			if (!splits.isEmpty()) {
 				for (SplitAtivoTO splitAtivo: splits) {

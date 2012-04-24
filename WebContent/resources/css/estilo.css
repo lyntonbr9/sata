@@ -46,8 +46,10 @@ h1 {
 }
 
 #adsense {
-	float: right;
+	position:absolute;
 	width: 160px;
+	top: 10px;
+	left: 1150px;
 	padding: 2px;
 }
 

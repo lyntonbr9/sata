@@ -9,8 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import sata.auto.operacao.ativo.Acao;
+import sata.metastock.robos.CotacaoLopesFilho;
 
 @Entity
 @Table(name="Opcao")
@@ -27,11 +29,20 @@ public class OpcaoTO implements TO {
 	private Acao acao;
 	
 	@Column(name="dtVencimento")
-	private Date dataVencimento;	
+	private Date dataVencimento;
+	
+	@Transient
+	private BigDecimal precoAtual;
+	
+	public BigDecimal getPrecoAtual() {
+		if (precoAtual == null)
+			precoAtual = CotacaoLopesFilho.getCotacao(codigo).setScale(50);
+		return precoAtual;
+	}
 	
 	@Override
-	public Integer getId() {
-		return codigo.hashCode();
+	public String getId() {
+		return codigo;
 	}
 
 	public String getCodigo() {

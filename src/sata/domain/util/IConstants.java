@@ -43,7 +43,7 @@ public interface IConstants {
 	public int QTD_DIAS_ANO = 365;
 	public int QTD_DIAS_FALTA_1_MES_VENC = 29; //quando for saber 1 mes
 	public int QTD_DIAS_FALTA_2_MES_VENC = 59; //quando for saber 2 meses
-	public double TAXA_DE_JUROS = 0.11; //11%
+	public double TAXA_DE_JUROS = 0.095; //9,5%
 	public double PCTGEM_OPCAO = 0.05;
 	public int QTD_DIAS_UTEIS_ANO = 252;
 	public int QTD_DIAS_UTEIS_MES=21;
@@ -91,6 +91,7 @@ public interface IConstants {
 	String MSG_ALERTA_LABEL_QTD_LOTES = "alerta.formOp.qtdLotes.label";
 	String MSG_ALERTA_LABEL_ATIVO = "alerta.formOp.ativo.label";
 	String MSG_ALERTA_LABEL_VALOR = "alerta.formOp.valor.label";
+	String MSG_ALERTA_LABEL_VOLATILIDADE = "alerta.volatilidade.label";
 	String MSG_ALERTA_EMAIL_ASSUNTO_GANHO = "alerta.email.assunto.ganho";
 	String MSG_ALERTA_EMAIL_ASSUNTO_PERDA = "alerta.email.assunto.perda";
 	String MSG_ACOMPANHAMENTO_EMAIL_ASSUNTO = "acompanhamento.email.assunto";
@@ -113,6 +114,7 @@ public interface IConstants {
 	String MSG_ENUM_PREFIX_TIPO_CALCULO_VALOR_INVESTIDO = "enum.tipoCalculoValorInvestido.";
 	String MSG_ENUM_PREFIX_POSICAO = "enum.posicao.";
 	
+	String MSG_ERRO_GENERICO = "general.msg.error.generico";
 	String MSG_ERRO_CAMPO_OBRIGATORIO = "general.msg.error.campoObrigatorio";
 	String MSG_ERRO_VALOR_MAIOR_QUE_ZERO = "general.msg.error.maiorQueZero";
 	String MSG_ERRO_ERRO_EMAIL_NAO_CADASTRADO = "login.msg.error.emailNaoCadastrado";

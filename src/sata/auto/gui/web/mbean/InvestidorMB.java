@@ -58,12 +58,12 @@ public class InvestidorMB implements IConstants {
 		if (ok) {
 			investidor.setSenha(SATAUtil.encrypt(investidor.getSenha()));
 			IInvestidorDAO dao = SATAFactoryFacade.getInvestidorDAO();
-			InvestidorTO invCompleto = dao.recuperar(investidor.getEmail());
-			if (invCompleto == null) {
+			investidor = dao.recuperar(investidor.getEmail());
+			if (investidor == null) {
 				FacesUtil.addError(MSG_ERRO_ERRO_EMAIL_NAO_CADASTRADO);
 				ok = false;
 			}
-			else if (!invCompleto.getSenha().equals(investidor.getSenha())) {
+			else if (!investidor.getSenha().equals(investidor.getSenha())) {
 				FacesUtil.addError(MSG_ERRO_ERRO_SENHA_INCORRETA);
 				ok = false;
 			}

@@ -53,8 +53,8 @@ public class CotacaoAtivoTO implements TO, Comparable<CotacaoAtivoTO>, Serializa
 	private int split;
 	
 	@Override
-	public Integer getId() {
-		return codigo.hashCode() + periodo.hashCode();
+	public String getId() {
+		return codigo + "-" + periodo;
 	}
 
 	public BigDecimal getValorFechamento() {

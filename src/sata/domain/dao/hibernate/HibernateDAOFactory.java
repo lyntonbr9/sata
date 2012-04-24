@@ -1,6 +1,7 @@
 package sata.domain.dao.hibernate;
 
 import sata.domain.dao.DAOFactory;
+import sata.domain.dao.IAcaoDAO;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
@@ -50,6 +51,11 @@ public class HibernateDAOFactory extends DAOFactory {
 	@Override
 	public IOpcaoDAO getOpcaoDAO() {
 		return HibernateOpcaoDAO.singleton();
+	}
+	
+	@Override
+	public IAcaoDAO getAcaoDAO() {
+		return HibernateAcaoDAO.singleton();
 	}
 
 	// Implementação do singleton

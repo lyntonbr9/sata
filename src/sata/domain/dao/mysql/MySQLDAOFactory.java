@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import sata.domain.dao.ConnectionPoolManager;
 import sata.domain.dao.DAOFactory;
+import sata.domain.dao.IAcaoDAO;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
@@ -14,6 +15,17 @@ import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
 
 public class MySQLDAOFactory extends DAOFactory{
+	
+	// Implementação do singleton
+	private MySQLDAOFactory() {}
+	private static MySQLDAOFactory instance;
+	public static MySQLDAOFactory singleton() {	
+		return (instance != null)? instance : create(); 
+	}
+	private static synchronized MySQLDAOFactory create() {
+		if (instance == null) instance = new MySQLDAOFactory();
+		return instance;
+	}
 	
 	private static ConnectionPoolManager conPoolManager = new ConnectionPoolManager();
 	
@@ -60,15 +72,9 @@ public class MySQLDAOFactory extends DAOFactory{
 	public IOpcaoDAO getOpcaoDAO() {
 		return null;
 	}
-	
-	// Implementação do singleton
-	private MySQLDAOFactory() {}
-	private static MySQLDAOFactory instance;
-	public static MySQLDAOFactory singleton() {	
-		return (instance != null)? instance : create(); 
-	}
-	private static synchronized MySQLDAOFactory create() {
-		if (instance == null) instance = new MySQLDAOFactory();
-		return instance;
+
+	@Override
+	public IAcaoDAO getAcaoDAO() {
+		return null;
 	}
 }

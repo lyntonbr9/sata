@@ -1,6 +1,8 @@
 package sata.domain.to;
 
+import java.io.Serializable;
+
 public interface TO {
 
-	public Integer getId();
+	public Serializable getId();
 }

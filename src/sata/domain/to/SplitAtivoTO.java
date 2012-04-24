@@ -26,8 +26,8 @@ public class SplitAtivoTO implements TO, Serializable {
 	private Integer split;
 
 	@Override
-	public Integer getId() {
-		return codigoAtivo.hashCode() + periodo.hashCode();
+	public String getId() {
+		return codigoAtivo + "-" + periodo;
 	}
 	
 	@Override

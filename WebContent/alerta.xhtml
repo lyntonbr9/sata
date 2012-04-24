@@ -114,6 +114,12 @@
 		            #{serie.acao.nome}
 	       		</p:column>
 	       		<p:column styleClass="center">  
+		            <f:facet name="header">#{msgs['alerta.formSerie.dataVencimento.label']}</f:facet>
+		            <h:outputText value="#{serie.dataVencimento}">
+		            	<f:convertDateTime pattern="dd/MM/yyyy" />
+		            </h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center">  
 		            <f:facet name="header">#{msgs['alerta.formSerie.qtdLotesAcao.label']}</f:facet>
 		            #{serie.qtdLotesAcao}
 	       		</p:column>
@@ -165,6 +171,12 @@
 				<p:selectOneMenu id="acao" value="#{alertaMB.serie.acao}" converter="toConverter" >
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{alertaMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['alerta.formSerie.dataVencimento.label']}:" for="dataVencimento" />
+				<p:selectOneMenu id="dataVencimento" value="#{alertaMB.serie.dataVencimento}" converter="dateConverter">
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{alertaMB.datasVencimento}"/>
 				</p:selectOneMenu>
 				
 				<h:outputLabel value="#{msgs['alerta.formSerie.qtdLotesAcao.label']}:" for="qtdLotesAcao" />
@@ -226,7 +238,7 @@
 	       		</p:column>
 	       		<p:column styleClass="center">  
 		            <f:facet name="header">#{msgs['general.label.update']}</f:facet>
-		            <p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editar}" process=":form:tableOp"
+		            <p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editarOperacao}" process=":form:tableOp"
 		            	update=":form:formOp" oncomplete="formOp.show();" title="#{msgs['general.label.update']}">
 		            	<f:setPropertyActionListener target="#{alertaMB.operacao}" value="#{op}" />
 		            </p:commandButton>
@@ -254,7 +266,10 @@
 				<p:spinner id="qtdLotes" value="#{alertaMB.operacao.qtdLotes}" size="4" />
 				
 				<h:outputLabel value="#{msgs['alerta.formOp.ativo.label']}:" for="ativoOp" />
-				<p:inputText id="ativoOp" value="#{alertaMB.operacao.ativo}" size="7" />
+				<p:selectOneMenu id="ativoOp" value="#{alertaMB.operacao.opcao}" converter="toConverter" >
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{alertaMB.opcoes}" var="opcao" itemValue="#{opcao}" itemLabel="#{opcao.codigo}" />
+				</p:selectOneMenu>
 			
 				<h:outputLabel value="#{msgs['alerta.formOp.valor.label']}:" for="valor" />
 				<p:inputText id="valor" value="#{alertaMB.operacao.valor}" size="4">

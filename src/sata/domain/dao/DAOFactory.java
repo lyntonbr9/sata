@@ -20,6 +20,7 @@ public abstract class DAOFactory {
 	public abstract IInvestidorDAO getInvestidorDAO();
 	public abstract IAcompOpcoesDAO getAcompOpcoesDAO();
 	public abstract IOpcaoDAO getOpcaoDAO();
+	public abstract IAcaoDAO getAcaoDAO();
 	
 	public static DAOFactory getDAOFactory(int wichFactory){
 		switch(wichFactory)
