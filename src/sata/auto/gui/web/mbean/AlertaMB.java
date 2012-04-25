@@ -17,13 +17,11 @@ import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.domain.alert.AlertaOperacao;
 import sata.domain.dao.IAlertaDAO;
-import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AlertaTO;
-import sata.domain.to.InvestidorTO;
 import sata.domain.to.OpcaoTO;
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.to.SerieOperacoesTO;
@@ -46,7 +44,6 @@ public class AlertaMB implements IConstants {
 	boolean alterar = false;
 	
 	List<AlertaTO> alertas = new ArrayList<AlertaTO>();
-	List<InvestidorTO> investidores = new ArrayList<InvestidorTO>();
 	List<OpcaoTO> opcoes = new ArrayList<OpcaoTO>();
 	List<Date> datasVencimento = new ArrayList<Date>();
 	
@@ -159,9 +156,7 @@ public class AlertaMB implements IConstants {
 	}
 	
 	public void atualizar() throws SQLException {
-		IInvestidorDAO investidorDAO = SATAFactoryFacade.getInvestidorDAO();
 		alertas = alertaDAO.listar();
-		investidores = investidorDAO.listar();
 		datasVencimento = opcaoDAO.listarDatasVencimento();
 	}
 	
@@ -275,12 +270,6 @@ public class AlertaMB implements IConstants {
 	}
 	public void setSerie(SerieOperacoesTO serie) {
 		this.serie = serie;
-	}
-	public List<InvestidorTO> getInvestidores() {
-		return investidores;
-	}
-	public void setInvestidores(List<InvestidorTO> investidores) {
-		this.investidores = investidores;
 	}
 	public OperacaoRealizadaTO getOperacao() {
 		return operacao;

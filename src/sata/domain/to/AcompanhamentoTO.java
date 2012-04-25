@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,7 +47,7 @@ public class AcompanhamentoTO implements TO {
 	@Column(name="dtVencimento")
 	private Date dataVencimento;	
 	
-	@OneToMany(mappedBy="acompanhamento")
+	@OneToMany(mappedBy="acompanhamento", cascade=CascadeType.ALL)
 	private List<AcompOpcaoTO> acompanhamentos;
 	
 	@Transient
@@ -56,6 +57,11 @@ public class AcompanhamentoTO implements TO {
 		if (precoAcaoAtual == null)
 			precoAcaoAtual = CotacaoLopesFilho.getCotacao(acao.getNome()).setScale(50);
 		return precoAcaoAtual;
+	}
+	
+	public boolean isVencida() {
+		if (dataVencimento == null) return false;
+		return dataVencimento.compareTo(new Date()) == -1; // Data de vencimento menor que a data atual
 	}
 	
 	@Override

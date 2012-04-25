@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
-import sata.domain.dao.IAcompOpcoesDAO;
+import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AcompOpcaoTO;
@@ -18,7 +18,7 @@ import sata.domain.util.SATAUtil;
 public class AcompOpcoes implements IConstants {
 	
 	public static void verificarOpcoes() throws Exception {
-		IAcompOpcoesDAO acompDAO = SATAFactoryFacade.getAcompOpcoesDAO();
+		IAcompanhamentoDAO acompDAO = SATAFactoryFacade.getAcompanhamentoDAO();
 		IOpcaoDAO opcaoDAO = SATAFactoryFacade.getOpcaoDAO();
 		for (AcompanhamentoTO acompanhamento : acompDAO.listar()) {
 			BigDecimal precoAcaoAtual = acompanhamento.getPrecoAcaoAtual();

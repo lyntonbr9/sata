@@ -94,6 +94,12 @@ public interface IConstants {
 	String MSG_ALERTA_LABEL_VOLATILIDADE = "alerta.volatilidade.label";
 	String MSG_ALERTA_EMAIL_ASSUNTO_GANHO = "alerta.email.assunto.ganho";
 	String MSG_ALERTA_EMAIL_ASSUNTO_PERDA = "alerta.email.assunto.perda";
+	String MSG_ACOMPANHAMENTO_LABEL_NOME = "acompanhamento.formAcomp.nome.label";
+	String MSG_ACOMPANHAMENTO_LABEL_INVESTIDOR = "acompanhamento.formAcomp.investidor.label";
+	String MSG_ACOMPANHAMENTO_LABEL_ACAO = "acompanhamento.formAcomp.acao.label";
+	String MSG_ACOMPANHAMENTO_LABEL_DATA_VENCIMENTO = "acompanhamento.formAcomp.dataVencimento.label";
+	String MSG_ACOMPANHAMENTO_LABEL_PERC_TOLERANCIA_INFERIOR = "acompanhamento.formAcompOpcao.percToleranciaInferior.label";
+	String MSG_ACOMPANHAMENTO_LABEL_PERC_TOLERANCIA_SUPERIOR = "acompanhamento.formAcompOpcao.percToleranciaSuperior.label";
 	String MSG_ACOMPANHAMENTO_EMAIL_ASSUNTO = "acompanhamento.email.assunto";
 	String MSG_LOGIN_LABEL_EMAIL = "login.email.label";
 	String MSG_LOGIN_LABEL_SENHA = "login.senha.label";

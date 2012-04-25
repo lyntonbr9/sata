@@ -15,7 +15,6 @@ public class DateConverter implements Converter {
 		try {
 			return SATAUtil.formataData(value);
 		} catch (ParseException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}

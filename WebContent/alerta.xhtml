@@ -141,13 +141,15 @@
 		        </p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.open']}">
 	       			<p:commandButton icon="ui-icon-folder-open" process=":form:tableSeries"
-		            	title="#{msgs['general.label.open']}" update=":form:tableOp" oncomplete="tableOp.show();">
+		            	title="#{msgs['general.label.open']}" update=":form:tableOp" oncomplete="tableOp.show();"
+		            	disabled="#{serie.vencida}">
 		            	<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
 		            </p:commandButton>
 		        </p:column>
 		        <p:column styleClass="center" headerText="#{msgs['general.label.update']}">
 					<p:commandButton icon="ui-icon-pencil" action="#{alertaMB.editar}" process=":form:tableSeries"
-						update=":form:formSerie" oncomplete="formSerie.show();" title="#{msgs['general.label.update']}">
+						update=":form:formSerie" oncomplete="formSerie.show();" title="#{msgs['general.label.update']}"
+						disabled="#{serie.vencida}">
 						<f:setPropertyActionListener target="#{alertaMB.serie}" value="#{serie}" />
 					</p:commandButton>
 				</p:column>
@@ -190,7 +192,7 @@
 				<h:outputLabel value="#{msgs['alerta.formSerie.investidor.label']}:" for="investidor" />
 				<p:selectOneMenu id="investidor" value="#{alertaMB.serie.investidor}" converter="toConverter">
 					<f:selectItem itemValue="" itemLabel="--" />
-					<f:selectItems value="#{alertaMB.investidores}" var="inv" itemValue="#{inv}" itemLabel="#{inv.nome}" />
+					<f:selectItems value="#{investidorMB.investidores}" var="inv" itemValue="#{inv}" itemLabel="#{inv.nome}" />
 				</p:selectOneMenu>
 				
 				<h:outputLabel value="#{msgs['alerta.formSerie.ativa.label']}:" for="ativa" />

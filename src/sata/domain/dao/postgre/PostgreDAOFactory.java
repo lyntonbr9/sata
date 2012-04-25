@@ -5,11 +5,12 @@ import java.sql.Connection;
 import sata.domain.dao.ConnectionPoolManager;
 import sata.domain.dao.DAOFactory;
 import sata.domain.dao.IAcaoDAO;
+import sata.domain.dao.IAcompOpcaoDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IInvestidorDAO;
-import sata.domain.dao.IAcompOpcoesDAO;
+import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.IOperacaoRealizadaDAO;
 import sata.domain.dao.ISerieOperacoesDAO;
@@ -56,7 +57,7 @@ public class PostgreDAOFactory extends DAOFactory{
 	}
 	
 	@Override
-	public IAcompOpcoesDAO getAcompOpcoesDAO() {
+	public IAcompanhamentoDAO getAcompanhamentoDAO() {
 		return null;
 	}
 	
@@ -70,6 +71,10 @@ public class PostgreDAOFactory extends DAOFactory{
 	}
 	@Override
 	public IAcaoDAO getAcaoDAO() {
+		return null;
+	}
+	@Override
+	public IAcompOpcaoDAO getAcompOpcaoDAO() {
 		return null;
 	}
 }

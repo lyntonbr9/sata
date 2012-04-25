@@ -21,7 +21,7 @@ public class HibernateAlertaDAO extends GenericDAOHibernate<AlertaTO> implements
 		for (AlertaTO alerta: lista) {
 			List<SerieOperacoesTO> remover = new ArrayList<SerieOperacoesTO>();
 			for (SerieOperacoesTO serie: alerta.getSeries()) {
-				if (!serie.isAtiva() || serie.isVencida()) {
+				if (!serie.isAtiva()) {
 					remover.add(serie);
 				}
 			}

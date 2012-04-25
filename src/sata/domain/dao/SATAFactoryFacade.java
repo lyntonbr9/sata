@@ -24,8 +24,11 @@ public class SATAFactoryFacade implements IConstants {
 	public static IInvestidorDAO getInvestidorDAO(){
 		return getDAOFactory().getInvestidorDAO();
 	}
-	public static IAcompOpcoesDAO getAcompOpcoesDAO(){
-		return getDAOFactory().getAcompOpcoesDAO();
+	public static IAcompanhamentoDAO getAcompanhamentoDAO(){
+		return getDAOFactory().getAcompanhamentoDAO();
+	}
+	public static IAcompOpcaoDAO getAcompOpcaoDAO(){
+		return getDAOFactory().getAcompOpcaoDAO();
 	}
 	public static IOpcaoDAO getOpcaoDAO(){
 		return getDAOFactory().getOpcaoDAO();
