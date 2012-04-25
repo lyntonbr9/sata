@@ -20,7 +20,7 @@
   					<h:outputText escape="false" value="#{msgs['grafico.form.precoInicialAcao.tooltip']}" />
   				</p:tooltip>
 		
-			<h:outputLabel value="#{msgs['grafico.form.taxaJuros.label']}:" for="taxaJuros" />
+			<h:outputLabel value="#{msgs['general.label.taxaDeJuros']}:" for="taxaJuros" />
 			<p:inputText id="taxaJuros" value="#{graficoMB.taxaJuros}" size="5">
 				<f:convertNumber minFractionDigits="2" />
 			</p:inputText>%
@@ -28,7 +28,7 @@
   					<h:outputText escape="false" value="#{msgs['grafico.form.taxaJuros.tooltip']}" />
   				</p:tooltip>
   				
-  				<h:outputLabel value="#{msgs['grafico.form.volatilidade.label']}:" for="volatilidade" />
+  				<h:outputLabel value="#{msgs['general.label.volatilidade']}:" for="volatilidade" />
 			<p:inputText id="volatilidade" value="#{graficoMB.volatilidade}" size="5">
 				<f:convertNumber minFractionDigits="2" />
 			</p:inputText>%

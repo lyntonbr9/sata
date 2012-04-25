@@ -11,28 +11,35 @@
 		<h:panelGroup id="tableAcomp">
 			<p:toolbar> 
 				<p:toolbarGroup align="left">
-					<p:commandButton icon="ui-icon-plus" value="#{msgs['acompanhamento.button.addAcomp']}" process=":form:tableAcomp"
-						action="#{acompanhamentoMB.incluirAcomp}" update=":form:formAcomp" oncomplete="formAcomp.show();"/>
+					<p:commandButton icon="ui-icon-plus" value="#{msgs['general.label.add']} #{msgs['acompanhamento.acompanhamento.label']}" 
+					process=":form:tableAcomp" action="#{acompanhamentoMB.incluirAcomp}" 
+					update=":form:formAcomp" oncomplete="formAcomp.show();"/>
 					<p:commandButton icon="ui-icon-refresh" title="#{msgs['general.label.refresh']}" process="@this"
-						action="#{acompanhamentoMB.atualizar}" update="tableAcomp"/>
+						action="#{acompanhamentoMB.atualizar}" update="page"/>
 				</p:toolbarGroup>
     		</p:toolbar>  
 			<p:dataTable id="acompanhamentos" value="#{acompanhamentoMB.acompanhamentos}" var="acompanhamento" 
 				rendered="#{not empty acompanhamentoMB.acompanhamentos}">  
-	    		<p:column headerText="#{msgs['acompanhamento.formAcomp.nome.label']}">  
+	    		<p:column headerText="#{msgs['general.label.nome']}">  
 		            #{acompanhamento.nome}  
 	       		</p:column>
-	       		<p:column styleClass="center" headerText="#{msgs['acompanhamento.formAcomp.investidor.label']}">  
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.investidor']}">  
 		            #{acompanhamento.investidor.nome}  
 	       		</p:column>
-	       		<p:column styleClass="center" headerText="#{msgs['acompanhamento.formAcomp.acao.label']}">  
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.acao']}">  
 		            #{acompanhamento.acao.nome}  
 	       		</p:column>
-	       		<p:column styleClass="center" headerText="#{msgs['acompanhamento.formAcomp.dataVencimento.label']}">  
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.dataVencimento']}">  
 		            <h:outputText value="#{acompanhamento.dataVencimento}">
 		            	<f:convertDateTime pattern="dd/MM/yyyy" />
 		            </h:outputText> 
 	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.view']}">
+	       			<p:commandButton icon="ui-icon-search" process=":form:tableAcomp"
+		            	title="#{msgs['general.label.view']}" update=":form:now" oncomplete="now.show();">
+		            	<f:setPropertyActionListener target="#{acompanhamentoMB.acompanhamento}" value="#{acompanhamento}" />
+		            </p:commandButton>
+		        </p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.open']}">
 	       			<p:commandButton icon="ui-icon-folder-open" process=":form:tableAcomp" disabled="#{acompanhamento.vencida}"
 		            	title="#{msgs['general.label.open']}" update=":form:tableAcompOpcoes" oncomplete="tableAcompOpcoes.show();">
@@ -58,22 +65,22 @@
 		<p:dialog header="#{msgs[acompanhamentoMB.textoOperacao]} #{msgs['acompanhamento.acompanhamento.label']}"
 			widgetVar="formAcomp" modal="true" id="formAcomp"> 
 			<h:panelGrid columns="2">
-				<h:outputLabel value="#{msgs['acompanhamento.formAcomp.nome.label']}:" for="acompanhamento" />
+				<h:outputLabel value="#{msgs['general.label.nome']}:" for="acompanhamento" />
 				<p:inputText id="acompanhamento" value="#{acompanhamentoMB.acompanhamento.nome}" />
 				
-				<h:outputLabel value="#{msgs['acompanhamento.formAcomp.investidor.label']}:" for="investidor" />
+				<h:outputLabel value="#{msgs['general.label.investidor']}:" for="investidor" />
 				<p:selectOneMenu id="investidor" value="#{acompanhamentoMB.acompanhamento.investidor}" converter="toConverter">
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{investidorMB.investidores}" var="inv" itemValue="#{inv}" itemLabel="#{inv.nome}" />
 				</p:selectOneMenu>
 			
-				<h:outputLabel value="#{msgs['acompanhamento.formAcomp.acao.label']}:" for="acao" />
+				<h:outputLabel value="#{msgs['general.label.acao']}:" for="acao" />
 				<p:selectOneMenu id="acao" value="#{acompanhamentoMB.acompanhamento.acao}" converter="toConverter" >
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{acompanhamentoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
 				</p:selectOneMenu>
 				
-				<h:outputLabel value="#{msgs['acompanhamento.formAcomp.dataVencimento.label']}:" for="dataVencimento" />
+				<h:outputLabel value="#{msgs['general.label.dataVencimento']}:" for="dataVencimento" />
 				<p:selectOneMenu id="dataVencimento" value="#{acompanhamentoMB.acompanhamento.dataVencimento}" converter="dateConverter">
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{acompanhamentoMB.datasVencimento}"/>
@@ -89,8 +96,9 @@
 			widgetVar="tableAcompOpcoes" modal="true">
 			<p:toolbar> 
 				<p:toolbarGroup align="left">
-					<p:commandButton icon="ui-icon-plus" value="#{msgs['acompanhamento.button.addAcompOpcoes']}" process=":form:tableAcompOpcoes"
-						action="#{acompanhamentoMB.incluirAcompOpcao}" update=":form:formAcompOpcoes" oncomplete="formAcompOpcoes.show();"/>
+					<p:commandButton icon="ui-icon-plus" value="#{msgs['general.label.add']} #{msgs['acompanhamento.acompOpcao.label']}" 
+						process=":form:tableAcompOpcoes" action="#{acompanhamentoMB.incluirAcompOpcao}" 
+						update=":form:formAcompOpcoes" oncomplete="formAcompOpcoes.show();"/>
 				</p:toolbarGroup>
     		</p:toolbar>  
 			<p:dataTable id="acompOpcoes" value="#{acompanhamentoMB.acompanhamento.acompanhamentos}" var="acompOpcao" 
@@ -136,6 +144,11 @@
 				action="#{acompanhamentoMB.salvarAcompOpcao}" onsuccess="formAcompOpcoes.hide();" oncomplete="tableAcompOpcoes.show();"
 				process=":form:formAcompOpcoes" />
 			<p:commandButton icon="ui-icon-close" title="#{msgs['general.label.cancel']}" onclick="formAcompOpcoes.hide();"/>
+		</p:dialog>
+		
+		<p:dialog header="#{msgs['acompanhamento.acompanhamento.label']} #{acompanhamentoMB.acompanhamento.nome} #{msgs['acompanhamento.now.title']}" 
+			id="now" widgetVar="now" modal="true">
+			<h:outputText value="#{acompanhamentoMB.acompNow}" escape="false" />
 		</p:dialog>
 	</ui:define>
 </ui:composition>

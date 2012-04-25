@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import sata.auto.enums.Posicao;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
+import sata.domain.alert.AcompOpcoes;
 import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.SATAFactoryFacade;
@@ -110,22 +111,33 @@ public class AcompanhamentoMB implements IConstants {
 		}
 	}
 	
+	public String getAcompNow() {
+		if (acompanhamento.getId() != null)  {
+			try {
+				return FacesUtil.formataTexto(AcompOpcoes.getMensagemAcompanhamento(acompanhamento, false));
+			} catch (Exception e) {
+				FacesUtil.addException(e);
+			}
+		}
+		return "";
+	}
+	
 	private boolean acompanhamentoValido() {
 		boolean valido = true;
 		if (StringUtils.isEmpty(acompanhamento.getNome())) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ACOMPANHAMENTO_LABEL_NOME);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_NOME);
 			valido = false;
 		}
 		if (acompanhamento.getInvestidor() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ACOMPANHAMENTO_LABEL_INVESTIDOR);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_INVESTIDOR);
 			valido = false;
 		}
 		if (acompanhamento.getAcao() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ACOMPANHAMENTO_LABEL_ACAO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_ACAO);
 			valido = false;
 		}
 		if (acompanhamento.getDataVencimento() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ACOMPANHAMENTO_LABEL_DATA_VENCIMENTO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_DATA_VENCIMENTO);
 			valido = false;
 		}
 		return valido;

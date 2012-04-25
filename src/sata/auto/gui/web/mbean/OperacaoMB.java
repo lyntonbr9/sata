@@ -146,15 +146,15 @@ public class OperacaoMB implements IConstants {
 	private boolean formularioValido() {
 		boolean valido = true;
 		if (tipoAtivo == NENHUM) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_OPERACOES_LABEL_ATIVO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_ATIVO);
 			valido = false;
 		}
 		if (posicao == null && !isRendaFixaSelecionada()) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_OPERACOES_LABEL_POSICAO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_POSICAO);
 			valido = false;
 		}
 		if (qtdLotes <= 0) {
-			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_OPERACOES_LABEL_QTD);
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_GENERAL_LABEL_QTD);
 			valido = false;
 		}
 		if (mesesParaVencimento <= 0) {
