@@ -44,7 +44,7 @@ public class SimulacaoMB implements IConstants {
 	public void simular() {
 		try {
 			if (acao == null) {
-				FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_SIMULACAO_LABEL_ACAO);
+				FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_ACAO);
 			}
 			else {
 				OperacaoMB operacaoMB = FacesUtil.getMB(OperacaoMB.class);

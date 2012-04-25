@@ -45,16 +45,16 @@ public class AlertaOperacao implements IConstants {
 		String msg = "";
 		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_ALERTA) + " " + serie.getAlerta().getNome() + "\n";
 		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_SERIE) + " " 
-			+ SATAUtil.getMessage(MSG_ALERTA_LABEL_DE) + " " 
+			+ SATAUtil.getMessage(MSG_GENERAL_LABEL_OF) + " " 
 			+ serie.getInvestidor().getNome() + " "
-			+ SATAUtil.getMessage(MSG_ALERTA_LABEL_DE) + " "
+			+ SATAUtil.getMessage(MSG_GENERAL_LABEL_OF) + " "
 			+ SATAUtil.formataData(serie.getDataExecucao()) + "\n";
 		BigDecimal volatilidade = calculaVolatilidade(serie);
 		for (OperacaoRealizadaTO op: serie.getOperacoes()) {
 			valorAbertura = valorAbertura.add(op.getValorReal().multiply(new BigDecimal(op.getQtdLotes())));
 			BigDecimal valorAtualTotal = op.getValorAtual().multiply(new BigDecimal(op.getQtdLotes()));
 			valorFechamento = valorFechamento.add(valorAtualTotal);
-			msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_OPERACAO) + " " + op.getPosicao() 
+			msg += SATAUtil.getMessage(MSG_GENERAL_LABEL_OPERACAO) + " " + op.getPosicao() 
 				+ " " + op.getAtivo() + " = " 
 				+ SATAUtil.formataNumero(op.getValorReal()) + " --> " 
 				+ SATAUtil.formataNumero(op.getValorAtual()) + " (B&S = "
@@ -63,12 +63,12 @@ public class AlertaOperacao implements IConstants {
 		BigDecimal valorInvestido = getValorInvestido(serie);
 		BigDecimal valorSerie = valorAbertura.add(valorFechamento);
 		BigDecimal percentual = valorSerie.divide(valorInvestido, RoundingMode.HALF_EVEN).multiply(CEM);
-		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_PRECO_ACAO) + " = " 
+		msg += SATAUtil.getMessage(MSG_GENERAL_LABEL_PRECO_ACAO) + " = " 
 			+  SATAUtil.formataNumero(serie.getPrecoAcao()) + " --> "
 			+  SATAUtil.formataNumero(serie.getPrecoAcaoAtual()) + "\n";
-		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_VOLATILIDADE) + " = " 
+		msg += SATAUtil.getMessage(MSG_GENERAL_LABEL_VOLATILIDADE) + " = " 
 			+ SATAUtil.formataNumero(volatilidade.multiply(CEM)) + "%\n";
-		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_VALOR_INVESTIDO) + " = " 
+		msg += SATAUtil.getMessage(MSG_GENERAL_LABEL_VALOR_INVESTIDO) + " = " 
 			+ SATAUtil.formataNumero(valorInvestido) + "\n";
 		msg += SATAUtil.getMessage(MSG_ALERTA_LABEL_VALOR_SERIE) + " = " 
 			+ SATAUtil.formataNumero(valorSerie) + "\n";

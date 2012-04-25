@@ -11,13 +11,13 @@
 		<ui:include src="include/operacoes.xhtml" />
 		<p:separator />			
 		<h:panelGrid id="formSimulacao" columns="2">
-			<h:outputLabel value="#{msgs['simulacao.formSimulacao.acao.label']}:" for="acao" />
+			<h:outputLabel value="#{msgs['general.label.acao']}:" for="acao" />
 			<p:selectOneMenu id="acao" value="#{simulacaoMB.acao}" converter="toConverter">
 				<f:selectItem itemValue="" itemLabel="--" />
 				<f:selectItems value="#{simulacaoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
 			</p:selectOneMenu>
 			
-			<h:outputLabel value="#{msgs['simulacao.formSimulacao.valorInvestido.label']}:" for="valorInvestido" />
+			<h:outputLabel value="#{msgs['general.label.valorInvestido']}:" for="valorInvestido" />
 			<p:selectOneMenu id="valorInvestido" value="#{simulacaoMB.tipoCalculoValorInvestido}">
 				<f:selectItems value="#{simulacaoMB.tiposCalculoValorInvestido}" />
 				<p:ajax update="formSimulacao" process="formSimulacao" />
@@ -37,7 +37,7 @@
 			<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoFinal.label']}:" for="anoFinal"/>
 			<p:spinner value="#{simulacaoMB.anoFinal}" size="4" id="anoFinal"/>
 			
-			<h:outputLabel value="#{msgs['simulacao.formSimulacao.taxaDeJuros.label']}:" for="taxaDeJuros"/>
+			<h:outputLabel value="#{msgs['general.label.taxaDeJuros']}:" for="taxaDeJuros"/>
 			<h:panelGroup>
 				<p:inputText value="#{simulacaoMB.taxaDeJuros}" size="4" id="taxaDeJuros" >
 					<f:convertNumber minFractionDigits="2" />

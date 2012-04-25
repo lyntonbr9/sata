@@ -5,10 +5,10 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:p="http://primefaces.org/ui">
-		<p:dialog id="formOperacao" header="#{msgs[operacaoMB.textoOperacao]} #{msgs['operacoes.operacao.label']}" 
+		<p:dialog id="formOperacao" header="#{msgs[operacaoMB.textoOperacao]} #{msgs['general.label.operacao']}" 
 			widgetVar="formOperacao" modal="true"> 
 			<h:panelGrid columns="3">
-				<h:outputLabel value="#{msgs['operacoes.posicao.label']}:" for="posicao" rendered="#{!operacaoMB.rendaFixaSelecionada}" />
+				<h:outputLabel value="#{msgs['general.label.posicao']}:" for="posicao" rendered="#{!operacaoMB.rendaFixaSelecionada}" />
 				<p:selectOneMenu id="posicao" value="#{operacaoMB.posicao}" rendered="#{!operacaoMB.rendaFixaSelecionada}">
 					<f:selectItem itemValue="" itemLabel="--" />
 					<f:selectItems value="#{operacaoMB.posicoes}" />
@@ -17,7 +17,7 @@
    					<h:outputText escape="false" value="#{msgs['operacoes.posicao.tooltip']}" />
    				</p:tooltip>
 			
-				<h:outputLabel value="#{msgs['operacoes.ativo.label']}:" for="ativo" />
+				<h:outputLabel value="#{msgs['general.label.ativo']}:" for="ativo" />
 				<p:selectOneMenu id="ativo" value="#{operacaoMB.tipoAtivo}">
 					<f:selectItem itemValue="-" itemLabel="--" />
 					<f:selectItem itemValue="A" itemLabel="#{msgs['list.ativo.acao']}" />
@@ -30,7 +30,7 @@
    					<h:outputText escape="false" value="#{msgs['operacoes.ativo.tooltip']}" />
    				</p:tooltip>
 			
-				<h:outputLabel value="#{msgs['operacoes.qtd.label']}:" for="qtd" />
+				<h:outputLabel value="#{msgs['general.label.qtd']}:" for="qtd" />
 				<p:spinner id="qtd" value="#{operacaoMB.qtdLotes}" size="3"/>
 				<p:tooltip for="qtd">
    					<h:outputText escape="false" value="#{msgs['operacoes.qtd.tooltip']}" />
@@ -81,7 +81,7 @@
 		<h:panelGroup id="tableOperacoes">
 		<p:toolbar> 
 			<p:toolbarGroup align="left">
-				<p:commandButton icon="ui-icon-plus" value="#{msgs['operacoes.button.addOperacao']}" 
+				<p:commandButton icon="ui-icon-plus" value="#{msgs['general.label.add']} #{msgs['general.label.operacao']}" 
 					action="#{operacaoMB.limpaCampos}" update=":form:formOperacao" oncomplete="formOperacao.show();"/>
 				<p:commandButton icon="ui-icon-folder-open" title="#{msgs['operacoes.button.abrirEstrategia']}" 
 					onclick="abrirEstrategia.show();" />
@@ -94,7 +94,7 @@
 		<p:dataTable id="operacoes" value="#{operacaoMB.operacoes}" var="operacao" 
 			rendered="#{not empty operacaoMB.operacoes}">  
     		<p:column>  
-	            <f:facet name="header">#{msgs['operacoes.operacao.label']}</f:facet>
+	            <f:facet name="header">#{msgs['general.label.operacao']}</f:facet>
 	            #{operacao.string}  
        		</p:column>
 			<p:column styleClass="center">  

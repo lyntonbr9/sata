@@ -163,7 +163,7 @@ public class AlertaMB implements IConstants {
 	private boolean alertaValido() {
 		boolean valido = true;
 		if (StringUtils.isEmpty(alerta.getNome())) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_NOME);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_NOME);
 			valido = false;
 		}
 		if (alerta.getPorcentagemGanho() <= 0) {
@@ -184,7 +184,7 @@ public class AlertaMB implements IConstants {
 			valido = false;
 		}
 		if (serie.getAcao() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_ACAO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_ACAO);
 			valido = false;
 		}
 		if (serie.getQtdLotesAcao() <= 0) {
@@ -192,11 +192,11 @@ public class AlertaMB implements IConstants {
 			valido = false;
 		}
 		if (serie.getPrecoAcao().doubleValue() <= 0) {
-			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_ALERTA_LABEL_PRECO_ACAO);
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_GENERAL_LABEL_PRECO_ACAO);
 			valido = false;
 		}
 		if (serie.getInvestidor() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_INVESTIDOR);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_INVESTIDOR);
 			valido = false;
 		}
 		return valido;
@@ -205,15 +205,15 @@ public class AlertaMB implements IConstants {
 	private boolean operacaoValida() {
 		boolean valido = true;
 		if (operacao.getPosicao() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_POSICAO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_POSICAO);
 			valido = false;
 		}
 		if (operacao.getQtdLotes() <= 0) {
-			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_ALERTA_LABEL_QTD_LOTES);
+			FacesUtil.addError(MSG_ERRO_VALOR_MAIOR_QUE_ZERO, MSG_GENERAL_LABEL_QTD);
 			valido = false;
 		}
 		if (operacao.getOpcao() == null) {
-			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_ALERTA_LABEL_ATIVO);
+			FacesUtil.addError(MSG_ERRO_CAMPO_OBRIGATORIO, MSG_GENERAL_LABEL_ATIVO);
 			valido = false;
 		}
 		if (operacao.getValor().doubleValue() <= 0) {
