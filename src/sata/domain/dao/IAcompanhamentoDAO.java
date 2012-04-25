@@ -5,9 +5,10 @@ import java.util.List;
 
 import sata.domain.to.AcompanhamentoTO;
 
-public interface IAcompOpcoesDAO {
+public interface IAcompanhamentoDAO {
 
 	public List<AcompanhamentoTO> listar() throws SQLException;
 	public void salvar(AcompanhamentoTO opcao) throws SQLException;
+	public void excluir(AcompanhamentoTO alerta) throws SQLException;
 	public AcompanhamentoTO recuperar(Integer id) throws SQLException;
 }

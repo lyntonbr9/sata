@@ -22,7 +22,7 @@ public class HibernateOpcaoDAO extends GenericDAOHibernate<OpcaoTO> implements I
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Date> listarDatasVencimento() throws SQLException {
-		return (List<Date>) super.executeQuery("select distinct dataVencimento from OpcaoTO").list();
+		return (List<Date>) super.executeQuery("select distinct dataVencimento from OpcaoTO where dataVencimento >= NOW() order by dataVencimento").list();
 	}
 
 	@Override

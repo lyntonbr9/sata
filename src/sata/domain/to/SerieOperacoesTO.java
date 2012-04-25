@@ -71,7 +71,12 @@ public class SerieOperacoesTO implements TO {
 		return precoAcaoAtual;
 	}
 	
+	public boolean isAtiva() {
+		return ativa && !isVencida();
+	}
+	
 	public boolean isVencida() {
+		if (dataVencimento == null) return false;
 		return dataVencimento.compareTo(new Date()) == -1; // Data de vencimento menor que a data atual
 	}
 	
@@ -128,9 +133,6 @@ public class SerieOperacoesTO implements TO {
 	}
 	public void setOperacoes(List<OperacaoRealizadaTO> operacoes) {
 		this.operacoes = operacoes;
-	}
-	public boolean isAtiva() {
-		return ativa;
 	}
 	public void setAtiva(boolean ativa) {
 		this.ativa = ativa;

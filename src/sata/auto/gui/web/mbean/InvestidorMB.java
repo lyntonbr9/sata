@@ -1,6 +1,8 @@
 package sata.auto.gui.web.mbean;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -18,7 +20,16 @@ import sata.domain.util.SATAUtil;
 @SessionScoped
 public class InvestidorMB implements IConstants {
 	
+	public InvestidorMB() {
+		try {
+			investidores = SATAFactoryFacade.getInvestidorDAO().listar();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private InvestidorTO investidor = new InvestidorTO();
+	private List<InvestidorTO> investidores = new ArrayList<InvestidorTO>();
 	private String pageAfterLogin;
 	private int tentativas;
 	private boolean logado = false;
@@ -94,5 +105,11 @@ public class InvestidorMB implements IConstants {
 	}
 	public void setTentativas(int tentativas) {
 		this.tentativas = tentativas;
+	}
+	public List<InvestidorTO> getInvestidores() {
+		return investidores;
+	}
+	public void setInvestidores(List<InvestidorTO> investidores) {
+		this.investidores = investidores;
 	}
 }
