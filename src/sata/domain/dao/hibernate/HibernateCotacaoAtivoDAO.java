@@ -35,7 +35,7 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 	}
 	@Override
 	public void insertCotacaoDoAtivo(CotacaoAtivoTO caTO) throws SQLException {
-		super.incluir(caTO);
+		super.salvar(caTO);
 	}
 	@Override
 	public boolean existeCotacao(String codigoAtivo, String periodo) throws SQLException {
@@ -47,7 +47,7 @@ public class HibernateCotacaoAtivoDAO extends GenericDAOHibernate<CotacaoAtivoTO
 	}
 	@Override
 	public int updateCotacaoDoAtivo(CotacaoAtivoTO caTO) throws SQLException {
-		super.alterar(caTO);
+		super.salvar(caTO);
 		return 0;
 	}
 	

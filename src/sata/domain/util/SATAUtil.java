@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -27,6 +28,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
@@ -93,6 +96,11 @@ public final class SATAUtil implements IConstants{
 		long longDia = dia1.getTimeInMillis();
 		long longFechamento = dia2.getTimeInMillis();
 		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
+	}
+	
+	public static java.util.Date converteToDate(String data) throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");  
+		return (java.util.Date) formatter.parse(data); 
 	}
 	
 	public static Calendar converteToCalendar(Date data) {
@@ -397,6 +405,14 @@ public final class SATAUtil implements IConstants{
 	public static java.util.Date formataData(String data) throws ParseException {
 		DateFormat format = DateFormat.getDateInstance(DateFormat.MEDIUM, getCurrentLocale());
 		return format.parse(data);
+	}
+	
+	public static String removeExcessoEspacos(String str) {
+		String padrao = "\\s{2,}";
+	    Pattern regPat = Pattern.compile(padrao);
+	    Matcher matcher = regPat.matcher(str);
+	    String res = matcher.replaceAll(" ").trim();
+	    return res;
 	}
 	
 	// pega as cotacoes do site

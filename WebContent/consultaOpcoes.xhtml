@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui:composition template="/templates/pagina.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">#{msgs['consultaOpcoes.page.title']}</ui:define>
+	<ui:define name="pagina">
+		<h:panelGrid id="formConsulta" columns="2">
+			<h:outputLabel value="#{msgs['general.label.acao']}:" for="acao" />
+				<p:selectOneMenu id="acao" value="#{acompanhamentoMB.acompanhamento.acao}" converter="toConverter" >
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{acompanhamentoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
+				</p:selectOneMenu>
+				
+				<h:outputLabel value="#{msgs['general.label.dataVencimento']}:" for="dataVencimento" />
+				<p:selectOneMenu id="dataVencimento" value="#{acompanhamentoMB.acompanhamento.dataVencimento}" converter="dateConverter">
+					<f:selectItem itemValue="" itemLabel="--" />
+					<f:selectItems value="#{acompanhamentoMB.datasVencimento}"/>
+				</p:selectOneMenu>
+		</h:panelGrid>
+		<br/>
+		<p:commandButton value="#{msgs['general.label.find']}" 
+				action="#{acompanhamentoMB.consultarOpcoes}" update="page"/>
+				
+		<h:panelGroup id="resultado" rendered="#{not empty acompanhamentoMB.opcoes}">
+			<br/><p:separator /><br/>		
+			<h:panelGrid columns="3">
+				<h:outputText value="#{msgs['general.label.volatilidadePraticada']}:" />
+				<h:outputText value="#{acompanhamentoMB.volatilidade * 100}">
+		       			<f:convertNumber maxFractionDigits="2" /></h:outputText>%
+		    </h:panelGrid>
+		    <h:panelGrid columns="3">
+		    	<h:outputText value="#{msgs['general.label.precoAcao']}:" />
+		    	$<h:outputText value="#{acompanhamentoMB.acompanhamento.precoAcaoAtual}">
+		       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+		    </h:panelGrid>
+		    <h:panelGrid columns="2">
+		    	<h:outputText value="#{msgs['general.label.diasParaVencimento']}:" />
+		    	#{acompanhamentoMB.diasParaVencimento}
+		    </h:panelGrid>
+		    <br/>
+			<p:dataTable id="opcoes" value="#{acompanhamentoMB.opcoes}" var="opcao" 
+				rendered="#{not empty acompanhamentoMB.opcoes}">
+				<p:column styleClass="center" headerText="#{msgs['general.label.opcao']}">  
+		            #{opcao.codigo}
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.precoExercicio']}">  
+	       			<h:outputText value="#{opcao.precoExercicio}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.precoAtual']}">
+	       			<h:outputText value="#{opcao.precoAtual}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText> 
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.blackScholes']}"> 
+	       			<h:outputText value="#{opcao.blackScholes}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="#{msgs['general.label.diferenca']}"> 
+	       			<h:outputText value="#{opcao.precoAtual - opcao.blackScholes}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       		</p:column>
+			</p:dataTable>  
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

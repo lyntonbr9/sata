@@ -1,5 +1,6 @@
 package sata.auto.gui.web.mbean;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,8 +21,10 @@ import sata.domain.dao.IOpcaoDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AcompOpcaoTO;
 import sata.domain.to.AcompanhamentoTO;
+import sata.domain.to.OpcaoTO;
 import sata.domain.util.FacesUtil;
 import sata.domain.util.IConstants;
+import sata.domain.util.SATAUtil;
 
 @ManagedBean
 @SessionScoped
@@ -35,9 +38,12 @@ public class AcompanhamentoMB implements IConstants {
 	}
 	
 	boolean alterar = false;
+	BigDecimal volatilidade = BigDecimal.ZERO;
+	int diasParaVencimento;
 	
 	List<AcompanhamentoTO> acompanhamentos = new ArrayList<AcompanhamentoTO>();
 	List<Date> datasVencimento = new ArrayList<Date>();
+	List<OpcaoTO> opcoes = new ArrayList<OpcaoTO>();
 	
 	AcompanhamentoTO acompanhamento = new AcompanhamentoTO();
 	AcompOpcaoTO acompOpcao = new AcompOpcaoTO();
@@ -101,11 +107,26 @@ public class AcompanhamentoMB implements IConstants {
 		atualizar();
 	}
 	
+	public void consultarOpcoes() {
+		try {
+			acompanhamento.setPrecoAcaoAtual(null);
+			opcoes = opcaoDAO.pesquisa(acompanhamento.getAcao(), acompanhamento.getDataVencimento());
+			volatilidade = AcompOpcoes.calculaVolatilidade(opcoes, acompanhamento.getPrecoAcaoAtual());
+			diasParaVencimento = SATAUtil.getDiferencaDias(new Date(), acompanhamento.getDataVencimento());
+			for(OpcaoTO opcao: opcoes) {
+				opcao.setBlackScholes(AcompOpcoes.getBlackScholes(opcao, acompanhamento.getPrecoAcaoAtual(), volatilidade));
+			}
+		} catch (Exception e) {
+			FacesUtil.addException(e);
+		} 
+	}
+	
 	public void atualizar()  {
 		try {
 			acompOpcao = null;
 			acompanhamentos = acompDAO.listar();
 			datasVencimento = opcaoDAO.listarDatasVencimento();
+			opcoes.clear();
 		} catch (Exception e) {
 			FacesUtil.addException(e);
 		}
@@ -199,5 +220,23 @@ public class AcompanhamentoMB implements IConstants {
 	}
 	public void setDatasVencimento(List<Date> datasVencimento) {
 		this.datasVencimento = datasVencimento;
+	}
+	public BigDecimal getVolatilidade() {
+		return volatilidade;
+	}
+	public void setVolatilidade(BigDecimal volatilidade) {
+		this.volatilidade = volatilidade;
+	}
+	public List<OpcaoTO> getOpcoes() {
+		return opcoes;
+	}
+	public void setOpcoes(List<OpcaoTO> opcoes) {
+		this.opcoes = opcoes;
+	}
+	public int getDiasParaVencimento() {
+		return diasParaVencimento;
+	}
+	public void setDiasParaVencimento(int diasParaVencimento) {
+		this.diasParaVencimento = diasParaVencimento;
 	}
 }
