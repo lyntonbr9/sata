@@ -405,10 +405,84 @@ public class CalculoUtil implements IConstants {
     	return 0.27; //27%
     }
     
+    public static double getProbabilidadeHistorica(List<CotacaoAtivoTO> cotacoes, int qtdDias, double valorInicio, double valorFim, boolean ehMaximo){
+    	
+    	double diferenca = valorFim - valorInicio;
+    	double pctDiferenca = Math.abs(diferenca / valorInicio);
+    	if(ehMaximo){
+    		System.out.println("pctDifMax: " + BigDecimal.valueOf(pctDiferenca * 100) + " %");
+    	}else{
+    		System.out.println("pctDifMin: " + BigDecimal.valueOf(pctDiferenca * 100) + " %");
+    	}
+    	
+    	double max = 0.0;
+    	double min = 0.0;
+    	double pctDiferencaMaximo = 0.0;
+    	int qtdMaximosUltrapassaram = 0;
+    	double pctDiferencaMinimo = 0.0;
+    	int qtdMinimosUltrapassaram = 0;
+    	double valorAcao = 0.0;
+    	
+    	for(int i = 0; i < cotacoes.size() - qtdDias; i++){
+    		valorAcao = cotacoes.get(i).getValorFechamento().doubleValue();
+    		max = getMaximo(cotacoes, i, i + qtdDias);
+    		min = getMinimo(cotacoes, i, i + qtdDias);
+    		pctDiferencaMaximo = Math.abs(max - valorAcao) / valorAcao;
+    		pctDiferencaMinimo = Math.abs(min - valorAcao) / valorAcao;
+    		if(pctDiferencaMaximo >= pctDiferenca){
+    			qtdMaximosUltrapassaram++;
+    		}
+    		if(pctDiferencaMinimo >= pctDiferenca){
+    			qtdMinimosUltrapassaram++;
+    		}
+    	}
+    	
+    	if(ehMaximo){
+    		return ((double)qtdMaximosUltrapassaram / cotacoes.size()) * 100;
+    	}else{
+    		return ((double)qtdMinimosUltrapassaram / cotacoes.size()) * 100;
+    	}
+    }
+    
+    private static double getMaximo(List<CotacaoAtivoTO> cotacoes, int indiceInicio, int indiceFim){
+    	double valorAcaoMax = 0.0;
+    	double valorAcaoCorrente = 0.0;
+    	for(int i = indiceInicio; i <= indiceFim; i++){
+    		valorAcaoCorrente = cotacoes.get(i).getValorFechamento().doubleValue();
+    		if(valorAcaoCorrente >= valorAcaoMax){
+    			valorAcaoMax = valorAcaoCorrente;
+    		}
+    	}
+    	return valorAcaoMax;
+    }
+    
+    private static double getMinimo(List<CotacaoAtivoTO> cotacoes, int indiceInicio, int indiceFim){
+    	double valorAcaoMin = Double.MAX_VALUE;
+    	double valorAcaoCorrente = 0.0;
+    	for(int i = indiceInicio; i <= indiceFim; i++){
+    		valorAcaoCorrente = cotacoes.get(i).getValorFechamento().doubleValue();
+    		if(valorAcaoCorrente <= valorAcaoMin){
+    			valorAcaoMin = valorAcaoCorrente;
+    		}
+    	}
+    	return valorAcaoMin;
+    }
+    
 	public static void main(String[] args) throws SQLException {
 		
-		List<CotacaoAtivoTO> listaDasCotacoesComVolatilidade = calculaVolatilidade("PETR4", "2010");
-		System.out.println(listaDasCotacoesComVolatilidade.size());
+		ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+		String codigoAtivo = "PETR4";
+		String dataInicial="2000-01-01";
+		String dataFinal = "2011-01-01";
+		int qtdDias = 1;
+		double valorFimMin = 19.80;
+		double valorInicio = 20.00;
+		double valorFimMax = 20.50;
+		List<CotacaoAtivoTO> cotacoesDoAno = caDAO.getCotacoesDoAtivo(codigoAtivo, dataInicial, dataFinal);
+		double resultadoProbMax = getProbabilidadeHistorica(cotacoesDoAno, qtdDias, valorInicio, valorFimMax, true);
+		double resultadoProbMin = getProbabilidadeHistorica(cotacoesDoAno, qtdDias, valorInicio, valorFimMin, false);
+		System.out.println("resultadoProbMax: " + BigDecimal.valueOf(resultadoProbMax) + " %");
+		System.out.println("resultadoProbMin: " + BigDecimal.valueOf(resultadoProbMin) + " %");
 	}
 	
 }
