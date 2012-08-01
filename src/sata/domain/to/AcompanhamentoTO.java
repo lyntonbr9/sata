@@ -112,4 +112,7 @@ public class AcompanhamentoTO implements TO {
 	public void setDataVencimento(Date dataVencimento) {
 		this.dataVencimento = dataVencimento;
 	}
+	public void setPrecoAcaoAtual(BigDecimal precoAcaoAtual) {
+		this.precoAcaoAtual = precoAcaoAtual;
+	}
 }

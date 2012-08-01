@@ -27,11 +27,15 @@ public class Acao extends Ativo implements TO {
 	@Column
 	String nomeEmpresa;
 	
+	@Column
+	String tipo;
+	
 	public Acao() {}
 	
-	public Acao(String nome, String nomeEmpresa) {
+	public Acao(String nome, String nomeEmpresa, String tipo) {
 		this.nome = nome;
 		this.nomeEmpresa = nomeEmpresa;
+		this.tipo = tipo;
 	}
 	
 	@Override
@@ -84,5 +88,11 @@ public class Acao extends Ativo implements TO {
 	}
 	public void setNomeEmpresa(String nomeEmpresa) {
 		this.nomeEmpresa = nomeEmpresa;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 }

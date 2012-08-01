@@ -14,6 +14,7 @@ import sata.domain.alert.AcompOpcoes;
 import sata.domain.alert.AlertaOperacao;
 import sata.domain.dao.hibernate.HibernateUtil;
 import sata.domain.util.SATAUtil;
+import sata.metastock.robos.BMFBovespa;
 import sata.metastock.robos.InfoMoney;
 
 /**
@@ -35,7 +36,10 @@ public class RobotServlet extends HttpServlet {
 				}
 				else System.out.println("Bolsa fechada!");
 			}
-			else if (robot.equals("strike")) {
+			else if (robot.equals("opcoes")) {
+				System.out.println("Atualizando opcoes...");
+				BMFBovespa.atualizarCadastroOpcoes();
+				System.out.println("Opcoes Atualizadas!");
 			}
 			HibernateUtil.closeCurrentSession();
 			System.out.println("--- Fim da execucao do Robo em " + SATAUtil.getDataAtualFormatada());

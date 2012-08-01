@@ -18,36 +18,11 @@ public class GenericDAOHibernate <T extends TO> {
 	}
 	
 	public void salvar(T to) throws SQLException {
-		if (to.getId() == null) 
-			incluir(to);
-		else alterar(to);
-	}
-
-	public Integer incluir(T to) throws SQLException {
-		Session sessao = getSession(); 
-		Integer id = null;
-		Transaction transaction = null;
-		try {
-			transaction = sessao.beginTransaction();
-			id = (Integer) sessao.save(to);
-			transaction.commit();
-		} catch (Exception e) { 
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw new SQLException(e);
-		} finally {
-			finalizeSession();
-		}
-		return id;
-	}
-	
-	public void alterar(T to) throws SQLException {
 		Session sessao = getSession(); 
 		Transaction transaction = null;
 		try {
 			transaction = sessao.beginTransaction();
-			sessao.update(to);
+			sessao.saveOrUpdate(to);
 			transaction.commit();
 		} catch (Exception e) { 
 			if (transaction != null) {

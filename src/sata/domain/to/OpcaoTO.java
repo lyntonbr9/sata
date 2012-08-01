@@ -34,6 +34,9 @@ public class OpcaoTO implements TO {
 	@Transient
 	private BigDecimal precoAtual;
 	
+	@Transient
+	private BigDecimal blackScholes;
+	
 	public BigDecimal getPrecoAtual() {
 		if (precoAtual == null)
 			precoAtual = CotacaoLopesFilho.getCotacao(codigo).setScale(50);
@@ -68,5 +71,13 @@ public class OpcaoTO implements TO {
 	}
 	public void setDataVencimento(Date dataVencimento) {
 		this.dataVencimento = dataVencimento;
+	}
+
+	public BigDecimal getBlackScholes() {
+		return blackScholes;
+	}
+
+	public void setBlackScholes(BigDecimal blackScholes) {
+		this.blackScholes = blackScholes;
 	}
 }

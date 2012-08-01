@@ -70,29 +70,27 @@ public class AcompOpcoes implements IConstants {
 		return msg;
 	}
 	
-	private static BigDecimal calculaVolatilidade(List<OpcaoTO> opcoes, AcompanhamentoTO acompanhamento) {
-		OpcaoTO opcaoMaisATM = getOpcaoMaisATM(opcoes, acompanhamento);
-		BigDecimal precoAcao = acompanhamento.getPrecoAcaoAtual();
+	public static BigDecimal calculaVolatilidade(List<OpcaoTO> opcoes, BigDecimal precoAcaoAtual) {
+		OpcaoTO opcaoMaisATM = getOpcaoMaisATM(opcoes, precoAcaoAtual);
 		BigDecimal precoOpcao = opcaoMaisATM.getPrecoAtual();
 		BigDecimal precoExercicioOpcao = opcaoMaisATM.getPrecoExercicio();
 		int diasParaVencimento = SATAUtil.getDiferencaDias(new Date(), opcaoMaisATM.getDataVencimento());
 		BigDecimal taxaJuros = new BigDecimal(SATAUtil.getTaxaDeJuros());
-		return PrecoOpcao.calculaVolatilidade(true, precoAcao, precoExercicioOpcao, diasParaVencimento, precoOpcao, taxaJuros);
+		return PrecoOpcao.calculaVolatilidade(true, precoAcaoAtual, precoExercicioOpcao, diasParaVencimento, precoOpcao, taxaJuros);
 	}
 	
-	private static BigDecimal getBlackScholes(OpcaoTO opcao, AcompanhamentoTO acompanhamento, BigDecimal volatilidade) {
-		BigDecimal precoAcao = acompanhamento.getPrecoAcaoAtual();
+	public static BigDecimal getBlackScholes(OpcaoTO opcao, BigDecimal precoAcaoAtual, BigDecimal volatilidade) {
 		BigDecimal precoExercicioOpcao = opcao.getPrecoExercicio();
 		int diasParaVencimento = SATAUtil.getDiferencaDias(new Date(), opcao.getDataVencimento());
 		BigDecimal taxaJuros = new BigDecimal(SATAUtil.getTaxaDeJuros());
-		return PrecoOpcao.blackScholes(true, precoAcao, precoExercicioOpcao, diasParaVencimento, volatilidade, taxaJuros);
+		return PrecoOpcao.blackScholes(true, precoAcaoAtual, precoExercicioOpcao, diasParaVencimento, volatilidade, taxaJuros);
 	}
 	
-	private static OpcaoTO getOpcaoMaisATM(List<OpcaoTO> opcoes, AcompanhamentoTO acompanhamento) {
+	public static OpcaoTO getOpcaoMaisATM(List<OpcaoTO> opcoes, BigDecimal precoAcaoAtual) {
 		double menorDiferenca = Double.POSITIVE_INFINITY;
 		OpcaoTO opcaoMaisATM = null;
 		for (OpcaoTO opcao : opcoes) {
-			double diferenca = opcao.getPrecoExercicio().subtract(acompanhamento.getPrecoAcaoAtual()).abs().doubleValue();
+			double diferenca = opcao.getPrecoExercicio().subtract(precoAcaoAtual).abs().doubleValue();
 			if (diferenca < menorDiferenca) {
 				menorDiferenca = diferenca;
 				opcaoMaisATM = opcao;
@@ -102,11 +100,11 @@ public class AcompOpcoes implements IConstants {
 	}
 	
 	private static String atualizaMsg(List<OpcaoTO> opcoes, AcompanhamentoTO acompanhamento, String msg) {
-		BigDecimal volatilidade = calculaVolatilidade(opcoes, acompanhamento);
+		BigDecimal volatilidade = calculaVolatilidade(opcoes, acompanhamento.getPrecoAcaoAtual());
 		msg = msg.replace("{*}",SATAUtil.formataNumero(volatilidade.multiply(CEM)));
 		for (OpcaoTO opcao : opcoes) {
 			msg = msg.replace("{["+ opcao.getCodigo() + "]}", 
-					SATAUtil.formataNumero(getBlackScholes(opcao, acompanhamento, volatilidade)));
+					SATAUtil.formataNumero(getBlackScholes(opcao, acompanhamento.getPrecoAcaoAtual(), volatilidade)));
 		}
 		return msg;
 	}
