@@ -39,6 +39,14 @@ public class Dia implements Comparable<Dia>, IConstants {
 		this.mes = new Mes(mes, ano);
 	}
 	
+	//data no formato yyyyMMdd
+	public Dia(String data) {
+		//recupera o dia a partir da posicao 6 na string
+		this.dia = Integer.valueOf(data.substring(6));
+		//recupera o mes e ano
+		this.mes = new Mes(Integer.valueOf(data.substring(4,6)), Integer.valueOf(data.substring(0,4)));
+	}
+	
 	public static Dia converte(String data) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(getFormatoDataPadrao()); 
 		Calendar calendar = Calendar.getInstance(); 

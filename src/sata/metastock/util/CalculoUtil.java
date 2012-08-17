@@ -475,9 +475,9 @@ public class CalculoUtil implements IConstants {
 		String dataInicial="2000-01-01";
 		String dataFinal = "2011-01-01";
 		int qtdDias = 1;
-		double valorFimMin = 19.80;
-		double valorInicio = 20.00;
-		double valorFimMax = 20.50;
+		double valorFimMin = 19.79;
+		double valorInicio = 19.80;
+		double valorFimMax = 19.81;
 		List<CotacaoAtivoTO> cotacoesDoAno = caDAO.getCotacoesDoAtivo(codigoAtivo, dataInicial, dataFinal);
 		double resultadoProbMax = getProbabilidadeHistorica(cotacoesDoAno, qtdDias, valorInicio, valorFimMax, true);
 		double resultadoProbMin = getProbabilidadeHistorica(cotacoesDoAno, qtdDias, valorInicio, valorFimMin, false);
