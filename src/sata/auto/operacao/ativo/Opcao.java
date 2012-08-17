@@ -10,6 +10,7 @@ import sata.auto.operacao.Operacao;
 import sata.auto.operacao.ativo.preco.Preco;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.to.Dia;
+import sata.domain.util.IConstants;
 
 public abstract class Opcao extends Derivado {
 	
@@ -61,5 +62,17 @@ public abstract class Opcao extends Derivado {
 	}
 	public void setVolatil(boolean volatil) {
 		this.volatil = volatil;
+	}
+	
+	//se call - true, se put - false
+	public static boolean getTipoOpcao(String codigoOpcao){
+		//recupera a serie da opcao
+		String serieOpcao = String.valueOf(codigoOpcao.charAt(4));
+		
+		//transforma as series de call disponiveis
+		String seriesCallDisponiveis =  String.valueOf(IConstants.SERIES_CALL_CHAR);
+		
+		//se existe nas series possiveis de CALL retorna true
+		return seriesCallDisponiveis.contains(serieOpcao);
 	}
 }

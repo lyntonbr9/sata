@@ -6,6 +6,7 @@ import sata.domain.dao.IAcompOpcaoDAO;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
+import sata.domain.dao.ICotacaoOpcaoDAO;
 import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
@@ -62,6 +63,11 @@ public class HibernateDAOFactory extends DAOFactory {
 	@Override
 	public IAcaoDAO getAcaoDAO() {
 		return HibernateAcaoDAO.singleton();
+	}
+	
+	@Override
+	public ICotacaoOpcaoDAO getCotacaoOpcaoDAO() {
+		return HibernateCotacaoOpcaoDAO.singleton();
 	}
 
 	// Implementação do singleton

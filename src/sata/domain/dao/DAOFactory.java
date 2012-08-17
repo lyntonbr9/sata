@@ -14,6 +14,7 @@ public abstract class DAOFactory {
 	
 	public abstract IAtivoDAO getAtivoDAO();
 	public abstract ICotacaoAtivoDAO getCotacaoAtivoDAO();
+	public abstract ICotacaoOpcaoDAO getCotacaoOpcaoDAO();
 	public abstract IAlertaDAO getAlertaDAO();
 	public abstract ISerieOperacoesDAO getSerieOperacoesDAO();
 	public abstract IOperacaoRealizadaDAO getOperacaoRealizadaDAO();

@@ -9,6 +9,7 @@ import sata.domain.dao.IAcompOpcaoDAO;
 import sata.domain.dao.IAtivoDAO;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.IAlertaDAO;
+import sata.domain.dao.ICotacaoOpcaoDAO;
 import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
@@ -40,6 +41,11 @@ public class PostgreDAOFactory extends DAOFactory{
 	
 	public ICotacaoAtivoDAO getCotacaoAtivoDAO(){
 		return new PostgreCotacaoAtivoDAO(conPoolManager.getConnectionFromPool());
+	}
+	
+	public ICotacaoOpcaoDAO getCotacaoOpcaoDAO(){
+//		return new PostgreCotacaoOpcaoDAO(conPoolManager.getConnectionFromPool());
+		return null;
 	}
 	
 	public IAlertaDAO getAlertaDAO() {

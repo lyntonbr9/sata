@@ -145,10 +145,8 @@ public class BlackScholes implements IConstants{
     		VI = getVI(false, precoAcao, precoExercicioOpcao);
     	
     	//calcula o VE e a porcentagem em relacao a acao
-    	double VE = valorOpcao - VI; 
-    	double pctgemVE = (VE * 100)/precoAcao;
-    	System.out.println("VE: " + VE);
-        System.out.println("PctgemVE: " + pctgemVE + "%");
+    	double VE = (valorOpcao - VI > 0.0 ? valorOpcao - VI : 0.0); 
+
     	return VE;
     }
     
@@ -168,6 +166,6 @@ public class BlackScholes implements IConstants{
     	else
     		return precoAcao - (ordem * PCTGEM_OPCAO * precoAcao);
     }
- 
+    
 }
 

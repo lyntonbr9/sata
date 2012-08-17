@@ -5,10 +5,12 @@ import sata.domain.util.SATAPropertyLoader;
 
 public class SATAFactoryFacade implements IConstants {
 	
+	public static ICotacaoOpcaoDAO getCotacaoOpcaoDAO(){
+		return getDAOFactory().getCotacaoOpcaoDAO();
+	}	
 	public static IAtivoDAO getAtivoDAO(){
 		return getDAOFactory().getAtivoDAO();
 	}
-
 	public static ICotacaoAtivoDAO getCotacaoAtivoDAO(){
 		return getDAOFactory().getCotacaoAtivoDAO();
 	}
