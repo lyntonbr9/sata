@@ -12,6 +12,8 @@ import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AcompOpcaoTO;
 import sata.domain.to.AcompanhamentoTO;
+import sata.domain.to.CotacaoAtivoTO;
+import sata.domain.to.CotacaoOpcaoTO;
 import sata.domain.to.OpcaoTO;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
@@ -98,6 +100,40 @@ public class AcompOpcoes implements IConstants {
 		}
 		return opcaoMaisATM;
 	}
+	
+	public static CotacaoOpcaoTO getCotacaoOpcaoMaisATM(List<CotacaoOpcaoTO> cotacoesOpcoes, CotacaoAtivoTO ca) {
+		double menorDiferenca = Double.POSITIVE_INFINITY;
+		CotacaoOpcaoTO opcaoMaisATM = null;
+		for(CotacaoOpcaoTO co : cotacoesOpcoes){
+			//verifica se a cotacao da ação está dentro da série da opção
+			int diferencaDias = SATAUtil.getDiferencaDias(ca.getPeriodo(), co.getDataVencimento()); 
+			if ( diferencaDias > 0 && diferencaDias < 31 ) {
+				double diferenca = co.getValorPrecoExercicio().subtract(ca.getValorFechamento()).abs().doubleValue();
+				if (diferenca < menorDiferenca) {
+					menorDiferenca = diferenca;
+					opcaoMaisATM = co;
+				}				
+			}
+		}
+		return opcaoMaisATM;
+	}
+	
+//	public static CotacaoOpcaoTO getCotacaoOpcaoMaisATM(List<CotacaoOpcaoTO> cotacoesOpcoes, BigDecimal precoAcaoAtual){
+//		List<OpcaoTO> opcoes = new ArrayList<OpcaoTO>();
+//		for(CotacaoOpcaoTO coTO : cotacoesOpcoes){
+//			OpcaoTO oTO = new OpcaoTO();
+//			oTO.setCodigo(coTO.getCodigo());
+//			oTO.setPrecoExercicio(coTO.getValorPrecoExercicio());
+//			opcoes.add(oTO);
+//		}		
+//		OpcaoTO opcaoATM = getOpcaoMaisATM(opcoes, precoAcaoAtual);
+//		for(CotacaoOpcaoTO coTO : cotacoesOpcoes){
+//			if(coTO.getCodigo().equalsIgnoreCase(opcaoATM.getCodigo())){
+//				return coTO;
+//			}
+//		}
+//		return null;
+//	}
 	
 	private static String atualizaMsg(List<OpcaoTO> opcoes, AcompanhamentoTO acompanhamento, String msg) {
 		BigDecimal volatilidade = calculaVolatilidade(opcoes, acompanhamento.getPrecoAcaoAtual());

@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
+import sata.auto.to.Dia;
 import sata.domain.to.CotacaoAtivoTO;
 import sata.metastock.mail.SendMailUsingAuthentication;
 import sata.metastock.robos.CotacaoLopesFilho;
@@ -82,6 +83,22 @@ public final class SATAUtil implements IConstants{
 			nsae.printStackTrace();   
 		}   
 		return value;   
+	} 
+
+	/**
+	 * Retorna a diferença em dias.
+	 * @param dia1 primeiro dia no formato YYYYmmdd.
+	 * @param dia2 segundo dia no formato YYYYmmdd.
+	 * @return
+	 */
+	public static int getDiferencaDias(String dia1, String dia2) {
+		Dia diaUm = new Dia(dia1);
+		Dia diaDois = new Dia(dia2);
+		return getDiferencaDias(diaUm.getDate(), diaDois.getDate());
+	}
+	
+	public static int getDiferencaDias(Dia dia1, Dia dia2) {
+		return getDiferencaDias(dia1.getDate(), dia2.getDate());
 	}
 	
 	public static int getDiferencaDias(java.util.Date dia1, java.util.Date dia2) {
@@ -95,7 +112,8 @@ public final class SATAUtil implements IConstants{
 	public static int getDiferencaDias(Calendar dia1, Calendar dia2) {
 		long longDia = dia1.getTimeInMillis();
 		long longFechamento = dia2.getTimeInMillis();
-		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
+//		return (int) (((longFechamento - longDia) / (24*60*60*1000)) + 1);
+		return (int) (((longFechamento - longDia) / (24*60*60*1000)));
 	}
 	
 	public static java.util.Date converteToDate(String data) throws ParseException {

@@ -2,7 +2,6 @@ package sata.domain.to;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,11 +25,14 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 
 	private static final long serialVersionUID = -6712687492264590910L;
 
-	@Id @Column(name="codigoAtivo")
+	@Id @Column
 	private String codigo;
 
 	@Id @Column
 	private String periodo;
+	
+	@Column
+	private String codigoAcao;
 	
 	@Column
 	private String abertura;
@@ -74,14 +76,14 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 	@Column
 	private double volatilidadeMensal;
 	
+	@Column
+	private boolean ehATM;
+
 	@Transient
 	private int split;
 
 	@Transient
-	private String codigoAcao;
-
-	@Transient
-	private ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();;
+	private ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
 	
 	@Override
 	public String getId() {
@@ -279,6 +281,14 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 		this.split = split;
 	}
 	
+	public boolean isEhATM() {
+		return ehATM;
+	}
+
+	public void setEhATM(boolean ehATM) {
+		this.ehATM = ehATM;
+	}
+	
 	/**
 	 * Calcula os valores (VI, VE, Volatilidade Implicita) da cotação da opção.
 	 */
@@ -289,10 +299,10 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 			boolean tipoOpcao = Opcao.getTipoOpcao(this.codigo);
 			
 			CotacaoAtivoTO cotacaoAcao = null;
-			
+
 			Dia diaPeriodo = new Dia(this.periodo);
 			Dia diaVencimento = new Dia(this.dataVencimento);
-
+			
 			//consulta o preco da acao no periodo da opcao
 			cotacaoAcao = caDAO.getCotacaoDoAtivo(this.codigoAcao, diaPeriodo.formatoBanco());
 			
@@ -321,9 +331,7 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 			this.setValorExtrinseco(String.valueOf(ve));
 			
 			//calcula a quantidade de dias para o vencimento
-			Date dataInicio = new Date(diaPeriodo.getAno().intValue(), diaPeriodo.getMes().getMes().intValue(), diaPeriodo.getDia().intValue()); 
-			Date dataFim = new Date(diaVencimento.getAno().intValue(), diaVencimento.getMes().getMes().intValue(), diaVencimento.getDia().intValue());
-			int diasParaVencimento = SATAUtil.getDiferencaDias(dataInicio, dataFim);
+			int diasParaVencimento = SATAUtil.getDiferencaDias(diaPeriodo, diaVencimento);
 			
 			//recupera a taxa de juros
 			BigDecimal taxaJuros = new BigDecimal(SATAUtil.getTaxaDeJuros());
@@ -337,6 +345,7 @@ public class CotacaoOpcaoTO implements TO, Comparable<CotacaoOpcaoTO>, Serializa
 			
 		} catch (Exception e) {
 			//nao conseguiu recuperar a cotacao da acao no periodo da opcao
+			System.out.println(e);
 		}
 		
 	}

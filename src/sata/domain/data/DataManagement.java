@@ -5,7 +5,10 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
+import sata.auto.to.Dia;
+import sata.domain.alert.AcompOpcoes;
 import sata.domain.dao.ICotacaoAtivoDAO;
 import sata.domain.dao.ICotacaoOpcaoDAO;
 import sata.domain.dao.SATAFactoryFacade;
@@ -103,7 +106,8 @@ public class DataManagement {
 						{
 							periodo = String.valueOf(Integer.valueOf(conteudoLinha.substring(2, 10).trim()));
 							//verifica se a cotacao nao existe
-							if(cotacaoAtivoDAO.existeCotacao(codigoAtivo, periodo) == false){
+							Dia diaPeriodo = new Dia(periodo);
+							if(cotacaoAtivoDAO.existeCotacao(codigoAtivo, diaPeriodo.formatoBanco()) == false){
 								CotacaoAtivoTO caTO = new CotacaoAtivoTO();
 								caTO.setCodigo(conteudoLinha.substring(12, 24).trim());
 								caTO.setAbertura(String.valueOf(Integer.valueOf(conteudoLinha.substring(56, 69).trim())));
@@ -176,8 +180,9 @@ public class DataManagement {
 						{
 							periodo = String.valueOf(Integer.valueOf(conteudoLinha.substring(2, 10).trim()));
 							codigoOpcao = conteudoLinha.substring(12, 24).trim();
+							Dia diaPeriodo = new Dia(periodo);
 							//verifica se a cotacao nao existe
-							if(cotacaoOpcaoDAO.existeCotacao(codigoOpcao, periodo) == false){
+							if(cotacaoOpcaoDAO.existeCotacao(codigoOpcao, diaPeriodo.formatoBanco()) == false){
 								CotacaoOpcaoTO caTO = new CotacaoOpcaoTO();
 								caTO.setCodigo(codigoOpcao);
 								caTO.setAbertura(String.valueOf(Integer.valueOf(conteudoLinha.substring(56, 69).trim())));
@@ -214,18 +219,65 @@ public class DataManagement {
 			}
 		}
 	}
+	
+	public void atualizarOpcoes(String codigoOpcao, String codigoAcao, String ano){
+
+		try {
+			ICotacaoAtivoDAO caDAO = SATAFactoryFacade.getCotacaoAtivoDAO();
+			ICotacaoOpcaoDAO coDAO = SATAFactoryFacade.getCotacaoOpcaoDAO();
+			//recupera as cotacoes da acao de todos os dias
+//			List<CotacaoAtivoTO> cotacoesAcao =  caDAO.getCotacoesDoAtivo(codigoAcao, Integer.valueOf(ano));
+			//atualiza a acao das opcoes
+			List<CotacaoAtivoTO> cotacoesAcao = caDAO.getCotacoesDoAtivo(codigoAcao, "2012-08-01", "2012-10-01");
+			for(CotacaoAtivoTO caTO : cotacoesAcao){
+				List<CotacaoOpcaoTO> cotacoesOpcao = coDAO.getCotacoesDaOpcao(codigoOpcao, caTO.getPeriodo(), caTO.getPeriodo());
+				CotacaoOpcaoTO cotacaoOpcaoATM = AcompOpcoes.getCotacaoOpcaoMaisATM(cotacoesOpcao, caTO);
+				if(cotacaoOpcaoATM != null){
+					cotacaoOpcaoATM.setEhATM(true);
+					coDAO.updateCotacaoDaOpcao(cotacaoOpcaoATM);
+				}
+			}
+			
+			//recupera as cotacoes da acao de todos os dias
+//			List<CotacaoAtivoTO> cotacoesAcao =  caDAO.getCotacoesDoAtivo(codigoAcao, Integer.valueOf(ano));
+			//atualiza a acao das opcoes
+//			List<CotacaoOpcaoTO> cotacoesOpcao = coDAO.getCotacoesDaOpcao(codigoOpcao, "2012-09-01", "2012-10-01");
+//			for(CotacaoOpcaoTO coTO : cotacoesOpcao){
+//				coTO.processaValores();
+//				coDAO.updateCotacaoDaOpcao(coTO);
+//			}
+//				CotacaoOpcaoTO cotacaoOpcaoATM = AcompOpcoes.getCotacaoOpcaoMaisATM(cotacoesOpcao, caTO);
+//				if(cotacaoOpcaoATM != null){
+//					cotacaoOpcaoATM.setEhATM(true);
+//					coDAO.updateCotacaoDaOpcao(cotacaoOpcaoATM);
+//				}
+			
+//			System.out.println("funciona");
+			//para cada cotacao acao calcula quem eh a opcao ATM
+			
+			//atualiza a tabela
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+
+
+	}
 
 	public static void main(String[] args) {
 		DataManagement dm = new DataManagement();
-		String ano="2012";
+		String ano= new String("2012");
 		
+//		dm.atualizarOpcoes(codigoOpcao, codigoAcao, ano)
 //		IAtivoDAO ativoDAO = SATAFactoryFacade.getAtivoDAO();
 //		List<String> listaCodigosOpcoesLiquidas = ativoDAO.getCodigosOpcoesLiquidas(ano);
 //		for(String nomeOpcao: listaCodigosOpcoesLiquidas)
 //			dm.importarArqCotacaoHistoricaBovespaToDB(nomeOpcao, ano);
 		
 //		dm.importarArqCotacaoHistoricaBovespaToDB("PETR4", ano);
-		dm.importarArqCotacaoHistoricaOpcoesBovespaToDB("PETR", "PETR4", ano);
+//		dm.importarArqCotacaoHistoricaOpcoesBovespaToDB("PETR", "PETR4", ano);
+		dm.atualizarOpcoes("PETR", "PETR4", ano);
 		
 //		DataManagement dm = new DataManagement();
 //		String periodo = "20100104";

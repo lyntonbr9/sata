@@ -46,7 +46,7 @@ public interface IConstants {
 	public int QTD_DIAS_ANO = 365;
 	public int QTD_DIAS_FALTA_1_MES_VENC = 29; //quando for saber 1 mes
 	public int QTD_DIAS_FALTA_2_MES_VENC = 59; //quando for saber 2 meses
-	public double TAXA_DE_JUROS = 0.080; //8,0%
+	public double TAXA_DE_JUROS = 0.075; //8,0%
 	public double PCTGEM_OPCAO = 0.05;
 	public int QTD_DIAS_UTEIS_ANO = 252;
 	public int QTD_DIAS_UTEIS_MES=21;
