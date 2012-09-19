@@ -3,6 +3,7 @@ package sata.auto.to;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -41,6 +42,8 @@ public class Dia implements Comparable<Dia>, IConstants {
 	
 	//data no formato yyyyMMdd
 	public Dia(String data) {
+		//remove o timestamp e o '-' da data
+		data = data.replace(" 00:00:00.0", "").replace("-", "");
 		//recupera o dia a partir da posicao 6 na string
 		this.dia = Integer.valueOf(data.substring(6));
 		//recupera o mes e ano
@@ -170,5 +173,12 @@ public class Dia implements Comparable<Dia>, IConstants {
 	}
 	public void setMes(Mes mes) {
 		this.mes = mes;
+	}
+	/**
+	 * Retorna a data com o tipo java.util.Date.
+	 * @return a data com o tipo java.util.Date.
+	 */
+	public Date getDate(){
+		return new Date(this.getAno().intValue(), this.getMes().getMes().intValue(), this.getDia().intValue());
 	}
 }

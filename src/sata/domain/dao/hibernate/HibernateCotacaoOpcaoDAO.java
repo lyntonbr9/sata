@@ -11,16 +11,20 @@ public class HibernateCotacaoOpcaoDAO extends GenericDAOHibernate<CotacaoOpcaoTO
 	
 	@Override
 	public List<CotacaoOpcaoTO> getCotacoesDaOpcao(String codigoOpcao) throws SQLException {
-		return setSplit(super.listar("where codigo = ? order by periodo", codigoOpcao));
+//		return setSplit(super.listar("where codigo = ? order by periodo", codigoOpcao));
+		return super.listar("where codigo like ? order by periodo", codigoOpcao+"%");
 	}
 	@Override
 	public List<CotacaoOpcaoTO> getCotacoesDaOpcao(String codigoOpcao, Integer ano) throws SQLException {
-		return setSplit(super.listar("where codigo = ? and ano = ? order by periodo", codigoOpcao, ano.toString()));
+//		return setSplit(super.listar("where codigo = ? and ano = ? order by periodo", codigoOpcao, ano.toString()));
+		return super.listar("where codigo like ? and ano = ? order by periodo", codigoOpcao+"%", ano.toString());
 	}
 	@Override
 	public CotacaoOpcaoTO getCotacaoDaOpcao(String codigoOpcao, String data) throws SQLException {
 		try {
-			return setSplit(super.listar("where codigo = ? and periodo like ?", codigoOpcao, data+"%")).get(0);
+//			return setSplit(super.listar("where codigo = ? and periodo like ?", codigoOpcao, data+"%")).get(0);
+//			return super.listar("where codigo like ? and periodo like ?", codigoOpcao+"%", data+"%").get(0);
+			return setSplit(super.listar("where codigo like ? and periodo like ?", codigoOpcao+"%", data+"%")).get(0);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		} 
@@ -31,8 +35,11 @@ public class HibernateCotacaoOpcaoDAO extends GenericDAOHibernate<CotacaoOpcaoTO
 	}
 	@Override
 	public List<CotacaoOpcaoTO> getCotacoesDaOpcao(String codigoOpcao, String dataInicial, String dataFinal) throws SQLException {
-		return setSplit(super.listar("where codigo = ? and periodo BETWEEN ? and ? order by periodo", codigoOpcao, dataInicial, dataFinal));
+//		return setSplit(super.listar("where codigo like ? and periodo BETWEEN ? and ? order by periodo", codigoOpcao+"%", dataInicial, dataFinal));
+//		return super.listar("where codigo like ? and periodo BETWEEN ? and ? order by periodo", codigoOpcao+"%", dataInicial, dataFinal);
+		return setSplit(super.listar("where codigo like ? and periodo BETWEEN ? and ? order by periodo", codigoOpcao+"%", dataInicial, dataFinal));
 	}
+	
 	@Override
 	public void insertCotacaoDaOpcao(CotacaoOpcaoTO caTO) throws SQLException {
 		super.salvar(caTO);
@@ -50,6 +57,7 @@ public class HibernateCotacaoOpcaoDAO extends GenericDAOHibernate<CotacaoOpcaoTO
 		super.salvar(caTO);
 		return 0;
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private List<CotacaoOpcaoTO> setSplit(List<CotacaoOpcaoTO> list) throws SQLException {
