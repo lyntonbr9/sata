@@ -52,7 +52,7 @@ public class OperacaoMB implements IConstants {
 	private int qtdLotes = 1;
 	private int ordemOpcao = 0;
 	private int mesesParaVencimento = 1;
-	private int diasParaFechamento = 1;
+//	private int diasParaFechamento = 1;
 	private Condicao condicao = new Condicao();
 	private StreamedContent arquivo;
 	
@@ -65,7 +65,7 @@ public class OperacaoMB implements IConstants {
 				operacao.setCondicao(trataCondicao());
 				operacao.setQtdLotes(qtdLotes);
 				operacao.setMesesParaVencimento(mesesParaVencimento);
-				operacao.setDiasParaFechamento(diasParaFechamento);
+//				operacao.setDiasParaVencimento(diasParaFechamento);
 				setReversivel(operacao);
 				operacoes.add(operacao);
 				limpaCampos();
@@ -84,7 +84,7 @@ public class OperacaoMB implements IConstants {
 			if (isOpcaoSelecionada())
 				ordemOpcao = ((Opcao)operacao.getAtivo()).getOrdem();
 			mesesParaVencimento = operacao.getMesesParaVencimento();
-			diasParaFechamento = operacao.getDiasParaFechamento();
+//			diasParaFechamento = operacao.getDiasParaVencimento();
 			alterar = true;
 			if (operacao.getCondicao() != null)
 				condicao = operacao.getCondicao();
@@ -339,14 +339,6 @@ public class OperacaoMB implements IConstants {
 
 	public void setMesesParaVencimento(int mesesParaVencimento) {
 		this.mesesParaVencimento = mesesParaVencimento;
-	}
-
-	public int getDiasParaFechamento() {
-		return diasParaFechamento;
-	}
-
-	public void setDiasParaFechamento(int diasParaFechamento) {
-		this.diasParaFechamento = diasParaFechamento;
 	}
 
 	public Condicao getCondicao() {

@@ -3,12 +3,12 @@ package sata.auto.operacao;
 import sata.auto.operacao.ativo.Ativo;
 
 public class Compra extends Operacao {
-	
+		
 	@Override
-	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso) {
-		return new Venda(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
+	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int diasParaVencimento) {
+		return new Venda(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, diasParaVencimento);
 	}
-	
+
 	@Override
 	public String getBundleMessage() {
 		return MSG_ENUM_LABEL_COMPRA;
@@ -31,20 +31,25 @@ public class Compra extends Operacao {
 	}
 
 	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
-			Condicao condicao, int mesesParaReversao) {
-		super(qtdLotes, ativo, mesesParaVencimento, condicao, mesesParaReversao);
+			Condicao condicao, int diasParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento, condicao, diasParaVencimento);
 	}
-
+	
 	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
 			Condicao condicao) {
 		super(qtdLotes, ativo, mesesParaVencimento, condicao);
 	}
 
 	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			int momento, Condicao condicao, Operacao reversa) {
+		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa);
+	}
+	
+	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
 			int momento, Condicao condicao, Operacao reversa,
-			int mesesParaReversao) {
+			int diasParaVencimento) {
 		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa,
-				mesesParaReversao);
+				diasParaVencimento);
 	}
 
 	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
@@ -52,10 +57,10 @@ public class Compra extends Operacao {
 	}
 
 	public Compra(int qtdLotes, Ativo ativo, int mesesParaVencimento,
-			int mesesParaReversao) {
-		super(qtdLotes, ativo, mesesParaVencimento, mesesParaReversao);
+			int diasParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento, diasParaVencimento);
 	}
-
+	
 	public Compra(int qtdLotes, Ativo ativo) {
 		super(qtdLotes, ativo);
 	}

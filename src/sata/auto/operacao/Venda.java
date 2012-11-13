@@ -5,8 +5,8 @@ import sata.auto.operacao.ativo.Ativo;
 public class Venda extends Operacao {
 	
 	@Override
-	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso) {
-		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, mesesParaReversaoReverso);
+	public Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int diasParaVencimento) {
+		return new Compra(qtdLotes, ativo, mesesParaVencimentoReverso, momentoReverso, condicao, this, diasParaVencimento);
 	}
 	
 	@Override
@@ -31,8 +31,8 @@ public class Venda extends Operacao {
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
-			Condicao condicao, int mesesParaReversao) {
-		super(qtdLotes, ativo, mesesParaVencimento, condicao, mesesParaReversao);
+			Condicao condicao, int diasParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento, condicao, diasParaVencimento);
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
@@ -41,10 +41,15 @@ public class Venda extends Operacao {
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
+			int momento, Condicao condicao, Operacao reversa) {
+		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa);
+	}
+	
+	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
 			int momento, Condicao condicao, Operacao reversa,
-			int mesesParaReversao) {
+			int diasParaVencimento) {
 		super(qtdLotes, ativo, mesesParaVencimento, momento, condicao, reversa,
-				mesesParaReversao);
+				diasParaVencimento);
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento) {
@@ -56,8 +61,8 @@ public class Venda extends Operacao {
 	}
 
 	public Venda(int qtdLotes, Ativo ativo, int mesesParaVencimento,
-			int mesesParaReversao) {
-		super(qtdLotes, ativo, mesesParaVencimento, mesesParaReversao);
+			int diasParaVencimento) {
+		super(qtdLotes, ativo, mesesParaVencimento, diasParaVencimento);
 	}
 
 	public Venda(Ativo ativo, boolean reversivel) {

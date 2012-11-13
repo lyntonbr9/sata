@@ -32,8 +32,8 @@ public class Lhama2 extends Estrategia {
 		Venda vendaCallOTM4 = new Venda(2, new Call(acao, 4), volatilidadeAlta);
 		Compra compraCallOTM8 = new Compra(new Call(acao, 8), volatilidadeAlta);
 		
-		compra2xCallATM.setDiasParaFechamento(parametros[1]);
-		vendaCallITM4.setDiasParaFechamento(parametros[1]);
+		compra2xCallATM.setDiasParaVencimento(parametros[1]);
+		vendaCallITM4.setDiasParaVencimento(parametros[1]);
 		
 		Simulacao simulacao = new Simulacao(
 				compra2xCallATM ,

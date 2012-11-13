@@ -22,12 +22,20 @@ public abstract class Operacao implements IConstants {
 	int mesesParaVencimento = 1;
 	Condicao condicao;
 	Operacao reversa;
-	int mesesParaReversao = 1;
-	int diasParaFechamento = 1;
 	boolean reversivel = true;
 	boolean executada = false;
-	
-	abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int mesesParaReversaoReverso);
+	//quando a operação de reversao foi realizada
+	Dia diaAbertura;
+	//quando a operação de reversao foi realizada
+	Dia diaReversao;
+	//quando eh o vencimento da operação
+	Dia diaVencimento;
+	//quantidade de dias de duração da operação
+	int duracao;
+	//quantidade de dias para o vencimento da operação
+	int diasParaVencimento = 1;
+
+	abstract Operacao criaOperacaoReversa(int mesesParaVencimentoReverso, int momentoReverso, int diasParaVencimento);
 	public abstract String getBundleMessage();
 	
 	public Preco getPreco(Dia dia) throws SATAEX {
@@ -68,40 +76,26 @@ public abstract class Operacao implements IConstants {
 	}
 	
 	public Operacao getReversa() {
-		if (reversa == null) {
-			int momentoReverso = FECHAMENTO;
-			int mesesParaVencimentoReverso = mesesParaVencimento-1;
-			int mesesParaReveresaoReverso = mesesParaVencimento-1;
-			if (momento == FECHAMENTO) {
-				momentoReverso = ABERTURA;
-				mesesParaVencimentoReverso = mesesParaVencimento+1;
-				mesesParaReveresaoReverso = mesesParaVencimento+1;
-			}
-			reversa = criaOperacaoReversa(mesesParaVencimentoReverso, momentoReverso, mesesParaReveresaoReverso);
-		}
+		int momentoReverso = FECHAMENTO;
+		reversa = criaOperacaoReversa(mesesParaVencimento, momentoReverso, diasParaVencimento);
 		reversa.setAtivo(ativo);
 		return reversa;
 	}
 	
 	public int getDiasParaVencimento(Dia dia) {
-		Dia diaOperacao = dia;
-		Dia diaFechamento = null;
+
 		if (momento == ABERTURA) {
-			diaFechamento = Simulacao.getDiaFechamento(dia.getMes().getMesPosterior());
-			for (int i=2; i<=mesesParaVencimento; i++) {
-				diaOperacao = Simulacao.getDiaAbertura(diaOperacao.getMes().getMesAnterior());
-			}
+			//se for na abertura retorna a duração da operação
+			return duracao;
 		}
-		if (momento == FECHAMENTO) {
-			diaFechamento = Simulacao.getDiaFechamento(dia.getMes());
-			for (int i=1; i<=mesesParaVencimento; i++) {
-				diaFechamento = Simulacao.getDiaFechamento(dia.getMes().getMesAnterior());
-			}
+		else if (momento == FECHAMENTO) {
+			//se for no fechamento retorna os dias que faltam para o vencimento
+			return diasParaVencimento;
 		}
-		return getDiferenca(diaOperacao, diaFechamento);
+		return 0;
 	}
 	
-	private int getDiferenca(Dia dia1, Dia dia2) {
+	public int getDiferenca(Dia dia1, Dia dia2) {
 		int dif = SATAUtil.getDiferencaDias(dia1.getCalendar(), dia2.getCalendar());
 		if (dif < 0)
 			dif = SATAUtil.getDiferencaDias(dia1.getCalendar(), Simulacao.getDiaFechamento(dia1.getMes().getMesPosterior()).getCalendar());
@@ -159,12 +153,12 @@ public abstract class Operacao implements IConstants {
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 	}
-	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int mesesParaReversao) {
+
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int diasParaVencimento) {
 		this.qtdLotes = qtdLotes;
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
-		this.mesesParaReversao = mesesParaReversao;
+		this.diasParaVencimento = diasParaVencimento;
 	}
 	
 	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao) {
@@ -174,24 +168,33 @@ public abstract class Operacao implements IConstants {
 		this.condicao = condicao;
 	}
 	
-	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao, int mesesParaReversao) {
+	public Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, Condicao condicao, int diasParaVencimento) {
 		this.qtdLotes = qtdLotes;
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 		this.condicao = condicao;
-		this.mesesParaReversao = mesesParaReversao;
+		this.diasParaVencimento = diasParaVencimento;
 	}
 	
-	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa, int mesesParaReversao) {
+	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa) {
 		this.qtdLotes = qtdLotes;
 		this.ativo = ativo;
 		this.mesesParaVencimento = mesesParaVencimento;
 		this.momento = momento;
 		this.condicao = condicao;
 		this.reversa = reversa;
-		this.mesesParaReversao = mesesParaReversao;
 	}
 	
+	protected Operacao(int qtdLotes, Ativo ativo, int mesesParaVencimento, int momento, Condicao condicao, Operacao reversa, int diasParaVencimento) {
+		this.qtdLotes = qtdLotes;
+		this.ativo = ativo;
+		this.mesesParaVencimento = mesesParaVencimento;
+		this.momento = momento;
+		this.condicao = condicao;
+		this.reversa = reversa;
+		this.diasParaVencimento = diasParaVencimento;
+	}
+
 	public String getString() {
 		String strCondicao = "";
 		String strMeses = "";
@@ -199,8 +202,8 @@ public abstract class Operacao implements IConstants {
 		if (mesesParaVencimento > 1) 
 			strMeses = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_MESES, String.valueOf(mesesParaVencimento));
 		if (condicao != null) strCondicao = " ["+condicao+"]";
-		if (diasParaFechamento > 1) 
-			strDias = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_DIAS, String.valueOf(diasParaFechamento));
+		if (diasParaVencimento > 1) 
+			strDias = SATAUtil.getMessage(MSG_PATTERN_OPERACAO_DIAS, String.valueOf(diasParaVencimento));
 		return SATAUtil.getMessage(MSG_PATTERN_OPERACAO, toString(), strMeses, strDias, strCondicao);
 	}
 	
@@ -220,7 +223,7 @@ public abstract class Operacao implements IConstants {
 	       append(mesesParaVencimento).
 	       append(condicao).
 	       append(reversa).
-	       append(mesesParaReversao).
+	       append(diasParaVencimento).
 	       append(reversivel).
 	       append(executada).
 	       toHashCode();
@@ -264,12 +267,6 @@ public abstract class Operacao implements IConstants {
 	public void setReversa(Operacao reversa) {
 		this.reversa = reversa;
 	}
-	public int getMesesParaReversao() {
-		return mesesParaReversao;
-	}
-	public void setMesesParaReversao(int mesesParaReversao) {
-		this.mesesParaReversao = mesesParaReversao;
-	}
 	public boolean isReversivel() {
 		return reversivel;
 	}
@@ -282,10 +279,47 @@ public abstract class Operacao implements IConstants {
 	public void setExecutada(boolean executada) {
 		this.executada = executada;
 	}
-	public int getDiasParaFechamento() {
-		return diasParaFechamento;
+	public int getDiasParaVencimento() {
+		return diasParaVencimento;
 	}
-	public void setDiasParaFechamento(int diasParaFechamento) {
-		this.diasParaFechamento = diasParaFechamento;
+	public void setDiasParaVencimento(int diasParaVencimento) {
+		this.diasParaVencimento = diasParaVencimento;
+	}
+	public Dia getDiaVencimento() {
+		return diaVencimento;
+	}
+	public void setDiaVencimento(Dia diaVencimento) {
+		this.diaVencimento = diaVencimento;
+	}
+	public Dia getDiaAbertura() {
+		return diaAbertura;
+	}
+	public void setDiaAbertura(Dia diaAbertura) {
+		this.diaAbertura = diaAbertura;
+		//calcula o dia de vencimento da operacao
+		Dia diaVencimento = Simulacao.getDiaFechamento(diaAbertura.getMes().getMesPosterior());
+		for (int i = 1; i < getMesesParaVencimento(); i++)
+			diaVencimento = Simulacao.getDiaFechamento(diaVencimento.getMes().getMesPosterior());
+		this.diaVencimento = diaVencimento;
+		//calcula a duracao da operacao
+		this.duracao = getDiferenca(diaAbertura, this.diaVencimento);
+	}
+	public int getDuracao() {
+		//caso a duracao já tenha sido calculada atraves do dia da abertura e do vencimento
+		if(duracao != 0)
+			return duracao;
+		else //caso não tenha sido calculada ela retorna uma estimativa de duracao
+			return getMesesParaVencimento() * QTD_DIAS_MES - getDiasParaVencimento();
+	}
+	public void setDuracao(int duracao) {
+		this.duracao = duracao;
+	}
+	public Dia getDiaReversao() {
+		return diaReversao;
+	}
+	public void setDiaReversao(Dia diaReversao) {
+		this.diaReversao = diaReversao;
+		//atualiza a quantidade de dias para fechamento pq depende do dia de reversão
+		this.diasParaVencimento = getDiferenca(diaReversao, this.diaVencimento);
 	}
 }

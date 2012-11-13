@@ -37,6 +37,9 @@
 			<h:outputLabel value="#{msgs['simulacao.formSimulacao.anoFinal.label']}:" for="anoFinal"/>
 			<p:spinner value="#{simulacaoMB.anoFinal}" size="4" id="anoFinal"/>
 			
+			<h:outputLabel value="#{msgs['simulacao.formSimulacao.diasParaVencimento.label']}:" for="diasParaVencimento"/>
+			<p:spinner value="#{simulacaoMB.diasParaVencimento}" size="4" id="diasParaVencimento"/>
+			
 			<h:outputLabel value="#{msgs['general.label.taxaDeJuros']}:" for="taxaDeJuros"/>
 			<h:panelGroup>
 				<p:inputText value="#{simulacaoMB.taxaDeJuros}" size="4" id="taxaDeJuros" >
