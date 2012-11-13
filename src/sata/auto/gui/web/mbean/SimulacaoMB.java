@@ -28,7 +28,7 @@ import sata.domain.util.SATAUtil;
 public class SimulacaoMB implements IConstants {
 	
 	private Acao acao;
-	private int anoInicial = 2000;
+	private int anoInicial = 2011;
 	private int anoFinal = 2011;
 	private TipoCalculoValorInvestido tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM;
 	private int percValorInvestido = 100;
@@ -40,6 +40,7 @@ public class SimulacaoMB implements IConstants {
 	private CartesianChartModel graficoModel = new CartesianChartModel();
 	private UploadedFile uploadedFile;
 	private double taxaDeJuros = SATAUtil.getTaxaDeJuros()*100;
+	private int diasParaVencimento = 31;
 	
 	public void simular() {
 		try {
@@ -56,6 +57,7 @@ public class SimulacaoMB implements IConstants {
 				simulacao.setAnoFinal(anoFinal);
 				simulacao.setTipoCalculoValorInvestido(tipoCalculoValorInvestido);
 				simulacao.setPercValorInvestido(percValorInvestido);
+				simulacao.setDiasParaVencimento(diasParaVencimento);
 				SATAUtil.setTaxaDeJuros(taxaDeJuros/100);
 				if (resultado != null) resultado.limpa();
 				resultado = simulacao.getResultado();
@@ -244,5 +246,13 @@ public class SimulacaoMB implements IConstants {
 
 	public void setPercValorInvestido(int percValorInvestido) {
 		this.percValorInvestido = percValorInvestido;
+	}
+
+	public int getDiasParaVencimento() {
+		return diasParaVencimento;
+	}
+
+	public void setDiasParaVencimento(int diasParaVencimento) {
+		this.diasParaVencimento = diasParaVencimento;
 	}
 }

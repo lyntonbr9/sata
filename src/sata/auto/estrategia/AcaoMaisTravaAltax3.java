@@ -18,9 +18,12 @@ public class AcaoMaisTravaAltax3 extends Estrategia {
 		tipoCalculoValorInvestido = TipoCalculoValorInvestido.CUSTO_MONTAGEM_IGNORANDO_PRIMEIRO_MES;
 		Acao acao = AcaoConteiner.get("PETR4");
 		
-		simulacoes.add(new Simulacao(new Compra(1, acao, 2, 2)));
-		simulacoes.add(new Simulacao(new Venda (3, new Call(acao, -2), 2, 2), 
-									 new Compra(3, new Call(acao, 0), 2, 2)));
+//		simulacoes.add(new Simulacao(new Compra(1, acao, 2, 2)));
+//		simulacoes.add(new Simulacao(new Venda (3, new Call(acao, -2), 2, 2), 
+//									 new Compra(3, new Call(acao, 0), 2, 2)));
+		simulacoes.add(new Simulacao(new Compra(1, acao, 2)));
+		simulacoes.add(new Simulacao(new Venda (3, new Call(acao, -2), 2), 
+									 new Compra(3, new Call(acao, 0), 2)));
 	}
 	
 	public static void main(String[] args) {

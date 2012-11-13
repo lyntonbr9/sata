@@ -72,6 +72,12 @@ public class Dia implements Comparable<Dia>, IConstants {
 		return converte(calendar);
 	}
 	
+	public Dia getDiaMesPosterior(int qtdMeses) {
+		Calendar calendar = getCalendar();
+		calendar.add(Calendar.MONTH, qtdMeses);
+		return converte(calendar);
+	}
+	
 	public Dia getProximoDia() {
 		return getDiaPosterior(1);
 	}

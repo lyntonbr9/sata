@@ -408,8 +408,10 @@ public class Resultado implements IConstants {
 		Mes mesAnterior = null;
 		for (ValorOperacao valorOperacao : resultados) {
 			if (!resultados.get(0).equals(valorOperacao) &&
-					!valorOperacao.getMes().equals(mesAnterior))
+					!valorOperacao.getMes().equals(mesAnterior)){
+				string += getResultadoMensal(mesAnterior);
 				string += "\n";
+			}
 			string += "\n" + valorOperacao;
 			mesAnterior = valorOperacao.getMes();
 		}

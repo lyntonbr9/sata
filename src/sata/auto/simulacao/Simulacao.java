@@ -26,6 +26,7 @@ public class Simulacao implements IConstants {
 	private TipoCalculoValorInvestido tipoCalculoValorInvestido;
 	private int percValorInvestido = 100;
 	private Stop stop;
+	private int diasParaVencimento;
 	
 	public Simulacao(Operacao... operacoes) {
 		this.operacoes = Arrays.asList(operacoes);
@@ -43,16 +44,28 @@ public class Simulacao implements IConstants {
 				for (int iMes=1; iMes <= 12; iMes++) {
 					Mes mes = new Mes(iMes,ano);
 					try {
+						//executa a abertura das operações
 						executaOperacoes(resultado, operacoes, mes, getDiaAbertura(mes));
-
-						Dia diaFechamento;
-						if (stop != null) diaFechamento = getDiaAbertura(mes).getProximoDia();
-						else diaFechamento = getDiaFechamento(mes);
+						
+						//tem que atualizar os dias para fechamento escolhido a cada mes
+						//para que possa fazer novo calculo de qual sera o dia de reversao
+						for(Operacao op: operacoes) {
+							op.setDiasParaVencimento(diasParaVencimento);
+						}
+							
+						Dia diaReversao;
+						if (stop != null) //se houver stop 
+							diaReversao = getDiaAbertura(mes).getProximoDia();
+						else //se nao houver stop, calcula o dia de reversao
+							diaReversao = getDiaReversao(mes, operacoes);
 						do  {
-							executaOperacoesReversas(resultado, operacoes, mes, diaFechamento);
-							if (diaFechamento.equals(getDiaFechamento(mes)))
+							//executa a reversão das operações
+							executaOperacoesReversas(resultado, operacoes, mes, diaReversao);
+							if(stop == null) //se não tiver stop
 								break;
-							diaFechamento = diaFechamento.getProximoDia();
+							if (diaReversao.equals(getDiaFechamento(mes))) //se tiver stop
+								break;
+							diaReversao = diaReversao.getProximoDia();
 						} while (!stop(resultado, mes));
 
 					} catch (CotacaoInexistenteEX e) {
@@ -68,31 +81,19 @@ public class Simulacao implements IConstants {
 	private void executaOperacoes(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws SATAEX {
 		for (Operacao operacao : operacoes) {
 			Dia diaOperacao = dia;
-			if (operacao.getDiasParaFechamento() > 1)
-				diaOperacao = dia.getDiaAnterior(operacao.getDiasParaFechamento()+1);
+			//atualiza o dia da operacao que sera executada
+			operacao.setDiaAbertura(diaOperacao);
+			//executa a operacao de abertura
 			executaOperacao(resultado, operacao, mes, diaOperacao, false);
 		}
 	}
 	
-	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mes, Dia dia) throws SATAEX {
+	private void executaOperacoesReversas(Resultado resultado, List<Operacao> operacoes, Mes mesReversao, Dia diaReversao) throws SATAEX {
 		for (Operacao operacao : operacoes) {
 			if (operacao.isReversivel() && operacao.isExecutada()) {
-				if (resultado.possui(operacao, mes)) {
-					Dia diaReversao = dia;
-					Mes mesReversao = mes;
-					int mesesParaVencimento = operacao.getMesesParaVencimento();
-					for (int i=1; i<operacao.getMesesParaReversao(); i++) {
-						mesReversao = dia.getMes().getMesPosterior();
-						diaReversao = getDiaFechamento(mesReversao);
-						operacao.setMesesParaVencimento(mesesParaVencimento-1);
-					}
-					
-					if (operacao.getDiasParaFechamento() > 1) {
-						diaReversao = diaReversao.getDiaAnterior(operacao.getDiasParaFechamento()-1);
-					}
-					
+				if (resultado.possui(operacao, mesReversao)) {
+					//executa a operacao de reversão
 					executaOperacao(resultado, operacao.getReversa(), mesReversao, diaReversao, true);
-					operacao.setMesesParaVencimento(mesesParaVencimento);
 				}
 			}
 		}
@@ -119,7 +120,37 @@ public class Simulacao implements IConstants {
 	}
 	
 	public static Dia getDiaFechamento(Mes mes) {
-		return new Dia(SATAUtil.getDiaMes(mes.getAno(), mes.getMes(), Calendar.MONDAY, 3)-3, mes);
+//		return new Dia(SATAUtil.getDiaMes(mes.getAno(), mes.getMes(), Calendar.MONDAY, 3)-3, mes);
+		return new Dia(SATAUtil.getDiaMes(mes.getAno(), mes.getMes(), Calendar.MONDAY, 3), mes);
+	}
+	
+	public static Dia getDiaReversao(Mes mes, List<Operacao> operacoes) {
+		Dia diaReversao;
+		Operacao operacao = null;
+		int qtdDias = Integer.MAX_VALUE;
+		//calcula qual é a operacao com menor duração para operacao
+		for(Operacao op: operacoes) {
+			if(op.isReversivel() && qtdDias >= op.getDuracao()){
+				qtdDias = op.getDuracao();
+				operacao = op;
+			}
+		}
+		//calcula o dia de reversao a partir da operacao com menor duração
+		diaReversao = getDiaFechamento(mes);
+		for (int i = 1; i < operacao.getMesesParaVencimento(); i++) {
+			diaReversao = getDiaFechamento(diaReversao.getMes().getMesPosterior());
+		}
+		//calcula o dia de reversao no mes de analise
+		if (operacao.getDiasParaVencimento() > 1) {
+			diaReversao = diaReversao.getDiaAnterior(operacao.getDiasParaVencimento());
+		}
+		//tem que atualizar a quantidade de dias para vencimento das operações
+		for(Operacao op: operacoes) {
+			//atualiza a quantidade de dias que restam para o vencimento
+			op.setDiaReversao(diaReversao);
+		}
+		
+		return diaReversao;
 	}
 	
 	private boolean possuiCotacaoNoAno(int ano) {
@@ -175,5 +206,13 @@ public class Simulacao implements IConstants {
 	}
 	public void setPercValorInvestido(int percValorInvestido) {
 		this.percValorInvestido = percValorInvestido;
+	}
+
+	public int getDiasParaVencimento() {
+		return diasParaVencimento;
+	}
+
+	public void setDiasParaVencimento(int diasParaVencimento) {
+		this.diasParaVencimento = diasParaVencimento;
 	}
 }

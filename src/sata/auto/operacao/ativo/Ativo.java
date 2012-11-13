@@ -16,11 +16,11 @@ public abstract class Ativo {
 	
 	public Preco calculaPreco(Dia dia, Operacao operacao) throws SATAEX {
 		Preco preco;
-		if (!precos.containsKey(dia)) {
+//		if (!precos.containsKey(dia)) {
 			preco = criaPreco(dia, operacao);
 			precos.put(dia, preco);
-		}
-		else preco = precos.get(dia);
+//		}
+//		else preco = precos.get(dia);
 		preco.calculaPreco();
 		return preco;
 	}
