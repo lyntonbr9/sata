@@ -45,7 +45,7 @@
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
-	
+
 	<servlet>
 		<servlet-name>RobotServlet</servlet-name>
 		<servlet-class>sata.auto.gui.web.servlet.RobotServlet</servlet-class>
@@ -54,4 +54,19 @@
 		<servlet-name>RobotServlet</servlet-name>
 		<url-pattern>/robot</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>sata.auto.rest.resource</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/resource/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>
