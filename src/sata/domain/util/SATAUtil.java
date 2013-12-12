@@ -35,6 +35,7 @@ import javax.mail.MessagingException;
 
 import sata.auto.to.Dia;
 import sata.domain.to.CotacaoAtivoTO;
+import sata.metastock.http.HTTPSata;
 import sata.metastock.mail.SendMailUsingAuthentication;
 import sata.metastock.robos.CotacaoLopesFilho;
 
@@ -440,7 +441,8 @@ public final class SATAUtil implements IConstants{
 		List<CotacaoAtivoTO> listaCotacoesAtivo = new ArrayList<CotacaoAtivoTO>();
 		Hashtable<String, String> h = getYahooFinancesURLParameters(acao, dataInicial, dataFinal);
 		
-		String html = CotacaoLopesFilho.POST("http://br.finance.yahoo.com/q/hp", h);
+//		String html = CotacaoLopesFilho.POST("http://br.finance.yahoo.com/q/hp", h);
+		String html = HTTPSata.POST("http://br.finance.yahoo.com/q/hp", h);
 //		System.out.println(html);
 //		String dataInicioLista = getDataToYahooFinances(dataFinal); // Ex: "10 de mai de 2011"
 		String dataFimDaLista = getDataToYahooFinances(dataInicial); // Ex: "2 de mai de 2011"
