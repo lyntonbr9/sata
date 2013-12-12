@@ -14,6 +14,7 @@ import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.OpcaoTO;
 import sata.domain.util.SATAPropertyLoader;
 import sata.domain.util.SATAUtil;
+import sata.metastock.http.HTTPSata;
 
 public class BMFBovespa {
 
@@ -46,22 +47,28 @@ public class BMFBovespa {
 			h.put("ctl00$contentPlaceHolderConteudo$tabOpcoes","{\"State\"=%s&\"+{},\"TabState\"=%s&\"+{\"ctl00_contentPlaceHolderConteudo_tabOpcoes_tabPosicoesAberto\"=%s&\"+{\"Selected\"=%s&\"+true},\"ctl00_contentPlaceHolderConteudo_tabOpcoes_tabPosicoesAberto_tabOpcoesEmp\"=%s&\"+{\"Selected\"=%s&\"+true},\"ctl00_contentPlaceHolderConteudo_tabOpcoes_tabSeriesAutorizadas_tabSeriesAutEmp\"=%s&\"+{\"Selected\"=%s&\"+true}}}");
 			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$","rbTodos");
 			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$cmbVcto","0");
-			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaData$txtConsultaData","2012-07-16");
-			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaData$txtConsultaData$dateInput","2012-07-16-00-00-00");
+			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaData$txtConsultaData","2013-11-19");
+			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaData$txtConsultaData$dateInput","2013-11-19-00-00-00");
 			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaData_txtConsultaData_calendar_SD","[]");
-			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaData_txtConsultaData_calendar_AD","[[2012,5,18],[2012,7,16],[2012,7,16]]");
+			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaData_txtConsultaData_calendar_AD","[[2013,9,23],[2013,11,19],[2013,11,19]]");
 			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaEmpresa",acao.getNomeEmpresa());
 			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$btnBuscarEmpresa","buscar");
-			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaDataDownload$txtConsultaDataDownload","2012-07-16");
-			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaDataDownload$txtConsultaDataDownload$dateInput","2012-07-16-00-00-00");
+			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaDataDownload$txtConsultaDataDownload","2013-11-19");
+			h.put("ctl00$contentPlaceHolderConteudo$posicoesAbertoEmp$txtConsultaDataDownload$txtConsultaDataDownload$dateInput","2013-11-19-00-00-00");
 			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaDataDownload_txtConsultaDataDownload_calendar_SD","[]");
-			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaDataDownload_txtConsultaDataDownload_calendar_AD","[[2012,5,18],[2012,7,16],[2012,7,16]]");
+			h.put("ctl00_contentPlaceHolderConteudo_posicoesAbertoEmp_txtConsultaDataDownload_txtConsultaDataDownload_calendar_AD","[[2013,9,23],[2013,11,19],[2013,11,19]]");
 			h.put("ctl00$contentPlaceHolderConteudo$mpgOpcoes_Selected","0");
 			h.put("cboAgentesCorretorasNome","#");
 			h.put("cboAgentesCorretorasCodigo","#");
-
+			
 			String url = "http://www.bmfbovespa.com.br/opcoes/opcoes.aspx?Idioma=pt-br";
-			String html = SATAUtil.removeExcessoEspacos(CotacaoLopesFilho.POST(url, h));
+			
+//			h.put("papel","PETR4");
+//			h.put("btBuscar.x","0");
+//			h.put("btBuscar.y","0");
+//			String url = "http://www.ondeinvestirbylopesfilho.com.br/cli/spl/cot/cotacao.asp";
+
+			String html = SATAUtil.removeExcessoEspacos(HTTPSata.POST(url, h));
 
 			/*if (acao.getNome().equals("PETR4")) {
 				BufferedReader in = new BufferedReader(new FileReader("C:\\FILES\\pessoal\\projetos\\sata\\workspace\\sata\\logs\\BMFSource.txt"));
