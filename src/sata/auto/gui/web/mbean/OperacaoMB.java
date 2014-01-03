@@ -31,7 +31,7 @@ import sata.auto.operacao.ativo.Call;
 import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.Put;
 import sata.auto.operacao.ativo.RendaFixa;
-import sata.domain.util.FacesUtil;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.util.IConstants;
 
 @ManagedBean

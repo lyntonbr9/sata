@@ -10,16 +10,16 @@
 	<ui:define name="pagina">
 		<h:panelGrid id="formConsulta" columns="2">
 			<h:outputLabel value="#{msgs['general.label.acao']}:" for="acao" />
-				<p:selectOneMenu id="acao" value="#{acompanhamentoMB.acompanhamento.acao}" converter="toConverter" >
-					<f:selectItem itemValue="" itemLabel="--" />
-					<f:selectItems value="#{acompanhamentoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
-				</p:selectOneMenu>
-				
-				<h:outputLabel value="#{msgs['general.label.dataVencimento']}:" for="dataVencimento" />
-				<p:selectOneMenu id="dataVencimento" value="#{acompanhamentoMB.acompanhamento.dataVencimento}" converter="dateConverter">
-					<f:selectItem itemValue="" itemLabel="--" />
-					<f:selectItems value="#{acompanhamentoMB.datasVencimento}"/>
-				</p:selectOneMenu>
+			<p:selectOneMenu id="acao" value="#{acompanhamentoMB.acompanhamento.acao}" converter="toConverter" >
+				<f:selectItem itemValue="" itemLabel="--" />
+				<f:selectItems value="#{acompanhamentoMB.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.nome}" />
+			</p:selectOneMenu>
+			
+			<h:outputLabel value="#{msgs['general.label.dataVencimento']}:" for="dataVencimento" />
+			<p:selectOneMenu id="dataVencimento" value="#{acompanhamentoMB.acompanhamento.dataVencimento}" converter="dateConverter">
+				<f:selectItem itemValue="" itemLabel="--" />
+				<f:selectItems value="#{acompanhamentoMB.datasVencimento}"/>
+			</p:selectOneMenu>
 		</h:panelGrid>
 		<br/>
 		<p:commandButton value="#{msgs['general.label.find']}" 
@@ -30,12 +30,14 @@
 			<h:panelGrid columns="3">
 				<h:outputText value="#{msgs['general.label.volatilidadePraticada']}:" />
 				<h:outputText value="#{acompanhamentoMB.volatilidade * 100}">
-		       			<f:convertNumber maxFractionDigits="2" /></h:outputText>%
+					<f:convertNumber maxFractionDigits="2" />
+		       	</h:outputText>%
 		    </h:panelGrid>
 		    <h:panelGrid columns="3">
 		    	<h:outputText value="#{msgs['general.label.precoAcao']}:" />
 		    	$<h:outputText value="#{acompanhamentoMB.acompanhamento.precoAcaoAtual}">
-		       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+		       	</h:outputText>
 		    </h:panelGrid>
 		    <h:panelGrid columns="2">
 		    	<h:outputText value="#{msgs['general.label.diasParaVencimento']}:" />
@@ -49,19 +51,45 @@
 	       		</p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.precoExercicio']}">  
 	       			<h:outputText value="#{opcao.precoExercicio}">
-	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
 	       		</p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.precoAtual']}">
 	       			<h:outputText value="#{opcao.precoAtual}">
-	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText> 
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText> 
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="VI">
+	       			<h:outputText value="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio}" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio gt 0}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			<h:outputText value="-" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio le 0}" />
+	       		</p:column>
+	       		<p:column styleClass="center" headerText="VE">
+	       			<h:outputText value="#{opcao.precoAtual - (acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio)}" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio gt 0}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			<h:outputText value="#{opcao.precoAtual}" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio le 0}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			- (
+	       			<h:outputText value="#{((opcao.precoAtual - (acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio))/acompanhamentoMB.acompanhamento.precoAcaoAtual)*100}" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio gt 0}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			<h:outputText value="#{(opcao.precoAtual/acompanhamentoMB.acompanhamento.precoAcaoAtual)*100}" rendered="#{acompanhamentoMB.acompanhamento.precoAcaoAtual - opcao.precoExercicio le 0}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			%) 
 	       		</p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.blackScholes']}"> 
 	       			<h:outputText value="#{opcao.blackScholes}">
-	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
 	       		</p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.diferenca']}"> 
 	       			<h:outputText value="#{opcao.precoAtual - opcao.blackScholes}">
-	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" /></h:outputText>
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
 	       		</p:column>
 			</p:dataTable>  
 		</h:panelGroup>

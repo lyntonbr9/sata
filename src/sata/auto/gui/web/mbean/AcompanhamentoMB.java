@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import sata.auto.enums.Posicao;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
+import sata.auto.operacao.ativo.preco.PrecoOpcao;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.alert.AcompOpcoes;
 import sata.domain.dao.IAcompanhamentoDAO;
 import sata.domain.dao.IOpcaoDAO;
@@ -22,7 +24,6 @@ import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.AcompOpcaoTO;
 import sata.domain.to.AcompanhamentoTO;
 import sata.domain.to.OpcaoTO;
-import sata.domain.util.FacesUtil;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
@@ -54,7 +55,7 @@ public class AcompanhamentoMB implements IConstants {
 	
 	public void incluirAcomp() {
 		acompanhamento = new AcompanhamentoTO();
-		acompanhamento.setInvestidor(FacesUtil.getInvestidorLogado());
+		acompanhamento.setInvestidor(InvestidorMB.getInvestidorLogado());
 		alterar = false;
 	}
 	
