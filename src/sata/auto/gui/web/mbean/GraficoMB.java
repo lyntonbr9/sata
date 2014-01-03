@@ -18,7 +18,7 @@ import sata.auto.operacao.ativo.Opcao;
 import sata.auto.operacao.ativo.RendaFixa;
 import sata.auto.operacao.ativo.preco.PrecoOpcao;
 import sata.auto.operacao.ativo.preco.PrecoRendaFixa;
-import sata.domain.util.FacesUtil;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 

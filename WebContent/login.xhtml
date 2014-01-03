@@ -14,7 +14,6 @@
 			
 			<h:outputLabel value="#{msgs['login.senha.label']}:" for="senha" />
 			<p:password id="senha" value="#{investidorMB.investidor.senha}" feedback="false" />
-			
 		</h:panelGrid>
 		<p:captcha rendered="#{investidorMB.tentativas >= 5}" 
 			requiredMessage="#{msgs['login.msg.error.captcha']}"  validatorMessage="#{msgs['login.msg.error.captcha']}" />

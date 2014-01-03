@@ -15,6 +15,7 @@ import sata.auto.enums.Posicao;
 import sata.auto.enums.TipoCalculoValorInvestido;
 import sata.auto.operacao.ativo.Acao;
 import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.alert.AlertaOperacao;
 import sata.domain.dao.IAlertaDAO;
 import sata.domain.dao.IOpcaoDAO;
@@ -25,7 +26,6 @@ import sata.domain.to.AlertaTO;
 import sata.domain.to.OpcaoTO;
 import sata.domain.to.OperacaoRealizadaTO;
 import sata.domain.to.SerieOperacoesTO;
-import sata.domain.util.FacesUtil;
 import sata.domain.util.IConstants;
 
 @ManagedBean
@@ -141,7 +141,7 @@ public class AlertaMB implements IConstants {
 	
 	public void incluirSerie() {
 		serie = new SerieOperacoesTO();
-		serie.setInvestidor(FacesUtil.getInvestidorLogado());
+		serie.setInvestidor(InvestidorMB.getInvestidorLogado());
 		alterar = false;
 	}
 	

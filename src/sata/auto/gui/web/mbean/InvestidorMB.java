@@ -9,10 +9,10 @@ import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang3.StringUtils;
 
+import sata.auto.web.util.FacesUtil;
 import sata.domain.dao.IInvestidorDAO;
 import sata.domain.dao.SATAFactoryFacade;
 import sata.domain.to.InvestidorTO;
-import sata.domain.util.FacesUtil;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 
@@ -112,4 +112,9 @@ public class InvestidorMB implements IConstants {
 	public void setInvestidores(List<InvestidorTO> investidores) {
 		this.investidores = investidores;
 	}
+	
+	public static InvestidorTO getInvestidorLogado() {
+		return FacesUtil.getMB(InvestidorMB.class).getInvestidor();
+	}
+
 }

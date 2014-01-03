@@ -19,7 +19,7 @@ import sata.auto.operacao.ativo.conteiner.AcaoConteiner;
 import sata.auto.simulacao.Resultado;
 import sata.auto.simulacao.Simulacao;
 import sata.auto.to.ValorResultado;
-import sata.domain.util.FacesUtil;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.util.IConstants;
 import sata.domain.util.SATAUtil;
 

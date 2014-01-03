@@ -5,7 +5,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
 import sata.auto.gui.web.mbean.InvestidorMB;
-import sata.domain.util.FacesUtil;
+import sata.auto.web.util.FacesUtil;
 import sata.domain.util.SATAUtil;
 
 public class LoginPhaseListener implements PhaseListener {

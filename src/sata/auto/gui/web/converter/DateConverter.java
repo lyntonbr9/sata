@@ -7,13 +7,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import sata.domain.util.SATAUtil;
+import sata.auto.web.util.LocaleUtil;
 
 public class DateConverter implements Converter {
 	
 	public Object getAsObject(FacesContext ctx, UIComponent component, String value) {
 		try {
-			return SATAUtil.formataData(value);
+			return LocaleUtil.formataData(value);
 		} catch (ParseException e) {
 			return null;
 		}
@@ -21,7 +21,7 @@ public class DateConverter implements Converter {
 
 	public String getAsString(FacesContext ctx, UIComponent component, Object value) {
 		try {
-			return SATAUtil.formataData((Date)value);
+			return LocaleUtil.formataData((Date)value);
 		}
 		catch (ClassCastException e) {
 			return value.toString();
