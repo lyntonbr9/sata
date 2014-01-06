@@ -53,6 +53,11 @@
 	       			<h:outputText value="#{opcao.precoExercicio}">
 	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
 	       			</h:outputText>
+	       			- (
+	       			<h:outputText value="#{((opcao.precoExercicio - acompanhamentoMB.acompanhamento.precoAcaoAtual)/acompanhamentoMB.acompanhamento.precoAcaoAtual)*100}">
+	       				<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+	       			</h:outputText>
+	       			%)
 	       		</p:column>
 	       		<p:column styleClass="center" headerText="#{msgs['general.label.precoAtual']}">
 	       			<h:outputText value="#{opcao.precoAtual}">
